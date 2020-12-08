@@ -1,0 +1,79 @@
+population,location,number,treatment_initial,treatment_final,control_initial,control_final
+Cemetary,South,1,446,126,382,382
+Cemetary,South,2,392,230,465,439
+Cemetary,South,3,382,129,433,332
+Cemetary,South,4,547,110,496,515
+Cemetary,South,5,420,167,427,484
+Cemetary,South,6,376,122,382,338
+Cemetary,South,7a,427,160,484,471
+Cemetary,South,7b,370,148,332,262
+Cemetary,South,8,382,160,408,351
+Cemetary,South,9,484,129,490,471
+Cemetary,South,10,515,141,490,477
+Cemetary,South,11,471,160,465,414
+Oil Patch,South,1,452,116,439,477
+Oil Patch,South,2,446,167,433,420
+Oil Patch,South,3,528,173,528,496
+Oil Patch,South,3,484,230,471,458
+Oil Patch,South,4,534,192,515,534
+Oil Patch,South,5,503,167,509,490
+Oil Patch,South,7,528,217,560,541
+Oil Patch,South,8,465,313,471,477
+Oil Patch,South,8,325,148,319,376
+Oil Patch,South,9,452,186,446,446
+Parking Lot,South,2,338,135,344,325
+Parking Lot,South,3,408,167,420,338
+Parking Lot,South,4,357,129,344,344
+Parking Lot,South,5,477,135,354,496
+Parking Lot,South,6,389,160,395,439
+Prairie Island,North,1,541,148,503,541
+Prairie Island,North,2,503,224,503,490
+Prairie Island,North,3,534,84,503,477
+Prairie Island,North,4,515,173,509,509
+Prairie Island,North,5,496,160,522,496
+Prairie Island,North,9,477,103,465,496
+Prairie Island,North,10,547,141,604,585
+Prairie Island,North,11,496,84,484,439
+Prairie Island,North,12,490,154,490,522
+Prairie Island,North,13,503,344,534,522
+Prairie Island,North,14,490,53,528,515
+Prairie Island,North,15,465,116,465,433
+Prairie Island,North,18,598,167,604,560
+Prairie Island,North,19,617,205,630,611
+Prairie Island,North,21,566,160,572,572
+Prairie Island,North,25,541,148,534,566
+Prairie Island,North,27,490,78,471,465
+Prairie Island,North,28,477,154,490,484
+Prairie Island,North,30,585,167,585,534
+Reserve,North,3,503,167,503,420
+Reserve,North,5,484,148,477,452
+Tremp,North,1,351,129,376,395
+Tremp,North,2,490,179,458,414
+Tremp,North,3,439,198,446,458
+Tremp,North,4,452,122,458,465
+Tremp,North,5,389,148,389,363
+Tremp,North,6,401,91,382,357
+Tremp,North,6,167,78,198,192
+Tremp,North,7,471,192,458,395
+Tremp,North,8,465,179,465,452
+Tremp,North,9,376,135,401,408
+Tremp,North,10,465,179,471,420
+Tremp,North,11,515,122,471,465
+Tremp,North,12,433,173,395,376
+Tremp,North,13,446,154,395,401
+Tremp,North,14,458,141,471,427
+Tremp,North,15,509,122,484,471
+Tremp,North,17,408,116,408,382
+Tremp,North,18,522,205,490,471
+Tremp,North,19,490,173,465,484
+Tremp,North,20,447,179,471,503
+Tremp,North,21,427,205,465,471
+Tremp,North,22,446,157,427,452
+Tremp,North,23,370,135,382,370
+Tremp,North,24,471,129,408,389
+Tremp,North,25,465,167,439,401
+Tremp,North,26,452,205,452,484
+Tremp,North,27,439,135,477,515
+Tremp,North,28,427,129,446,433
+Tremp,North,29,446,179,433,389
+Tremp,North,30,509,192,496,433
