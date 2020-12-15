@@ -3,6 +3,8 @@
 remove(list=ls())
 set.seed(654841)
 
+#' Random selection for Southern plant included in study
+(Southern <- sample(x = 1:26, size = 20, replace = F))
 
 #' Randomization for ramet A for all plants
 (A_north <- sample(x = 1:20, size = 20, replace = F))
