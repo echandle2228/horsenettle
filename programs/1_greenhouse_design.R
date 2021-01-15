@@ -3,6 +3,22 @@
 remove(list=ls())
 set.seed(654841)
 
+
+
+#' Randomization for ramet A for all plants
+(A_north <- sample(x = 1:19, size = 19, replace = F))
+(A_south <- sample(x = 1:26, size = 19, replace = F))
+
+#' Coin flip for which position(left or right) to place northern plant
+A_placement <- sample(x = c("left", "right"), size = 19, replace = T)
+
+A_ramet <- data.frame(A_north, A_south, A_placement)
+
+write.csv(file = "Output/greenhouse_design_PIonly.csv", x = A_ramet)
+
+
+
+
 #' Random selection for Prairie Island plants included in study
 (PI <- sample(x = 1:19, size = 9, replace = F))
 #' Random selection for Tremp plants included in study
