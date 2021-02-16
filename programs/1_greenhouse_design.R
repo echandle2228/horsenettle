@@ -4,17 +4,24 @@ remove(list=ls())
 set.seed(654841)
 
 
-
+################### PI AND SOUTH ONLY ###########################################################
 #' Randomization for ramet A for all plants
 (A_north <- sample(x = 1:19, size = 19, replace = F))
 (A_south <- sample(x = 1:26, size = 19, replace = F))
-
 #' Coin flip for which position(left or right) to place northern plant
 A_placement <- sample(x = c("left", "right"), size = 19, replace = T)
-
 A_ramet <- data.frame(A_north, A_south, A_placement)
 
-write.csv(file = "Output/greenhouse_design_PIonly.csv", x = A_ramet)
+#' Randomization for ramet B for all plants
+(B_north <- sample(x = 1:19, size = 19, replace = F))
+(B_south <- sample(x = 1:26, size = 19, replace = F))
+#' Coin flip for which position(left or right) to place northern plant
+B_placement <- sample(x = c("left", "right"), size = 19, replace = T)
+B_ramet <- data.frame(B_north, B_south, B_placement)
+
+AB_ramet <- data.frame(A_ramet, B_ramet)
+
+write.csv(file = "Output/greenhouse_design_PIonlyAB.csv", x = AB_ramet)
 
 
 
