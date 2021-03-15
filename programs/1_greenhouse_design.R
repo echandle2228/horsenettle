@@ -4,6 +4,16 @@ remove(list=ls())
 set.seed(654841)
 
 
+################### Adding FR################################################################
+
+#' Randomization for ramet A for all plants
+(A_FR <- sample(x = 1:11, size = 4, replace = F))
+(A_lastN <- sample(x = 1:5, size=5, replace = F))
+
+#' Coin flip for which position(left or right) to place northern plant
+(FR_placement <- sample(x = c("left", "right"), size = 5, replace = T))
+
+
 ################### PI AND SOUTH ONLY ###########################################################
 #' Randomization for ramet A for all plants
 (A_north <- sample(x = 1:19, size = 19, replace = F))
@@ -13,15 +23,14 @@ A_placement <- sample(x = c("left", "right"), size = 19, replace = T)
 A_ramet <- data.frame(A_north, A_south, A_placement)
 
 #' Randomization for ramet B for all plants
-(B_north <- sample(x = 1:19, size = 19, replace = F))
-(B_south <- sample(x = 1:26, size = 19, replace = F))
+(B_north <- sample(x = 1:26, size = 26, replace = F))
+(B_south <- sample(x = 1:26, size = 26, replace = F))
 #' Coin flip for which position(left or right) to place northern plant
-B_placement <- sample(x = c("left", "right"), size = 19, replace = T)
+B_placement <- sample(x = c("left", "right"), size = 26, replace = T)
 B_ramet <- data.frame(B_north, B_south, B_placement)
 
-AB_ramet <- data.frame(A_ramet, B_ramet)
 
-write.csv(file = "Output/greenhouse_design_PIonlyAB.csv", x = AB_ramet)
+write.csv(file = "Output/greenhouse_design_RAMETB.csv", x = B_ramet)
 
 
 
