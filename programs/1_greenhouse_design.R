@@ -33,6 +33,16 @@ B_ramet <- data.frame(B_north, B_south, B_placement)
 write.csv(file = "Output/greenhouse_design_RAMETB.csv", x = B_ramet)
 
 
+#' Randomization for ramet C for all plants
+(C_north <- sample(x = 1:26, size = 26, replace = F))
+(C_south <- sample(x = 1:26, size = 26, replace = F))
+#' Coin flip for which position(left or right) to place northern plant
+C_placement <- sample(x = c("left", "right"), size = 26, replace = T)
+C_ramet <- data.frame(C_north, C_south, C_placement)
+
+write.csv(file = "Output/greenhouse_design_RAMETC.csv", x = C_ramet)
+
+
 
 
 #' Random selection for Prairie Island plants included in study
