@@ -1,0 +1,43 @@
+population,location,number,ID,block,pair,treatment_initial,treatment_final,control_initial,control_final
+Oil Patch,South,5,OP5,1,1,414,72,433,439
+Prairie Island,North,28,PI28,1,1,471,148,503,446
+Oil Patch,South,1,OP1,1,2,553,129,509,452
+Prairie Island,North,9,PI9,1,2,344,129,389,446
+Oil Patch,South,4,OP4,1,3,433,198,477,490
+Prairie Island,North,10,PI10,1,3,446,160,458,471
+Cemetary,South,2,CE2,1,4,452,122,439,395
+Prairie Island,North,4,PI4,1,4,503,192,439,490
+Cemetary,South,1,CE1,1,5,471,179,484,458
+Prairie Island,North,1,PI1 ,1,5,420,154,300,389
+Cemetary,South,9,CE9,2,6,592,294,572,534
+Prairie Island,North,15,PI15,2,6,553,129,465,471
+Frontenac,North,2,FR2,2,7,300,122,325,351
+Oil Patch,South,3,OP3,2,7,560,224,528,509
+Prairie Island,North,21,PI21,2,8,553,249,553,547
+Cemetary,South,7b,CE7b,2,8,560,192,553,528
+Cemetary,South,3,CE3,2,9,566,281,572,547
+Frontenac,North,12,FR12,2,9,560,224,534,579
+Frontenac,North,1,FR1 ,2,10,528,198,534,534
+Cemetary,South,8,CE8,2,10,515,255,490,477
+Prairie Island,North,12,PI12,3,11,515,230,522,458
+Parking Lot,South,5,PL5,3,11,433,160,408,414
+Prairie Island,North,14,PI14,3,12,477,224,427,408
+Parking Lot,South,4,PL4,3,12,509,230,534,528
+Cemetary,South,7a,CE7a,3,13,528,192,547,528
+Prairie Island,North,27,PI27,3,13,490,363,560,515
+Oil Patch,South,8,OP8,3,14,471,255,509,389
+Prairie Island,North,30,PI30,3,14,528,294,547,522
+Prairie Island,North,25,PI25,3,15,534,236,515,458
+Reserve,South,3,RE3,3,15,503,255,490,452
+Prairie Island,North,5,PI5,4,16,471,255,458,471
+Cemetary,South,4,CE4,4,16,509,179,490,515
+Parking Lot,South,2,PL2,4,17,515,179,490,490
+Prairie Island,North,19,PI19,4,17,427,255,496,471
+Cemetary,South,11,CE11,4,18,522,211,560,585
+Prairie Island,North,11,PI11,4,18,515,268,553,522
+Prairie Island,North,13,PI13,4,19,484,255,553,427
+Oil Patch,South,7,OP7,4,19,490,249,471,477
+Prairie Island,North,3,PI3 ,4,20,458,275,547,522
+Oil Patch,South,9,OP9,4,20,484,224,515,446
+Cemetary,South,10,CE10,4,21,452,141,433,452
+Prairie Island,North,18,PI18,4,21,446,217,474,408
