@@ -1,0 +1,11 @@
+population,location,number,ID,ramet,block,pair,temp,no_tubes,tubes,mean_length,median_length,sd_length,time
+Oil Patch,South,5,OP5,A,,,10,2384,144,0.028817341,0.027708935,0.01075854,24
+Oil Patch,South,5,OP5,A,,,20,45,395,0.221688073,0.167320721,0.165704633,24
+Oil Patch,South,5,OP5,A,,,25,36,292,0.274281208,0.237716636,0.165136704,24
+Oil Patch,South,5,OP5,A,,,30,28,200,0.29557081,0.269143669,0.186905186,24
+Oil Patch,South,5,OP5,A,,,40,203,214,0.03218696,0.02657474,0.01928377,20
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+Prairie Island,North,28,PI28,A,,,30,56,236,0.198478545,0.126340472,0.175723741,24
+Prairie Island,North,28,PI28,A,,,40,104,176,0.06062391,0.054957306,0.038004031,24
