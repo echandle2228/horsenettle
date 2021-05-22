@@ -1,0 +1,49 @@
+population,location,number,ID,ramet,block,pair,treatment_initial,treatment_final,control_initial,control_final
+Oil Patch,South,5,OP5,A,1,1,496,268,484,414
+Prairie Island,North,28,PI28,A,1,1,579,433,572,560
+Oil Patch,South,1,OP1,A,1,2,547,357,604,515
+Prairie Island,North,9,PI9,A,1,2,604,351,598,414
+Oil Patch,South,4,OP4,A,1,3,534,186,515,427
+Prairie Island,North,10,PI10,A,1,3,649,439,668,592
+Cemetary,South,2,CE2,A,1,4,566,287,553,427
+Prairie Island,North,4,PI4,A,1,4,572,370,560,503
+Cemetary,South,1,CE1,A,1,5,560,268,515,389
+Prairie Island,North,1,PI1 ,A,1,5,553,401,585,471
+Cemetary,South,9,CE9,A,2,6,553,319,604,528
+Prairie Island,North,15,PI15,A,2,6,617,420,636,515
+Frontenac,North,2,FR2,A,2,7,496,255,534,420
+Oil Patch,South,3,OP3,A,2,7,598,357,592,522
+Prairie Island,North,21,PI21,A,2,8,553,370,560,477
+Cemetary,South,7b,CE7b,A,2,8,541,306,560,439
+Cemetary,South,3,CE3,A,2,9,560,338,592,484
+Frontenac,North,12,FR12,A,2,9,566,370,560,534
+Frontenac,North,1,FR1 ,A,2,10,458,325,439,433
+Cemetary,South,8,CE8,A,2,10,547,281,541,465
+Prairie Island,North,12,PI12,A,3,11,566,313,572,490
+Parking Lot,South,5,PL5,A,3,11,503,255,477,452
+Prairie Island,North,14,PI14,A,3,12,611,376,617,509
+Parking Lot,South,4,PL4,A,3,12,496,243,534,515
+Cemetary,South,7a,CE7a,A,3,13,560,255,560,446
+Prairie Island,North,27,PI27,A,3,13,604,376,642,503
+Oil Patch,South,8,OP8,A,3,14,617,382,547,503
+Prairie Island,North,30,PI30,A,3,14,674,401,642,477
+Prairie Island,North,25,PI25,A,3,15,585,357,585,452
+Reserve,South,3,RE3,A,3,15,604,230,598,408
+Prairie Island,North,5,PI5,A,4,16,649,370,617,509
+Cemetary,South,4,CE4,A,4,16,547,262,541,496
+Parking Lot,South,2,PL2,A,4,17,553,262,547,534
+Prairie Island,North,9,PI19,A,4,17,503,325,503,427
+Cemetary,South,11,CE11,A,4,18,566,249,585,528
+Prairie Island,North,11,PI11,A,4,18,668,401,649,592
+Prairie Island,North,13,PI13,A,4,19,623,420,585,611
+Oil Patch,South,7,OP7,A,4,19,553,325,528,509
+Prairie Island,North,3,PI3,A,4,20,541,382,572,509
+Oil Patch,South,9,OP9,A,4,20,528,243,541,484
+Cemetary,South,10,CE10,A,4,21,560,281,572,458
+Prairie Island,North,18,PI18,A,4,21,617,407,598,509
+Prairie Island,North,12,PI12,B,6,27,655,389,630,547
+Cemetary,South,10,CE10,B,6,27,471,294,477,439
+Parking Lot,South,2,PL2,B,6,28,547,281,553,509
+Prairie Island,North,2,PI2,B,6,28,496,338,477,446
+Prairie Island,North,19,PI19,B,6,31,553,338,560,496
+Oil Patch,South,6,OP6,B,6,31,598,319,585,522
