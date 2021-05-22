@@ -1,6 +1,6 @@
 #######################################################################
-#' # Membrane Stability data analysis
-#' ## 4/8/2021
+#' # Cold Cell Membrane Stability data analysis
+#' ## 5/22/2021
 #' ## Emma Chandler
 #' 
 #########################################################################
@@ -14,12 +14,12 @@ library(forcats)
 
 #' Clear environment and set seed 
 remove(list = ls())
-set.seed(654616)
+set.seed(78965412)
 
 
 
 #' ### Load data
-membraneStability <- read.csv(file = "data/CMSdata.csv", header = T, stringsAsFactors = F)
+membraneStability <- read.csv(file = "data/CMS_cold.csv", header = T, stringsAsFactors = F)
 
 
 #' ### Create columns with proportions
@@ -37,13 +37,7 @@ membraneStability$AST_CMS <- asin(sqrt(membraneStability$CMS/100))
 
 #' ### Averaging all ramets of same genotype
 membraneStability_m<-ddply(membraneStability,.(ID),summarize, AST_CMS=mean(AST_CMS),
-                     CMS=mean(CMS), location=head(location,1), population=head(population,1))
-
-
-#' ### Omitting Outliers
-outliers <- boxplot(data = membraneStability_m, CMS~location, plot=FALSE)$out         
-membraneStability_final<- membraneStability_m[-which(membraneStability_m$CMS %in% outliers),]
-
+                           CMS=mean(CMS), location=head(location,1), population=head(population,1))
 
 
 
@@ -75,7 +69,7 @@ t.test(membraneStability$AST_CMS ~ membraneStability$location)
 CMS_boxplot <- ggplot(membraneStability_m, aes(location, AST_CMS))+ 
   geom_boxplot(outlier.shape=NA)+geom_jitter(width=0.2)+
   theme_bw() +
-  ylab("Cell Membrane Stability")+ 
+  ylab("CMS")+ 
   xlab("") +
   theme(text = element_text(family = "serif"),
         axis.text.y=element_text(size=12),
@@ -90,10 +84,11 @@ popCMS_boxplot <- ggplot(membraneStability_m, aes(x= fct_reorder(population,AST_
   theme_bw() +
   ylab("CMS")+ 
   xlab("") +
-  theme(axis.text.y=element_text(size=12),
-        axis.title.y=element_text(size=12),
-        axis.text.x=element_text(size = 12),
-        axis.title.x=element_text(size = 12))
+  theme(text = element_text(family = "serif"),
+        axis.text.y=element_text(size=12),
+        axis.title.y=element_text(size=14),
+        axis.text.x=element_text(size = 14),
+        axis.title.x=element_text(size = 14))
 plot(popCMS_boxplot)
 
 
@@ -101,11 +96,5 @@ plot(popCMS_boxplot)
 wilcox.test(membraneStability$AST_CMS ~ membraneStability$location) 
 
 
-#' # ANOVA
-anova_lmer <- lmerTest::lmer(
-  formula = AST_CMS ~ varietyFactor  + (1|species) ,
-  data = GH_data)
-anova(rt_pbm_anova.lmer)
-summary(rt_pbm_anova.lmer)
 
 

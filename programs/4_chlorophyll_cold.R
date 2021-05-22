@@ -1,6 +1,6 @@
 #############################################################
-#' # Hi Temperature Chlorophyll data analysis
-#' ## 4/8/2021
+#' # Low Temperature Chlorophyll data analysis
+#' ## 5/22/2021
 #' Emma Chandler
 #' 
 #' 
@@ -18,10 +18,10 @@ library(plyr)
 
 #' Clear environment and set seed 
 remove(list = ls())
-set.seed(654616)
+set.seed(84695)
 
 #' ### Load data
-chlorophyll <- read.csv(file = "data/chlorophylldata.csv", header = T, stringsAsFactors = F)
+chlorophyll <- read.csv(file = "data/chlorophyll_cold.csv", header = T, stringsAsFactors = F)
 
 
 #' ### Create columns with proportions
@@ -40,7 +40,6 @@ chlorophyll$AST_tolerance <- asin(sqrt(chlorophyll$chlp_tolerance))
 #' ### Averaging all ramets of same genotype
 chlorophyll_m<-ddply(chlorophyll,.(ID),summarize, AST_tolerance=mean(AST_tolerance),
                      chlp_tolerance=mean(chlp_tolerance), location=head(location,1), population=head(population,1))
-
 
 #' ### Omitting Outliers
 outliers <- boxplot(data = chlorophyll_m, chlp_tolerance~location, plot=FALSE)$out         
@@ -70,11 +69,11 @@ plot(density(south$chlp_tolerance),
 
 
 #' ## T-test analyzing chlorophyll heat damage in north and south populations
-t.test(chlorophyll_final$chlp_tolerance ~ chlorophyll_final$location)
+t.test(chlorophyll_m$chlp_tolerance ~ chlorophyll_m$location)
 
 
 #' ## Create boxplot for north and south
-chl_boxplot <- ggplot(chlorophyll_final, aes(location, chlp_tolerance))+ 
+chl_boxplot <- ggplot(chlorophyll_m, aes(location, chlp_tolerance))+ 
   geom_boxplot(outlier.shape=NA)+geom_jitter(width=0.2)+
   theme_bw() +
   ylab("Chlorophyll Ratio")+ 
@@ -85,9 +84,6 @@ chl_boxplot <- ggplot(chlorophyll_final, aes(location, chlp_tolerance))+
         axis.text.x=element_text(size = 14),
         axis.title.x=element_text(size = 14))
 plot(chl_boxplot)
-
-
-
 
 #' ## Create boxplot for each population
 popchl_boxplot <- ggplot(chlorophyll, aes(x= fct_reorder(population,chlp_tolerance), chlp_tolerance))+ 
