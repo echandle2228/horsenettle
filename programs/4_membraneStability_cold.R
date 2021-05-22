@@ -69,7 +69,7 @@ t.test(membraneStability$AST_CMS ~ membraneStability$location)
 CMS_boxplot <- ggplot(membraneStability_m, aes(location, AST_CMS))+ 
   geom_boxplot(outlier.shape=NA)+geom_jitter(width=0.2)+
   theme_bw() +
-  ylab("CMS")+ 
+  ylab("Cell Membrane Stability")+ 
   xlab("") +
   theme(text = element_text(family = "serif"),
         axis.text.y=element_text(size=12),
@@ -82,7 +82,7 @@ plot(CMS_boxplot)
 popCMS_boxplot <- ggplot(membraneStability_m, aes(x= fct_reorder(population,AST_CMS), AST_CMS))+ 
   geom_boxplot(outlier.shape=NA)+geom_jitter(width=0.2)+
   theme_bw() +
-  ylab("CMS")+ 
+  ylab("Cell Membrane Stability")+ 
   xlab("") +
   theme(text = element_text(family = "serif"),
         axis.text.y=element_text(size=12),
