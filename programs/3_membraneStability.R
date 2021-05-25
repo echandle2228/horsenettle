@@ -29,7 +29,6 @@ membraneStability$cntrpro <- membraneStability$cntr_trt / membraneStability$cntr
 #' ### Calculate CMS using proportions
 membraneStability$CMS <- ((1 - membraneStability$trtpro)/(1 - membraneStability$cntrpro))
 
-# write.csv(x = membraneStability, file = "data/membraneStability_calc.csv")
 
 #' ## arcsine sqrt transformation for later t-test
 membraneStability$AST_CMS <- asin(sqrt(membraneStability$CMS/100))
@@ -40,9 +39,16 @@ membraneStability_m<-ddply(membraneStability,.(ID),summarize, AST_CMS=mean(AST_C
                      CMS=mean(CMS), location=head(location,1), population=head(population,1))
 
 
+# write.csv(x = membraneStability_m, file = "data/processed/HCMS_processed.csv")
+
+
+
+
 #' ### Omitting Outliers
 outliers <- boxplot(data = membraneStability_m, CMS~location, plot=FALSE)$out         
 membraneStability_final<- membraneStability_m[-which(membraneStability_m$CMS %in% outliers),]
+
+
 
 
 

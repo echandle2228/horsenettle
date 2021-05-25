@@ -31,7 +31,7 @@ chlorophyll$cntrpro <- chlorophyll$control_final / chlorophyll$control_initial
 #' ### Calculate chlorophyll damage using proportions
 chlorophyll$chlp_tolerance <- 1 - (chlorophyll$cntrpro - chlorophyll$trtpro)
 
-# write.csv(x = chlorophyll, file = "data/chlorophyll_inv_calc.csv")
+
 
 
 #' ## arcsine sqrt transformation for later t-test
@@ -40,6 +40,11 @@ chlorophyll$AST_tolerance <- asin(sqrt(chlorophyll$chlp_tolerance))
 #' ### Averaging all ramets of same genotype
 chlorophyll_m<-ddply(chlorophyll,.(ID),summarize, AST_tolerance=mean(AST_tolerance),
                      chlp_tolerance=mean(chlp_tolerance), location=head(location,1), population=head(population,1))
+
+
+
+# write.csv(x = chlorophyll_m, file = "data/processed/Cchloro_processed.csv")
+
 
 #' ### Omitting Outliers
 outliers <- boxplot(data = chlorophyll_m, chlp_tolerance~location, plot=FALSE)$out         

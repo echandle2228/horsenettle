@@ -29,7 +29,6 @@ membraneStability$cntrpro <- membraneStability$cntr_trt / membraneStability$cntr
 #' ### Calculate CMS using proportions
 membraneStability$CMS <- ((1 - membraneStability$trtpro)/(1 - membraneStability$cntrpro))
 
-# write.csv(x = membraneStability, file = "data/membraneStability_calc.csv")
 
 #' ## arcsine sqrt transformation for later t-test
 membraneStability$AST_CMS <- asin(sqrt(membraneStability$CMS/100))
@@ -38,6 +37,11 @@ membraneStability$AST_CMS <- asin(sqrt(membraneStability$CMS/100))
 #' ### Averaging all ramets of same genotype
 membraneStability_m<-ddply(membraneStability,.(ID),summarize, AST_CMS=mean(AST_CMS),
                            CMS=mean(CMS), location=head(location,1), population=head(population,1))
+
+
+# write.csv(x = membraneStability_m, file = "data/processed/CCMS_processed.csv")
+
+
 
 
 

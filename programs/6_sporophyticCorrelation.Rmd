@@ -1,0 +1,89 @@
+---
+title: "Sporophytic Tolerance Correlation"
+author: "Emma Chandler"
+date: "May 24, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Libraries
+```{r}
+library(ggplot2)
+library(plyr)
+library(tidyverse)
+library(ggcorrplot)
+```
+
+# Clear environment and set seed
+```{r}
+remove(list = ls())
+set.seed(158358)
+```
+
+
+# Load data
+```{r}
+H_CMS <- read.csv("C:/Users/moin2/OneDrive/Documents/Horsenettle/data/processed/HCMS_processed.csv", header = TRUE)
+C_CMS <- read.csv("C:/Users/moin2/OneDrive/Documents/Horsenettle/data/processed/CCMS_processed.csv", header = TRUE)
+H_chloro <- read.csv("C:/Users/moin2/OneDrive/Documents/Horsenettle/data/processed/Hchloro_processed.csv", header = TRUE)
+C_chloro <- read.csv("C:/Users/moin2/OneDrive/Documents/Horsenettle/data/processed/Cchloro_processed.csv", header = TRUE)
+
+```
+
+# Rename Columns that are the same between hot and cold treatments
+```{r}
+names(H_CMS)[names(H_CMS) == "AST_CMS"] <- "H_AST_CMS"
+names(H_CMS)[names(H_CMS) == "CMS"] <- "H_CMS"
+
+names(C_CMS)[names(C_CMS) == "AST_CMS"] <- "C_AST_CMS"
+names(C_CMS)[names(C_CMS) == "CMS"] <- "C_CMS"
+
+names(H_chloro)[names(H_chloro) == "AST_tolerance"] <- "H_AST_chloro"
+names(H_chloro)[names(H_chloro) == "chlp_tolerance"] <- "H_chloro"
+
+names(C_chloro)[names(C_chloro) == "AST_tolerance"] <- "C_AST_chloro"
+names(C_chloro)[names(C_chloro) == "chlp_tolerance"] <- "C_chloro"
+
+```
+
+
+# Create data frame with all tolerance variables
+```{r}
+CMS <- merge(H_CMS, C_CMS, by = c("ID", "location", "population"), all.x = FALSE, all = TRUE)
+CHLORO <- merge(H_chloro, C_chloro, by = c("ID", "location", "population"), all.x = FALSE, all = TRUE)
+
+ALL <- merge(CMS, CHLORO, by = c("ID", "location", "population"), all.x = FALSE, all = TRUE)
+
+# For correlation matrix, dataframe may only contain values of interest
+DROP <- ALL[ -c(1,2,3,4:5,7:8,10:11,13:14)]
+FINAL<- na.omit(DROP)
+AST <- data.frame(ALL$H_AST_CMS, ALL$C_AST_CMS, ALL$H_AST_chloro, ALL$C_AST_chloro)
+AST_f <- na.omit(AST)
+```
+
+
+# Create correlation matrix
+```{r}
+correlation <- cor(FINAL)
+head(correlation[, 1:4])
+
+p.mat <- cor_pmat(FINAL)
+head(p.mat[, 1:4])
+
+
+AST_corr <- cor(AST_f)
+head(AST_corr[, 1:4])
+
+p.mat <- cor_pmat(AST_corr)
+head(p.mat[, 1:4])
+
+```
+
+# Create correlation heat map
+```{r}
+ggcorrplot(correlation, hc.order = FALSE, outline.col = "white")
+```
+
