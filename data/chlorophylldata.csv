@@ -1,109 +1,177 @@
 population,location,number,ID,ramet,block,pair,treatment_initial,treatment_final,control_initial,control_final
-Cemetary,South,1,CE1,A,1,5,471,179,484,458
-Cemetary,South,1,CE1,B,8,40,572,179,560,541
-Cemetary,South,10,CE10,A,4,21,452,141,433,452
-Cemetary,South,10,CE10,B,6,27,541,217,585,534
-Cemetary,South,10,CE10,C,11,56,503,173,496,446
-Cemetary,South,11,CE11,A,4,18,522,211,560,585
-Cemetary,South,11,CE11,B,8,41,503,116,503,496
-Cemetary,South,2,CE2,A,1,4,452,122,439,395
-Cemetary,South,2,CE2,B,8,37,515,122,484,433
-Cemetary,South,3,CE3,A,2,9,566,281,572,547
-Cemetary,South,4,CE4,A,4,16,509,179,490,515
-Cemetary,South,5,CE5,A,9,42,623,275,579,515
-Cemetary,South,5,CE5,A,5,22,503,173,515,490
-Cemetary,South,6,CE6,B,7,36,585,167,598,547
-Cemetary,South,6,CE6,A,9,43,604,408,604,553
-Cemetary,South,6,CE6,A,5,23,465,129,465,452
-Cemetary,South,6,CE6,C,11,54,503,173,490,484
-Cemetary,South,7a,CE7a,A,3,13,528,192,547,528
-Cemetary,South,7a,CE7a,C,11,57,446,141,420,370
-Cemetary,South,7b,CE7b,A,2,8,560,192,553,528
-Cemetary,South,8,CE8,A,2,10,515,255,490,477
-Cemetary,South,8,CE8,B,7,34,522,192,490,465
-Cemetary,South,8,CE8,C,11,53,509,186,452,477
-Cemetary,South,9,CE9,A,2,6,592,294,572,534
-Frontenac,North,1,FR1,B,10,49,458,91,452,414
-Frontenac,North,1,FR1,A,2,10,528,198,534,534
-Frontenac,North,10,FR10,A,9,46,668,160,661,630
-Frontenac,North,10,FR10,B,10,50,509,141,490,534
-Frontenac,North,10,FR10,A,5,26,598,122,617,503
-Frontenac,North,11,FR11,A,9,43,560,268,566,509
-Frontenac,North,11,FR11,A,5,23,484,217,490,376
-Frontenac,North,12,FR12,A,2,9,560,224,534,579
-Frontenac,North,2,FR2,A,2,7,300,122,325,351
-Frontenac,North,2,FR2,B,10,48,566,236,560,534
-Frontenac,North,6,FR6,A,9,44,566,230,553,522
-Frontenac,North,6,FR6,B,10,47,515,135,477,433
-Frontenac,North,6,FR6,A,5,24,560,281,560,503
-Frontenac,North,8,FR8,A,9,42,611,224,674,585
-Frontenac,North,8,FR8,A,5,22,484,135,522,458
-Oil Patch,South,4,OP4,C,11,55,566,122,547,458
-Oil Patch,South,1,OP1,A,1,2,553,129,509,452
-Oil Patch,South,1,OP1,B,7,33,560,198,611,547
-Oil Patch,South,2,OP2,B,7,32,604,186,661,553
-Oil Patch,South,2,OP2,A,9,44,642,167,579,534
-Oil Patch,South,2,OP2,A,5,24,484,154,496,389
-Oil Patch,South,3,OP3,A,2,7,560,224,528,509
-Oil Patch,South,3,OP3,B,10,51,547,192,553,427
-Oil Patch,South,4,OP4,A,1,3,433,198,477,490
-Oil Patch,South,4,OP4,B,8,38,553,141,604,541
 Oil Patch,South,5,OP5,A,1,1,414,72,433,439
-Oil Patch,South,5,OP5,B,10,48,598,160,604,496
-Oil Patch,South,6,OP6,B,6,31,541,154,528,503
-Oil Patch,South,6,OP6,A,9,45,572,135,585,547
-Oil Patch,South,6,OP6,A,5,25,395,135,376,376
-Oil Patch,South,7,OP7,A,4,19,490,249,471,477
-Oil Patch,South,7,OP7,B,10,47,566,173,592,490
-Oil Patch,South,8,OP8,A,3,14,471,255,509,389
-Oil Patch,South,8,OP8,B,8,39,572,179,579,572
-Oil Patch,South,9,OP9,A,4,20,484,224,515,446
-Oil Patch,South,9,OP9,B,10,50,623,192,617,528
-Prairie Island,North,1,PI1,B,7,32,585,211,642,534
-Prairie Island,North,1,PI1,A,1,5,420,154,300,389
-Prairie Island,North,10,PI10,A,1,3,446,160,458,471
-Prairie Island,North,10,PI10,B,10,51,623,217,636,604
-Prairie Island,North,11,PI11,A,4,18,515,268,553,522
-Prairie Island,North,12,PI12,A,3,11,515,230,522,458
-Prairie Island,North,12,PI12,B,6,27,598,205,579,528
-Prairie Island,North,13,PI13,A,4,19,484,255,553,427
-Prairie Island,North,13,PI13,B,8,40,598,217,598,528
-Prairie Island,North,13,PI13,C,11,57,553,148,560,509
-Prairie Island,North,14,PI14,A,3,12,477,224,427,408
-Prairie Island,North,14,PI14,B,8,39,572,179,566,560
-Prairie Island,North,15,PI15,A,2,6,553,129,465,471
-Prairie Island,North,15,PI15,C,11,56,566,129,560,509
-Prairie Island,North,18,PI18,A,4,21,446,217,474,408
-Prairie Island,North,19,PI19,A,4,17,427,255,496,471
-Prairie Island,North,19,PI19,B,6,31,534,211,534,515
-Prairie Island,North,2,PI2,B,6,28,598,249,572,547
-Prairie Island,North,2,PI2,A,9,45,541,287,579,471
-Prairie Island,North,2,PI2,A,5,25,560,129,592,522
-Prairie Island,North,21,PI21,A,2,8,553,249,553,547
-Prairie Island,North,21,PI21,B,7,33,617,249,630,471
-Prairie Island,North,25,PI25,A,3,15,534,236,515,458
-Prairie Island,North,25,PI25,B,7,36,572,186,598,465
-Prairie Island,North,25,PI25,C,11,55,522,141,560,547
-Prairie Island,North,27,PI27,A,3,13,490,363,560,515
-Prairie Island,North,27,PI27,B,8,38,604,236,611,642
 Prairie Island,North,28,PI28,A,1,1,471,148,503,446
-Prairie Island,North,28,PI28,B,8,37,427,294,515,439
-Prairie Island,North,3,PI3,C,11,54,630,217,585,566
-Prairie Island,North,3,PI3,A,4,20,458,275,547,522
-Prairie Island,North,30,PI30,A,3,14,528,294,547,522
-Prairie Island,North,30,PI30,B,7,35,611,217,585,566
-Prairie Island,North,4,PI4,A,1,4,503,192,439,490
-Prairie Island,North,4,PI4,C,11,53,585,154,566,547
-Prairie Island,North,5,PI5,A,4,16,471,255,458,471
-Prairie Island,North,5,PI5,B,8,41,522,186,560,566
+Oil Patch,South,1,OP1,A,1,2,553,129,509,452
 Prairie Island,North,9,PI9,A,1,2,344,129,389,446
-Prairie Island,North,9,PI9,B,7,34,630,287,636,541
-Parking Lot,South,2,PL2,A,4,17,515,179,490,490
-Parking Lot,South,2,PL2,B,6,28,509,160,560,566
-Parking Lot,South,4,PL4,A,3,12,509,230,534,528
+Oil Patch,South,4,OP4,A,1,3,433,198,477,490
+Prairie Island,North,10,PI10,A,1,3,446,160,458,471
+Cemetary,South,2,CE2,A,1,4,452,122,439,395
+Prairie Island,North,4,PI4,A,1,4,503,192,439,490
+Cemetary,South,1,CE1,A,1,5,471,179,484,458
+Prairie Island,North,1,PI1,A,1,5,420,154,300,389
+Cemetary,South,9,CE9,A,2,6,592,294,572,534
+Prairie Island,North,15,PI15,A,2,6,553,129,465,471
+Frontenac,North,2,FR2,A,2,7,300,122,325,351
+Oil Patch,South,3,OP3,A,2,7,560,224,528,509
+Cemetary,South,7b,CE7b,A,2,8,560,192,553,528
+Prairie Island,North,21,PI21,A,2,8,553,249,553,547
+Cemetary,South,3,CE3,A,2,9,566,281,572,547
+Frontenac,North,12,FR12,A,2,9,560,224,534,579
+Cemetary,South,8,CE8,A,2,10,515,255,490,477
+Frontenac,North,1,FR1,A,2,10,528,198,534,534
+Prairie Island,North,12,PI12,A,3,11,515,230,522,458
 Parking Lot,South,5,PL5,A,3,11,433,160,408,414
+Prairie Island,North,14,PI14,A,3,12,477,224,427,408
+Parking Lot,South,4,PL4,A,3,12,509,230,534,528
+Cemetary,South,7a,CE7a,A,3,13,528,192,547,528
+Prairie Island,North,27,PI27,A,3,13,490,363,560,515
+Oil Patch,South,8,OP8,A,3,14,471,255,509,389
+Prairie Island,North,30,PI30,A,3,14,528,294,547,522
+Prairie Island,North,25,PI25,A,3,15,534,236,515,458
 Reserve,South,3,RE3,A,3,15,503,255,490,452
+Cemetary,South,4,CE4,A,4,16,509,179,490,515
+Prairie Island,North,5,PI5,A,4,16,471,255,458,471
+Prairie Island,North,19,PI19,A,4,17,427,255,496,471
+Parking Lot,South,2,PL2,A,4,17,515,179,490,490
+Cemetary,South,11,CE11,A,4,18,522,211,560,585
+Prairie Island,North,11,PI11,A,4,18,515,268,553,522
+Oil Patch,South,7,OP7,A,4,19,490,249,471,477
+Prairie Island,North,13,PI13,A,4,19,484,255,553,427
+Oil Patch,South,9,OP9,A,4,20,484,224,515,446
+Prairie Island,North,3,PI3,A,4,20,458,275,547,522
+Cemetary,South,10,CE10,A,4,21,452,141,433,452
+Prairie Island,North,18,PI18,A,4,21,446,217,474,408
+Cemetary,South,5,CE5,A,5,22,623,275,579,515
+Frontenac,North,8,FR8,A,5,22,611,224,674,585
+Cemetary,South,6,CE6,A,5,23,604,408,604,553
+Frontenac,North,11,FR11,A,5,23,560,268,566,509
+Frontenac,North,6,FR6,A,5,24,566,230,553,522
+Oil Patch,South,2,OP2,A,5,24,642,167,579,534
+Oil Patch,South,6,OP6,A,5,25,572,135,585,547
+Prairie Island,North,2,PI2,A,5,25,541,287,579,471
+Frontenac,North,10,FR10,A,5,26,668,160,661,630
+Reserve,South,5,RE5,A,5,26,560,401,598,534
+Cemetary,South,10,CE10,B,6,27,541,217,585,534
+Prairie Island,North,12,PI12,B,6,27,598,205,579,528
+Prairie Island,North,2,PI2,B,6,28,598,249,572,547
+Parking Lot,South,2,PL2,B,6,28,509,160,560,566
+Oil Patch,South,6,OP6,B,6,31,541,154,528,503
+Prairie Island,North,19,PI19,B,6,31,534,211,534,515
+Oil Patch,South,2,OP2,B,7,32,604,186,661,553
+Prairie Island,North,1,PI1,B,7,32,585,211,642,534
+Oil Patch,South,1,OP1,B,7,33,560,198,611,547
+Prairie Island,North,21,PI21,B,7,33,617,249,630,471
+Cemetary,South,8,CE8,B,7,34,522,192,490,465
+Prairie Island,North,9,PI9,B,7,34,630,287,636,541
+Prairie Island,North,30,PI30,B,7,35,611,217,585,566
 Reserve,South,3,RE3,B,7,35,522,211,496,509
-Reserve,South,5,RE5,A,9,46,560,401,598,534
-Reserve,South,5,RE5,B,10,49,534,160,515,458
-Reserve,South,5,RE5,A,5,26,522,173,541,471
+Cemetary,South,6,CE6,B,7,36,585,167,598,547
+Prairie Island,North,25,PI25,B,7,36,572,186,598,465
+Cemetary,South,2,CE2,B,8,37,515,122,484,433
+Prairie Island,North,28,PI28,B,8,37,427,294,515,439
+Oil Patch,South,4,OP4,B,8,38,553,141,604,541
+Prairie Island,North,27,PI27,B,8,38,604,236,611,642
+Oil Patch,South,8,OP8,B,8,39,572,179,579,572
+Prairie Island,North,14,PI14,B,8,39,572,179,566,560
+Cemetary,South,1,CE1,B,8,40,572,179,560,541
+Prairie Island,North,13,PI13,B,8,40,598,217,598,528
+Cemetary,South,11,CE11,B,8,41,503,116,503,496
+Prairie Island,North,5,PI5,B,8,41,522,186,560,566
+Cemetary,South,5,CE5,B,9,42,522,173,509,484
+Frontenac,North,8,FR8,B,9,42,490,122,477,439
+Prairie Island,North,3,PI3,B,9,43,414,262,401,382
+Cemetary,South,4,CE4,B,9,43,414,148,490,465
+Prairie Island,North,4,PI4,B,9,44,357,129,325,344
+Cemetary,South,9,CE9,B,9,44,522,179,490,471
+Cemetary,South,7b,CE7b,B,9,45,458,173,541,477
+Prairie Island,North,15,PI15,B,9,45,433,224,471,433
+Frontenac,North,6,FR6,B,10,47,515,135,477,433
+Oil Patch,South,7,OP7,B,10,47,566,173,592,490
+Frontenac,North,2,FR2,B,10,48,566,236,560,534
+Oil Patch,South,5,OP5,B,10,48,598,160,604,496
+Frontenac,North,1,FR1,B,10,49,458,91,452,414
+Oil Patch,South,9,OP9,B,10,49,623,192,617,528
+Reserve,South,5,RE5,B,10,50,534,160,515,458
+Frontenac,North,10,FR10,B,10,50,509,141,490,534
+Oil Patch,South,3,OP3,B,10,51,547,192,553,427
+Prairie Island,North,10,PI10,B,10,51,623,217,636,604
+Cemetary,South,3,CE3,B,10,52,446,91,458,414
+Frontenac,North,11,FR11,B,10,52,471,160,515,420
+Cemetary,South,8,CE8,C,11,53,509,186,452,477
+Prairie Island,North,4,PI4,C,11,53,585,154,566,547
+Cemetary,South,6,CE6,C,11,54,503,173,490,484
+Prairie Island,North,3,PI3,C,11,54,630,217,585,566
+Oil Patch,South,4,OP4,C,11,55,566,122,547,458
+Prairie Island,North,25,PI25,C,11,55,522,141,560,547
+Cemetary,South,10,CE10,C,11,56,503,173,496,446
+Prairie Island,North,15,PI15,C,11,56,566,129,560,509
+Cemetary,South,7a,CE7a,C,11,57,446,141,420,370
+Prairie Island,North,13,PI13,C,11,57,553,148,560,509
+Prairie Island,North,12,PI12,C,12,58,528,179,541,503
+Cemetary,South,9,CE9,C,12,58,509,179,515,465
+Prairie Island,North,14,PI14,C,12,59,604,173,579,534
+Cemetary,South,2,CE2,C,12,59,465,186,439,465
+Prairie Island,North,11,PI11,C,12,60,630,230,636,572
+Oil Patch,South,5,OP5,C,12,60,579,186,572,547
+Oil Patch,South,1,OP1,C,12,61,579,167,553,503
+Prairie Island,North,1,PI1,C,12,61,528,192,553,522
+Prairie Island,North,10,PI10,C,12,62,534,167,585,522
+Reserve,South,5,RE5,C,12,62,547,186,541,471
+Frontenac,North,10,FR10,C,13,63,408,211,357,401
+Oil Patch,South,6,OP6,C,13,63,477,186,490,496
+Oil Patch,South,9,OP9,C,13,64,496,198,528,496
+Frontenac,North,12,FR12,C,13,64,446,230,458,452
+Prairie Island,North,30,PI30,C,13,65,522,414,553,560
+Cemetary,South,7b,CE7b,C,13,65,471,173,458,490
+Prairie Island,North,21,PI21,C,13,66,560,370,541,547
+Parking Lot,South,4,PL4,C,13,66,503,211,522,566
+Prairie Island,North,27,PI27,C,13,67,528,186,534,541
+Cemetary,South,3,CE3,C,13,67,484,167,458,427
+Frontenac,North,11,FR11,C,14,68,598,192,566,579
+Oil Patch,South,7,OP7,C,14,68,592,186,611,541
+Prairie Island,North,28,PI28,C,14,69,598,192,585,553
+Oil Patch,South,2,OP2,C,14,69,553,198,522,522
+Oil Patch,South,8,OP8,C,14,70,592,198,604,553
+Frontenac,North,2,FR2,C,14,70,395,300,446,414
+Prairie Island,North,18,PI18,C,14,71,534,205,484,477
+Cemetary,South,11,CE11,C,14,71,534,141,515,465
+Prairie Island,North,19,PI19,C,15,73,446,389,496,439
+Reserve,South,3,RE3,C,15,73,446,179,496,452
+Prairie Island,North,9,PI9,C,15,74,528,319,515,553
+Cemetary,South,1,CE1,C,15,74,446,135,471,414
+Cemetary,South,4,CE4,C,15,75,503,167,465,427
+Frontenac,North,1,FR1,C,15,75,414,122,395,376
+Prairie Island,North,5,PI5,C,15,76,534,141,530,503
+Parking Lot,South,5,PL5,C,15,76,395,173,433,446
+Prairie Island,North,2,PI2,C,15,77,496,262,503,452
+Parking Lot,South,2,PL2,C,15,77,420,186,496,534
+Frontenac,North,6,FR6,C,15,78,452,205,484,452
+Oil Patch,South,3,OP3,C,15,78,509,173,490,465
+Prairie Island,North,30,PI30,D,16,79,509,217,534,465
+Cemetary,South,2,CE2,D,16,79,490,313,452,420
+Cemetary,South,6,CE6,D,16,80,509,141,528,477
+Prairie Island,North,25,PI25,D,16,80,547,167,484,477
+Prairie Island,North,28,PI28,D,16,82,534,167,522,439
+Oil Patch,South,3,OP3,D,16,82,515,179,547,433
+Cemetary,South,8,CE8,D,16,83,509,141,534,458
+Frontenac,North,2,FR2,D,16,83,528,363,522,548
+Oil Patch,South,8,OP8,D,17,84,528,148,553,509
+Prairie Island,North,11,PI11,D,17,84,547,141,560,496
+Oil Patch,South,9,OP9,D,17,85,484,167,515,477
+Prairie Island,North,19,PI19,D,17,85,528,135,528,452
+Parking Lot,South,5,PL5,D,17,86,534,160,534,503
+Prairie Island,North,15,PI15,D,17,86,522,211,503,433
+Prairie Island,North,21,PI21,D,17,87,547,148,572,471
+Cemetary,South,11,CE11,D,17,87,477,363,452,433
+Prairie Island,North,4,PI4,D,17,88,553,154,585,522
+Reserve,South,3,RE3,D,17,88,484,154,496,458
+Reserve,South,5,RE5,D,18,89,427,122,439,357
+Prairie Island,North,3,PI3,D,18,89,509,122,528,477
+Prairie Island,North,1,PI1,D,18,90,503,116,509,477
+Oil Patch,South,4,OP4,D,18,90,458,91,465,376
+Cemetary,South,10,CE10,D,18,91,458,141,515,427
+Prairie Island,North,9,PI9,D,18,91,560,420,566,515
+Prairie Island,North,12,PI12,D,18,92,452,287,465,395
+Cemetary,South,7b,CE7b,D,18,92,357,110,370,319
+Oil Patch,South,5,OP5,D,18,93,433,122,427,389
+Frontenac,North,8,FR8,D,18,93,471,97,477,427
