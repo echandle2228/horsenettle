@@ -107,11 +107,4 @@ plot(popCMS_boxplot)
 wilcox.test(membraneStability$AST_CMS ~ membraneStability$location) 
 
 
-#' # ANOVA
-anova_lmer <- lmerTest::lmer(
-  formula = AST_CMS ~ varietyFactor  + (1|species) ,
-  data = GH_data)
-anova(rt_pbm_anova.lmer)
-summary(rt_pbm_anova.lmer)
-
 
