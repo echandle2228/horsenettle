@@ -3,7 +3,7 @@ Oil Patch,South,5,OP5,A,1,1,4-Feb,19-Feb
 Prairie Island,North,28,PI28,A,1,1,4-Feb,19-Feb
 Oil Patch,South,1,OP1,A,1,2,9-Jun,8-Jul
 Prairie Island,North,9,PI9,A,1,2,4-Jul,
-Oil Patch,South,4,OP4,A,1,3,10-Feb,
+Oil Patch,South,4,OP4,A,1,3,10-Feb,13-Jul
 Prairie Island,North,10,PI10,A,1,3,8-Jul,
 Cemetary,South,2,CE2,A,1,4,,
 Prairie Island,North,4,PI4,A,1,4,4-Jul,8-Jul
@@ -127,15 +127,15 @@ Prairie Island,North,21,PI21,C,13,66,27-May,2-Jun
 Parking Lot,South,4,PL4,C,13,66,,
 Prairie Island,North,27,PI27,C,13,67,15-Jun,
 Cemetary,South,3,CE3,C,13,67,,
-Frontenac,North,11,FR11,C,14,68,15-Jun,
-Oil Patch,South,7,OP7,C,14,68,17-Jul,
+Frontenac,North,11,FR11,C,14,68,15-Jun,8-Sep
+Oil Patch,South,7,OP7,C,14,68,17-Jul,8-Sep
 Prairie Island,North,28,PI28,C,14,69,26-May,2-Jun
 Oil Patch,South,2,OP2,C,14,69,1-Jun,2-Jun
 Oil Patch,South,8,OP8,C,14,70,,
 Frontenac,North,2,FR2,C,14,70,,
 Prairie Island,North,18,PI18,C,14,71,2-Jun,
 Cemetary,South,11,CE11,C,14,71,,
-Prairie Island,North,9,PI9,C,15,74,6-Jun,
+Prairie Island,North,9,PI9,C,15,74,6-Jun,8-Sep
 Cemetary,South,1,CE1,C,15,74,,
 Cemetary,South,4,CE4,C,15,75,,
 Frontenac,North,1,FR1,C,15,75,8-Jul,
@@ -144,7 +144,7 @@ Parking Lot,South,5,PL5,C,15,76,,
 Prairie Island,North,2,PI2,C,15,77,3-Jul,
 Parking Lot,South,2,PL2,C,15,77,,
 Frontenac,North,6,FR6,C,15,78,,
-Oil Patch,South,3,OP3,C,15,78,16-Jun,
+Oil Patch,South,3,OP3,C,15,78,16-Jun,8-Sep
 Prairie Island,North,28,PI28,D,16,82,10-Jun,20-Jun
 Prairie Island,North,25,PI25,D,16,80,15-Jun,
 Oil Patch,South,3,OP3,D,16,82,16-Jun,20-Jun
@@ -164,13 +164,13 @@ Parking Lot,South,5,PL5,D,17,86,,
 Cemetary,South,11,CE11,D,17,87,,
 Reserve,South,3,RE3,D,17,88,,
 Prairie Island,North,9,PI9,D,18,91,18-Jun,
-Oil Patch,South,4,OP4,D,18,90,18-Jun,
-Oil Patch,South,5,OP5,D,18,93,18-Jun,
-Prairie Island,North,3,PI3,D,18,89,3-Jul,
+Oil Patch,South,4,OP4,D,18,90,18-Jun,1-Sep
+Oil Patch,South,5,OP5,D,18,93,18-Jun,1-Sep
+Prairie Island,North,3,PI3,D,18,89,3-Jul,1-Sep
 Reserve,South,5,RE5,D,18,89,,
 Prairie Island,North,1,PI1,D,18,90,8-Jul,
 Cemetary,South,10,CE10,D,18,91,,
-Prairie Island,North,12,PI12,D,18,92,,
+Prairie Island,North,12,PI12,D,18,92,20-Aug,1-Sep
 Cemetary,South,7b,CE7b,D,18,92,,
 Frontenac,North,8,FR8,D,18,93,,
 Cemetary,South,5,CE5,D,19,95,,
