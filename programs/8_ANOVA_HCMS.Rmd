@@ -1,0 +1,275 @@
+---
+title: "ANOVA for temperature tolerance"
+author: "Emma Chandler"
+date: "September 11, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+library(rcompanion)
+library(MASS)
+library(moments)
+library(plyr)
+library(lmerTest)
+library(lme4)
+library(AICcmodavg)
+
+```
+
+
+
+## Load Data
+```{r}
+remove(list = ls())
+
+H.CMS <- read.csv("~/Horsenettle/data/CMSdata.csv", header = TRUE)
+
+```
+
+## Calculate CMS 
+```{r}
+# Create  proportions of damage over max
+trtpro <- H.CMS$exp_trt / H.CMS$exp_max
+cntrpro <- H.CMS$cntr_trt / H.CMS$cntr_max
+
+# Calculate CMS using proportions
+H.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
+
+```
+
+
+
+
+# Is there variance between regions, while accounting for block, population, and genet as random effects?
+```{r}
+HCMS_lmer1 <- lmer(CMS ~ location + (1|ramet) + (1|population:ID), data = H.CMS)
+
+(HCMS_lmer1.a <- anova(HCMS_lmer1))
+summary(HCMS_lmer1.a)
+(HCMS_glmer1.r <- ranova(HCMS_lmer1))
+
+
+# Data Visualization
+(H.CMS.p1 <- ggplot(H.CMS, aes(x = reorder(ramet, CMS), CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#00008B", "#FF4040")) +
+    theme_classic() +
+    theme(axis.text.x = element_text(size = 12, angle = 0)) +
+    labs(x = "Ramet", y = "CMS"))
+
+
+```
+
+
+## Is there variation in temperature tolerance between genets with ramet as replicates
+```{r}
+HCMS_lmer2 <- lmer(CMS ~ ID + (1|ramet), data = H.CMS)
+
+(HCMS_lmer2.a <- anova(HCMS_lmer2))
+(HCMS_lmer2.r <- ranova(HCMS_lmer2))
+
+
+#Crate summarised data
+detach(package:plyr)
+
+summary <- H.CMS %>% group_by(ID) %>% 
+  summarise(mean = mean(CMS),sd = sd(CMS))
+
+# dot plot
+(H.CMS.dot <- ggplot(summary, aes(x = reorder(ID, mean), y = mean)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3) +
+    theme_classic() +
+    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
+    labs(x = "Genotype", y = "CMS"))
+
+```
+
+
+
+
+# 1 ) Is there variance between populations?
+```{r}
+
+# Data Visualization
+(H.CMS.p1 <- ggplot(H.CMS, aes(x = reorder(population, CMS), CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#00008B", "#FF4040")) +
+    theme_classic() +
+    theme(axis.text.x = element_text(size = 12, angle = 0)) +
+    labs(x = "Population", y = "CMS"))
+
+```
+
+ANOVA https://daviddalpiaz.github.io/appliedstats/analysis-of-variance.html 
+https://cran.r-project.org/web/packages/lmerTest/lmerTest.pdf 
+https://www.r-bloggers.com/2017/06/linear-models-anova-glms-and-mixed-effects-models-in-r/ 
+
+
+
+# 2) Is there variance between Regions?
+```{r}
+# Data Visualization
+(H.CMS.p2 <- ggplot(H.CMS, aes(location, CMS, fill = location)) + 
+    geom_boxplot(fill = c("#00008B", "#FF4040"),alpha = 0.8, colour = c("#00008B", "#FF4040")) +
+    theme_classic()+
+    theme(axis.text.x = element_text(size = 12, angle = 0)) +
+    labs(x = "Region", y = "CMS"))
+
+```
+
+
+
+# 3) Is there variation between Genotypes?
+```{r}
+# Data Visualization
+HCMS_means <- aggregate(CMS ~ ID, data=H.CMS, mean)
+HCMS_means <- HCMS_means %>% 
+  mutate(location = case_when(
+    grepl("CE", ID) ~ "South",
+    grepl("RE", ID) ~ "South", 
+    grepl("OP", ID) ~ "South",
+    grepl("FR", ID) ~ "North",
+    grepl("PI", ID) ~ "North"))
+
+(H.CMS.p3 <- ggplot(HCMS_means, aes(x = reorder(ID, CMS), CMS, fill = location)) + 
+    geom_col() +
+    scale_fill_manual(values = c("#00008B", "#FF4040")) +
+    theme_classic() +
+    theme(axis.text.x = element_text(size = 12, angle = 90)) +
+    labs(x = "Genotype", y = "CMS"))
+
+
+```
+
+
+# 4) Is there variation between ramets of a genotype?
+```{r}
+# Data Visualization
+(H.CMS.p4 <- ggplot(H.CMS, aes(x = ramet, y = CMS, group = ID, colour = location)) + 
+    geom_point() +
+    geom_line() +
+    scale_color_manual(values = c("#00008B", "#FF4040")) +
+    theme_classic() +
+    theme(axis.text.x = element_text(size = 12, angle = 0)) +
+    labs(x = "Block", y = "CMS"))
+
+```
+
+
+
+# 5) Is there variance between location when genotype is nested in popultation and location and with block effects?
+```{r}
+# Data Visualization
+(H.CMS.p1 <- ggplot(H.CMS, aes(x = ramet, CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#00008B", "#FF4040")) +
+    theme_classic() +
+    theme(axis.text.x = element_text(size = 12, angle = 0)) +
+    labs(x = "Block", y = "CMS"))
+```
+
+
+# Post hoc test
+```{r}
+# Check for homoscedasticity
+par(mfrow=c(2,2))
+plot(HCMS.m1)
+par(mfrow=c(1,1))
+
+
+# Post hoc test
+(tukey.population<-TukeyHSD(HCMS.m1))
+
+plot(tukey.population, las = 1)
+```
+
+Selecting models from aov https://www.scribbr.com/statistics/anova-in-r/ 
+
+Using linear models and anova https://rc2e.com/linearregressionandanova 
+
+
+
+
+## Check Normality
+```{r}
+# Original Data
+hist(H.CMS$CMS, main = "Raw Data", xlab = "CMS")
+shapiro.test(H.CMS$CMS)
+skewness(H.CMS$CMS)
+
+# NOT NORMALLY DISTRIBUTED!! 
+# Very negatively skewed.
+
+# Transformation following ladder of powers
+
+# cube transformation
+CB_CMS<- (H.CMS$CMS)^3
+hist(CB_CMS, main = "cube transformed")
+shapiro.test(CB_CMS)
+
+# square transformation
+sq_CMS<- (H.CMS$CMS)^2
+hist(sq_CMS, main = "squared transformed")
+shapiro.test(sq_CMS)
+
+# square root transformation
+SQRT_CMS <- sqrt(H.CMS$CMS)
+hist(SQRT_CMS, main = "square root transformed")
+shapiro.test(SQRT_CMS)
+
+# cube root transformed
+CR_CMS <- sign(H.CMS$CMS) * abs(H.CMS$CMS)^(1/3)
+hist(CR_CMS, main = "cube root transformed")
+shapiro.test(CR_CMS)
+
+# log transformed
+LOG_CMS <- log(H.CMS$CMS)
+hist(LOG_CMS, main = "log transformed")
+shapiro.test(LOG_CMS)
+
+# reciprocal root
+RR_CMS <- -(1/(H.CMS$CMS^0.5))
+hist(RR_CMS, main = "reciprocal root transformed")
+shapiro.test(RR_CMS)
+
+# reciprocal 
+R_CMS <- -(1/(H.CMS$CMS))
+hist(R_CMS, main = "reciprocal transformed")
+shapiro.test(R_CMS)
+
+# reciprocal square
+R_CMS <- -(1/(H.CMS$CMS)^2)
+hist(R_CMS, main = "reciprocal square transformed")
+shapiro.test(R_CMS)
+
+# arcsin sqrt transformation 
+AST_CMS <- asin(sqrt(H.CMS$CMS/100))
+hist(AST_CMS, main = "arcsin sqrt transformed")
+shapiro.test(AST_CMS)
+
+
+# All histograms
+par(mfrow=c(3,2))
+plotNormalHistogram(H.CMS$CMS, main = "Raw")
+plotNormalHistogram(SQ_CMS, main = "Square Transformed")
+plotNormalHistogram(SQRT_CMS, main = "Square root Transformed")
+plotNormalHistogram(CR_CMS, main = "Cuberoot Transformed")
+plotNormalHistogram(LOG_CMS, main = "Log Transformed")
+
+
+# The Square transformation has the most normal distribution and the highest shapiro-whilk test p-value
+# Add Squared transformation to data frame
+H.CMS$sq_CMS <- sq_CMS
+
+```
+
+Transforming data https://daviddalpiaz.github.io/appliedstats/transformations.html
+Ladder of powers http://seismo.berkeley.edu/~kirchner/eps_120/Toolkits/Toolkit_03.pdf 

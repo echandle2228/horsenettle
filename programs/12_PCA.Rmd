@@ -1,0 +1,109 @@
+---
+title: "Sporophytic Tolerance PCA"
+author: "Emma Chandler"
+date: "September 12, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+```{r}
+library(dplyr)
+library(devtools)
+library(psych)
+
+```
+
+## Load data
+```{r}
+remove(list = ls())
+
+H.CMS <- read.csv("~/Horsenettle/data/CMSdata.csv", header = TRUE)
+C.CMS <- read.csv("~/Horsenettle/data/CMS_cold.csv", header = TRUE)
+H.CHLP <- read.csv("~/Horsenettle/data/chlorophylldata.csv", header = TRUE)
+C.CHLP <- read.csv("~/Horsenettle/data/chlorophyll_cold.csv", header = TRUE)
+
+```
+
+## Calculate tolerance variables- CMS, CHLP tolerance
+```{r}
+# Hot CMS
+trtpro <- H.CMS$exp_trt / H.CMS$exp_max
+cntrpro <- H.CMS$cntr_trt / H.CMS$cntr_max
+# Calculate CMS using proportions
+H.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
+# arcsin sqrt transformation because it is a proportion
+H.CMS$AST_HCMS <- asin(sqrt(H.CMS$CMS/100))
+
+
+# Hot CHLP
+trtpro <- H.CHLP$treatment_final / H.CHLP$treatment_initial
+cntrpro <- H.CHLP$control_final / H.CHLP$control_initial
+# Calculate H.CHLP damage using proportions
+H.CHLP$CHLP <- 1 - (cntrpro - trtpro)
+# arcsine sqrt transformation for later t-test
+H.CHLP$AST_HCHLP <- asin(sqrt(H.CHLP$CHLP))
+
+
+# Cold CHLP
+trtpro <- C.CHLP$treatment_final / C.CHLP$treatment_initial
+cntrpro <- C.CHLP$control_final / C.CHLP$control_initial
+# Calculate C.CHLP damage using proportions
+C.CHLP$CHLP <- 1 - (cntrpro - trtpro)
+# arcsine sqrt transformation for later t-test
+C.CHLP$AST_CCHLP <- asin(sqrt(C.CHLP$CHLP))
+
+
+# Cold CMS
+trtpro <- C.CMS$exp_trt / C.CMS$exp_max
+cntrpro <- C.CMS$cntr_trt / C.CMS$cntr_max
+# Calculate CMS using proportions
+C.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
+# arcsin sqrt transformation because it is a proportion
+C.CMS$AST_CCMS <- asin(sqrt(C.CMS$CMS/100))
+
+```
+
+## Combine data into one dataset
+```{r}
+# Make one dataframe with all sporophytic tolerance variables
+mergedat <- H.CMS %>% right_join(H.CHLP, by=c("ID","ramet", "population", "block", "pair", "number"))
+mergedat <- mergedat %>% right_join(C.CMS, by=c("ID","ramet", "population", "block", "pair", "number"))
+mergedat <- mergedat %>% right_join(C.CHLP, by=c("ID","ramet", "population", "block", "pair", "number"))
+
+
+keep <- c("ID", "ramet", "location.x", "AST_HCMS", "AST_HCHLP", "AST_CCMS", "AST_CCHLP")
+full.data <- mergedat[keep]
+names(full.data) <- c("ID", "ramet", "location", "H.CMS", "H.CHLP", "C.CMS", "C.CHLP")
+
+full.data <- na.omit(full.data)
+
+
+```
+
+## Correlations
+```{r}
+pairs.panels(full.data[,c(4:7)],
+             gap = 0,
+             bg = c("red", "blue")[full.data$location.x],
+             pch=21)
+```
+
+
+
+
+## PCA
+```{r}
+
+SPOR.PCA <- prcomp(full.data[,c(4:7)], center = TRUE, scale. = TRUE)
+summary(SPOR.PCA)
+attributes(SPOR.PCA)
+print(SPOR.PCA)
+
+
+# https://www.datacamp.com/community/tutorials/pca-analysis-r
+```
+
