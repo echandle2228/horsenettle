@@ -16,11 +16,11 @@ library(ggplot2)
 library(rcompanion)
 library(MASS)
 library(moments)
-library(plyr)
 library(lmerTest)
 library(lme4)
 
 ```
+
 
 
 ## Load Data
@@ -31,7 +31,7 @@ H.CHPL <- read.csv("~/Horsenettle/data/chlorophylldata.csv", header = TRUE)
 
 ```
 
-## Calculate CHPL
+## Calculate CHPL 
 ```{r}
 
 # Create columns with proportions
@@ -41,8 +41,43 @@ cntrpro <- H.CHPL$control_final / H.CHPL$control_initial
 # Calculate H.CHPL damage using proportions
 H.CHPL$CHPL <- 1 - (cntrpro - trtpro)
 
+# Export data frame for Correlation
+write.csv(x = H.CHPL, file = "~/Horsenettle/data/processed/H.CHPL.csv")
+
+```
 
 
+## Test for outliers
+```{r}
+
+# Create a boxplot of the dataset, outliers are shown as two distinct points
+# (outliers <- boxplot(data = H.CHPL, CHPL~location, plot=TRUE)$out)  
+
+# Use number of potential outliers from previous code
+# rosner <- rosnerTest(H.CHPL$CHPL, k = 6)
+# rosner$all.stats
+# Three Outliers in rows 199, 201, 182
+
+# #Remove outliers
+# H.CHPL <- H.CHPL[-c(199,201,182),]
+
+```
+
+# Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "serif"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
 ```
 
 
@@ -50,19 +85,23 @@ H.CHPL$CHPL <- 1 - (cntrpro - trtpro)
 
 # Is there variance between regions, while accounting for block, population, and genet as random effects?
 ```{r}
-HCHPL_lmer1 <- lmer(CHPL ~ location + (1|population:ID) + (1|ramet), data = H.CHPL)
+HCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|population:ID), data = H.CHPL)
 
 (HCHPL_lmer1.a <- anova(HCHPL_lmer1))
-summary(HCHPL_lmer1.a)
 (HCHPL_lmer1.r <- ranova(HCHPL_lmer1))
 
 
+
 # Data Visualization
-(H.CHPL.p2 <- ggplot(H.CHPL, aes(location, CHPL, fill = location)) + 
-    geom_boxplot(fill = c("#8EE5EE", "#EEA9B8"),alpha = 0.8, colour = c("#00008B", "#8B1A1A")) +
-    theme_classic()+
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Region", y = "CHPL"))
+(H.CHPL.p1 <- ggplot(H.CHPL, aes(x = location, CHPL, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
+    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Content", subtitle = "Hot Treatment")+
+    HStheme() +
+    theme(legend.position = "none"))
+
+# Saving graph
+# ggsave("figures/H.CHPL.p1.png", width = 7, height = 5, dpi = 300)
 
 ```
 
@@ -70,11 +109,9 @@ summary(HCHPL_lmer1.a)
 
 ## Is there variation in temperature tolerance between genets with ramet as replicates
 ```{r}
-HCHPL_lmer2 <- lmer(CHPL ~ ID + (1|ramet), data = H.CHPL)
+HCHPL_aov2 <- aov(CHPL ~ ID, data = H.CHPL)
 
-(HCHPL_lmer2.a <- anova(HCHPL_lmer2))
-(HCHPL_lmer2.r <- ranova(HCHPL_lmer2))
-
+summary(HCHPL_aov2)
 
 
 #Crate summarised data
@@ -87,16 +124,15 @@ summary <- H.CHPL %>% group_by(ID) %>%
 (H.CHPL.dot <- ggplot(summary, aes(x = reorder(ID, mean), y = mean)) +
     geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
     geom_point(size = 3) +
-    theme_classic() +
+    HStheme() +
     theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
-    labs(x = "Genotype", y = "CHPL"))
+    labs(x = "Genotype", y = "Chlorophyll Ratio", title = "Chlorophyll Stability", subtitle = "Hot Treatment"))
 
+# Saving graph
+ggsave("figures/H.CHPL.p2.png", width = 7, height = 5, dpi = 300)
 
 ```
 
-ANOVA https://daviddalpiaz.github.io/appliedstats/analysis-of-variance.html 
-https://cran.r-project.org/web/packages/lmerTest/lmerTest.pdf 
-https://www.r-bloggers.com/2017/06/linear-models-anova-glms-and-mixed-effects-models-in-r/ 
 
 
 # 1 ) Is there variance between populations?
@@ -108,7 +144,13 @@ https://www.r-bloggers.com/2017/06/linear-models-anova-glms-and-mixed-effects-mo
     theme_classic() +
     theme(axis.text.x = element_text(size = 12, angle = 0)) +
     labs(x = "Population", y = "CHPL"))
+
 ```
+
+ANOVA https://daviddalpiaz.github.io/appliedstats/analysis-of-variance.html 
+https://cran.r-project.org/web/packages/lmerTest/lmerTest.pdf 
+https://www.r-bloggers.com/2017/06/linear-models-anova-glms-and-mixed-effects-models-in-r/ 
+
 
 
 # 2) Is there variance between Regions?
@@ -174,7 +216,6 @@ HCHPL_means <- HCHPL_means %>%
 ```
 
 
-
 # Post hoc test
 ```{r}
 # Check for homoscedasticity
@@ -192,6 +233,7 @@ plot(tukey.population, las = 1)
 Selecting models from aov https://www.scribbr.com/statistics/anova-in-r/ 
 
 Using linear models and anova https://rc2e.com/linearregressionandanova 
+
 
 
 ## Check Normality
@@ -221,9 +263,9 @@ hist(SQRT_CHPL, main = "square root transformed")
 shapiro.test(SQRT_CHPL)
 
 # cube root transformed
-CHPL <- sign(H.CHPL$CHPL) * abs(H.CHPL$CHPL)^(1/3)
-hist(CHPL, main = "cube root transformed")
-shapiro.test(CHPL)
+CR_CHPL <- sign(H.CHPL$CHPL) * abs(H.CHPL$CHPL)^(1/3)
+hist(CR_CHPL, main = "cube root transformed")
+shapiro.test(CR_CHPL)
 
 # log transformed
 LOG_CHPL <- log(H.CHPL$CHPL)
@@ -255,17 +297,15 @@ par(mfrow=c(3,2))
 plotNormalHistogram(H.CHPL$CHPL, main = "Raw")
 plotNormalHistogram(CHPL, main = "Square Transformed")
 plotNormalHistogram(SQRT_CHPL, main = "Square root Transformed")
-plotNormalHistogram(CHPL, main = "Cuberoot Transformed")
+plotNormalHistogram(CR_CHPL, main = "Cuberoot Transformed")
 plotNormalHistogram(LOG_CHPL, main = "Log Transformed")
 
 
-# The cubed root transformation has the most normal distribution and the highest shapiro-whilk test p-value
-# Add cubed root transformation to data frame
+# The square transformation has the most normal distribution and the highest shapiro-whilk test p-value
+# Add square transformation to data frame
 H.CHPL$CHPL <- CHPL
-
 
 
 ```
 Transforming data https://daviddalpiaz.github.io/appliedstats/transformations.html
-Ladder of powers http://seismo.berkeley.edu/~kirchner/eps_120/Toolkits/Toolkit_03.pdf ```
-
+Ladder of powers http://seismo.berkeley.edu/~kirchner/eps_120/Toolkits/Toolkit_03.pdf 

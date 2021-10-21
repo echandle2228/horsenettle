@@ -1,0 +1,14 @@
+population,location,number,ID,ramet,block,pair,temp,no_tubes,tubes,total_tubes,mean_length,median_length,sd_length,max_length,time
+Cemetary,South,7b,CE7B,A,,,10,211,39,250,0.117441482,0.104771005,0.043251844,,16
+Cemetary,South,7b,CE7B,A,,,20,5,62,67,0.710798581,0.68537384,0.136662057,,16
+Cemetary,South,7b,CE7B,A,,,25,12,107,119,1.436461357,1.400577687,0.180739092,,16
+Cemetary,South,7b,CE7B,A,,,30,5,147,152,1.039165584,1.016315595,0.110654189,,16
+Cemetary,South,7b,CE7B,A,,,40,238,18,256,0.207789182,0.202830563,0.064007938,,16
+Frontenac,North,2,FR2,A,,,10,70,92,162,0.082891864,0.082269529,0.021152876,,16
+Frontenac,North,2,FR2,A,,,20,18,238,256,1.388128712,1.301004222,0.239319206,2.040724283,16
+,,,,,,,,,,,,,,,
+Prairie Island,,,,,,,,,,,,,,,
+Reserve,,,,,,,,,,,,,,,
+Prairie Island,,,,,,,,,,,,,,,
+Reserve,,,,,,,,,,,,,,,
+Cemetary,,,,,,,,,,,,,,,

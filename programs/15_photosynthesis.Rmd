@@ -1,0 +1,208 @@
+---
+title: "Photosynthesis Analysis"
+author: "Emma Chandler"
+date: "October 13, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries
+```{r message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(ggplot2)
+library(rcompanion)
+library(MASS)
+library(moments)
+library(plyr)
+library(lmerTest)
+library(lme4)
+library(ggstatsplot)
+library(tidyverse)
+```
+
+
+## Load Data
+```{r}
+remove(list = ls())
+
+PS <- read.csv("~/Horsenettle/data/photosynthesis.csv", header = TRUE)
+```
+
+
+## Process Data - add NA to blank cells
+```{r}
+# add NA to blank cells
+PS[PS == ""] <- NA
+PS[PS == "na"] <- NA
+PS[PS == " "] <- NA
+
+# Change photosynthesis measurements character to numeric
+PS$CPS_i <- as.numeric(PS$CPS_i)
+PS$CPS_f <- as.numeric(PS$CPS_f)
+PS$HPS_i <- as.numeric(PS$HPS_i)
+PS$HPS_f <- as.numeric(PS$HPS_f)
+
+summary(PS)
+
+```
+
+## Calculating the difference in photosynthesis before and after treatment
+```{r}
+PS$CPS_dif <- PS$CPS_f - PS$CPS_i
+PS$HPS_dif <- PS$HPS_f - PS$HPS_i
+
+# Export data frame for Correlation
+write.csv(x = PS, file = "~/Horsenettle/data/processed/PS.csv")
+
+```
+
+
+## Check normality of differences
+```{r}
+
+# Cold Treatment
+hist(PS$CPS_dif, main = "Cold Treatment", xlab = "Photosynthesis")
+shapiro.test(PS$CPS_dif)
+
+# Hot Treatment
+hist(PS$HPS_dif, main = "Hot Treatment", xlab = "Photosynthesis")
+shapiro.test(PS$HPS_dif)
+
+```
+
+
+## Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "serif"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+# Cold Photosynthesis 
+Is there variance between regions, while accounting for block, population, and genet as random effects?
+```{r}
+
+# Model
+CPS_lmer1 <- lmer(CPS_dif ~ location + (1|ramet) + (1|population:ID), data = PS)
+CPS_lmer1 <- lmer(CPS_dif ~ location + (1|ramet) + (1|population), data = PS)
+CPS_lmer1 <- lmer(CPS_dif ~ location + (1|ramet), data = PS)
+
+CPS_aov <- aov(CPS_dif ~ location, data = PS)
+summary(CPS_aov)
+
+
+# Data Visualization
+(CPS.p1 <- ggplot(PS, aes(x = location, CPS_dif, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
+    HStheme() +
+    theme(legend.position = "none") +
+    labs(x = "Region", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Cold Treatment"))
+
+
+# Saving graph
+ggsave("figures/CPS.p1.png", width = 7, height = 5, dpi = 300)
+
+```
+
+# Hot Photosynthesis
+Is there variance between regions, while accounting for block, population, and genet as random effects?
+```{r}
+
+# Model
+HPS_lmer1 <- lmer(HPS_dif ~ location + (1|ramet) + (1|population:ID), data = PS)
+HPS_lmer1 <- lmer(HPS_dif ~ location + (1|ramet) + (1|population), data = PS)
+
+(HPS_lmer1.a <- anova(HPS_lmer1))
+(HPS_lmer1.r <- ranova(HPS_lmer1))
+
+
+# Data Visualization
+(HPS.p1 <- ggplot(PS, aes(x = location, HPS_dif, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
+    HStheme() +
+    theme(legend.position = "none") +
+    labs(x = "Region", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Hot Treatment"))
+
+
+# Saving graph
+ggsave("figures/HPS.p1.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+## Cold Photosynthesis
+Is there variation in temperature tolerance between genets with ramet as replicates
+```{r}
+CPS_aov2 <- aov(CPS_dif ~ ID, data = PS)
+summary(CPS_aov2)
+
+
+#Create summarised data
+detach(package:plyr)
+
+summary1 <- PS %>%  
+  drop_na(CPS_dif)%>% 
+  group_by(ID) %>%
+  summarise(mean = mean(CPS_dif),sd = sd(CPS_dif)) 
+  
+
+# dot plot
+(CPS.dot <- ggplot(summary1, aes(x = reorder(ID, mean), y = mean)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3) +
+    HStheme() +
+    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
+    labs(x = "Genotype", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Cold Treatment"))
+
+# Saving graph
+ggsave("figures/CPS.p2.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+## Hot Photosynthesis
+Is there variation in temperature tolerance between genets with ramet as replicates
+```{r}
+HPS_aov2 <- aov(HPS_dif ~ ID, data = PS)
+summary(HPS_aov2)
+
+
+#Create summarised data
+summary2 <- PS %>%  
+  drop_na(HPS_dif)%>% 
+  group_by(ID) %>%
+  summarise(mean = mean(HPS_dif),sd = sd(HPS_dif)) 
+  
+
+# dot plot
+(CPS.dot <- ggplot(summary2, aes(x = reorder(ID, mean), y = mean)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3) +
+    HStheme() +
+    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
+    labs(x = "Genotype", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Hot Treatment"))
+
+# Saving graph
+# ggsave("figures/HPS.p2.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+

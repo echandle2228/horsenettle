@@ -1,0 +1,35 @@
+---
+title: "Mass Comparison"
+author: "Emma Chandler"
+date: "September 30, 2021"
+output: html_document
+---
+## Load Libraries
+```{r}
+library(ggplot2)
+```
+
+
+
+## Load Data
+```{r}
+remove(list = ls())
+
+mass <- read.csv("~/Horsenettle/data/leaf_mass.csv", header = TRUE)
+
+```
+
+
+## Calculating mean mass
+```{r}
+(mass.p <- ggplot(mass, aes(x = reorder(population, mass_T), y = mass_T, fill = location)) +
+  geom_boxplot()+
+  theme_bw() +
+  labs(x = "Popultation", y = "Mass", title = "Leaf mass by population") +
+  theme(panel.background = element_blank()))
+                   
+mass.m <- aov(mass_T ~ ID, data = mass)
+summary(mass.m)
+
+```
+
