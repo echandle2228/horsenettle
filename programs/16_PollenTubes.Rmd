@@ -1,0 +1,110 @@
+---
+title: "Pollen Tube Analysis"
+author: "Emma Chandler"
+date: "October 27, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Data
+
+```{r}
+
+Pollen <- read.csv("~/Horsenettle/data/pollenTube_NEW.csv", header = TRUE)
+
+```
+
+
+## Load Libraries
+
+```{r} 
+library(devtools)
+
+# install_github("nsantantonio/Bilinear")
+library(Bilinear)
+library(deSolve)
+library(drc)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+```
+
+## Fitting bilinear model for germination data
+nls function is used for non-linear models and stands for Nonlinear Least Square
+
+```{r}
+
+# Calculating germination percentage
+Pollen$germ <- Pollen$tubes/Pollen$total_grains * 100
+model1 <- drm(germ ~ temp, data = Pollen, subset = ID)
+
+# Change data from long form to wide form, delete 15 degree column and omit all rows with NA
+Pollen_wide <- Pollen %>% 
+  dplyr::select(c(population,location,number,ID,ramet,temp,germ)) %>% 
+  spread(temp, germ) %>% 
+  select(-"15") %>% 
+  na.omit() %>% 
+  dplyr::select(c(ID,"10","20","25","30","40"))
+
+```
+
+
+
+## Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "serif"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+
+## Bilinear Fit
+
+```{r}
+# Bilinear fit using the bilinear fit package
+bilinear(x = Pollen_wide, g = Pollen_wide$ID, model = "GREG", )
+         
+
+
+```
+
+
+
+
+
+
+```{r}
+
+# Bilinear Model from Kakani et al. 2002
+Topt <- 22.855
+a <- 19.638
+b1 <- -0.23356
+b2 <- 1.04908
+
+y <- a - b1 * (Pollen$temp - Topt) - b2 * abs(Topt - Pollen$temp)
+
+
+ggplot(data = Pollen, aes(x = temp, y = germ, color = location)) +
+  geom_point()+
+  labs(x = "Temperature", y = "% Germination")+
+  HStheme()
+
+
+```
+
+

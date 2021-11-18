@@ -76,7 +76,7 @@ CHPL <- merge(H.CHPL, C.CHPL, by = c("ID", "location", "population", "number", "
 CC <- merge(CMS, CHPL, by = c("ID", "location", "population", "number", "block"), all.x = FALSE, all = TRUE)
 ALL <- merge(CC, PS, by = c("ID", "location", "population", "number", "block"), all.x = TRUE, all = TRUE)
 
-# write.csv(x = ALL, file = "~/Horsenettle/data/processed/correlation.csv")
+write.csv(x = ALL, file = "~/Horsenettle/data/processed/correlation.csv")
 
 COR <- read.csv("~/Horsenettle/data/processed/correlation.csv", header = TRUE)
 

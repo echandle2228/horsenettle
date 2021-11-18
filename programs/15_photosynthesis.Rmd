@@ -50,27 +50,44 @@ summary(PS)
 
 ```
 
-## Calculating the difference in photosynthesis before and after treatment
+## Calculating the proportion of photosynthesis before and after treatment
 ```{r}
-PS$CPS_dif <- PS$CPS_f - PS$CPS_i
-PS$HPS_dif <- PS$HPS_f - PS$HPS_i
+# Calculating photosynthesis ratio
+PS$CPS <- PS$CPS_f / PS$CPS_i
+PS$HPS <- PS$HPS_f / PS$HPS_i
+```
+
+## Omit data below one standard error of the mean
+```{r}
+
+# Create a function for standard error
+SE <- function(x) sd(x)/sqrt(length(x))
+
+PS_CPS <- PS[!is.na(PS$CPS),]
+
+PS1 <- PS %>% 
+  group_by(location) %>% 
+  filter(!CPS <= (mean(PS_CPS$CPS) - SE(PS_CPS$CPS)))
 
 # Export data frame for Correlation
 write.csv(x = PS, file = "~/Horsenettle/data/processed/PS.csv")
 
+
 ```
+
+
 
 
 ## Check normality of differences
 ```{r}
 
 # Cold Treatment
-hist(PS$CPS_dif, main = "Cold Treatment", xlab = "Photosynthesis")
-shapiro.test(PS$CPS_dif)
+hist(PS$CPS, main = "Cold Treatment", xlab = "Photosynthesis")
+shapiro.test(PS$CPS)
 
 # Hot Treatment
-hist(PS$HPS_dif, main = "Hot Treatment", xlab = "Photosynthesis")
-shapiro.test(PS$HPS_dif)
+hist(PS$HPS, main = "Hot Treatment", xlab = "Photosynthesis")
+shapiro.test(PS$HPS)
 
 ```
 
@@ -98,16 +115,16 @@ Is there variance between regions, while accounting for block, population, and g
 ```{r}
 
 # Model
-CPS_lmer1 <- lmer(CPS_dif ~ location + (1|ramet) + (1|population:ID), data = PS)
-CPS_lmer1 <- lmer(CPS_dif ~ location + (1|ramet) + (1|population), data = PS)
-CPS_lmer1 <- lmer(CPS_dif ~ location + (1|ramet), data = PS)
+CPS_lmer1 <- lmer(CPS ~ location + (1|ramet) + (1|population:ID), data = PS)
+CPS_lmer1 <- lmer(CPS ~ location + (1|ramet) + (1|population), data = PS)
+CPS_lmer1 <- lmer(CPS ~ location + (1|ramet), data = PS)
 
-CPS_aov <- aov(CPS_dif ~ location, data = PS)
+CPS_aov <- aov(CPS ~ location, data = PS)
 summary(CPS_aov)
 
 
 # Data Visualization
-(CPS.p1 <- ggplot(PS, aes(x = location, CPS_dif, fill = location)) + 
+(CPS.p1 <- ggplot(PS, aes(x = location, CPS, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
     scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
     HStheme() +
@@ -125,15 +142,15 @@ Is there variance between regions, while accounting for block, population, and g
 ```{r}
 
 # Model
-HPS_lmer1 <- lmer(HPS_dif ~ location + (1|ramet) + (1|population:ID), data = PS)
-HPS_lmer1 <- lmer(HPS_dif ~ location + (1|ramet) + (1|population), data = PS)
+HPS_lmer1 <- lmer(HPS ~ location + (1|ramet) + (1|population:ID), data = PS)
+HPS_lmer1 <- lmer(HPS ~ location + (1|ramet) + (1|population), data = PS)
 
 (HPS_lmer1.a <- anova(HPS_lmer1))
 (HPS_lmer1.r <- ranova(HPS_lmer1))
 
 
 # Data Visualization
-(HPS.p1 <- ggplot(PS, aes(x = location, HPS_dif, fill = location)) + 
+(HPS.p1 <- ggplot(PS, aes(x = location, HPS, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
     scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
     HStheme() +
@@ -150,7 +167,7 @@ ggsave("figures/HPS.p1.png", width = 7, height = 5, dpi = 300)
 ## Cold Photosynthesis
 Is there variation in temperature tolerance between genets with ramet as replicates
 ```{r}
-CPS_aov2 <- aov(CPS_dif ~ ID, data = PS)
+CPS_aov2 <- aov(CPS ~ ID, data = PS)
 summary(CPS_aov2)
 
 
@@ -158,9 +175,9 @@ summary(CPS_aov2)
 detach(package:plyr)
 
 summary1 <- PS %>%  
-  drop_na(CPS_dif)%>% 
+  drop_na(CPS)%>% 
   group_by(ID) %>%
-  summarise(mean = mean(CPS_dif),sd = sd(CPS_dif)) 
+  summarise(mean = mean(CPS),sd = sd(CPS)) 
   
 
 # dot plot
@@ -180,15 +197,15 @@ ggsave("figures/CPS.p2.png", width = 7, height = 5, dpi = 300)
 ## Hot Photosynthesis
 Is there variation in temperature tolerance between genets with ramet as replicates
 ```{r}
-HPS_aov2 <- aov(HPS_dif ~ ID, data = PS)
+HPS_aov2 <- aov(HPS ~ ID, data = PS)
 summary(HPS_aov2)
 
 
 #Create summarised data
 summary2 <- PS %>%  
-  drop_na(HPS_dif)%>% 
+  drop_na(HPS)%>% 
   group_by(ID) %>%
-  summarise(mean = mean(HPS_dif),sd = sd(HPS_dif)) 
+  summarise(mean = mean(HPS),sd = sd(HPS)) 
   
 
 # dot plot

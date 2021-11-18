@@ -14,6 +14,14 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(devtools)
 library(psych)
+library(reshape)
+library(tidyverse)
+library(broom)
+library(ggplot2)
+library(ggforce)
+library(ggfortify)
+library(cluster)
+library(PCAtools)
 
 ```
 
@@ -21,89 +29,236 @@ library(psych)
 ```{r}
 remove(list = ls())
 
-H.CMS <- read.csv("~/Horsenettle/data/CMSdata.csv", header = TRUE)
-C.CMS <- read.csv("~/Horsenettle/data/CMS_cold.csv", header = TRUE)
-H.CHLP <- read.csv("~/Horsenettle/data/chlorophylldata.csv", header = TRUE)
-C.CHLP <- read.csv("~/Horsenettle/data/chlorophyll_cold.csv", header = TRUE)
+data <- read.csv("~/Horsenettle/data/processed/correlation.csv", header = TRUE)
+
 
 ```
 
-## Calculate tolerance variables- CMS, CHLP tolerance
+# Creating a figure theme for all plots
 ```{r}
-# Hot CMS
-trtpro <- H.CMS$exp_trt / H.CMS$exp_max
-cntrpro <- H.CMS$cntr_trt / H.CMS$cntr_max
-# Calculate CMS using proportions
-H.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
-# arcsin sqrt transformation because it is a proportion
-H.CMS$AST_HCMS <- asin(sqrt(H.CMS$CMS/100))
-
-
-# Hot CHLP
-trtpro <- H.CHLP$treatment_final / H.CHLP$treatment_initial
-cntrpro <- H.CHLP$control_final / H.CHLP$control_initial
-# Calculate H.CHLP damage using proportions
-H.CHLP$CHLP <- 1 - (cntrpro - trtpro)
-# arcsine sqrt transformation for later t-test
-H.CHLP$AST_HCHLP <- asin(sqrt(H.CHLP$CHLP))
-
-
-# Cold CHLP
-trtpro <- C.CHLP$treatment_final / C.CHLP$treatment_initial
-cntrpro <- C.CHLP$control_final / C.CHLP$control_initial
-# Calculate C.CHLP damage using proportions
-C.CHLP$CHLP <- 1 - (cntrpro - trtpro)
-# arcsine sqrt transformation for later t-test
-C.CHLP$AST_CCHLP <- asin(sqrt(C.CHLP$CHLP))
-
-
-# Cold CMS
-trtpro <- C.CMS$exp_trt / C.CMS$exp_max
-cntrpro <- C.CMS$cntr_trt / C.CMS$cntr_max
-# Calculate CMS using proportions
-C.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
-# arcsin sqrt transformation because it is a proportion
-C.CMS$AST_CCMS <- asin(sqrt(C.CMS$CMS/100))
-
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "serif"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
 ```
 
-## Combine data into one dataset
-```{r}
-# Make one dataframe with all sporophytic tolerance variables
-mergedat <- H.CMS %>% right_join(H.CHLP, by=c("ID","ramet", "population", "block", "pair", "number"))
-mergedat <- mergedat %>% right_join(C.CMS, by=c("ID","ramet", "population", "block", "pair", "number"))
-mergedat <- mergedat %>% right_join(C.CHLP, by=c("ID","ramet", "population", "block", "pair", "number"))
-
-
-keep <- c("ID", "ramet", "location.x", "AST_HCMS", "AST_HCHLP", "AST_CCMS", "AST_CCHLP")
-full.data <- mergedat[keep]
-names(full.data) <- c("ID", "ramet", "location", "H.CMS", "H.CHLP", "C.CMS", "C.CHLP")
-
-full.data <- na.omit(full.data)
-
-
-```
 
 ## Correlations
 ```{r}
-pairs.panels(full.data[,c(4:7)],
+pairs.panels(data[,c(7:12)],
              gap = 0,
-             bg = c("red", "blue")[full.data$location.x],
+             bg = c("red", "blue")[data$location.x],
              pch=21)
 ```
 
 
 
 
-## PCA
+## PCA of all sporophytic variables
 ```{r}
+# Omitt all rows with nas
+data.nona <- na.omit(data)
 
-SPOR.PCA <- prcomp(full.data[,c(4:7)], center = TRUE, scale. = TRUE)
+SPOR.PCA <- prcomp(data.nona[,c(7:12)], center = TRUE, scale. = TRUE)
+
 summary(SPOR.PCA)
 attributes(SPOR.PCA)
 print(SPOR.PCA)
 
 
+(PCA.p1 <- autoplot(prcomp(data.nona[,c(7:12)], center = TRUE, scale. = TRUE), 
+         data = data.cold, colour = 'location', 
+         loadings = TRUE, loadings.colour = 'black',
+         loadings.label = TRUE, loadings.label.size = 4, loadings.label.colour = 'black', loadings.label.hjust = 1, loadings.label.vjust = 0,
+         frame = TRUE, frame.type = 't') +
+  scale_fill_manual(values = c("#00BFFF", "#FF4040")) +
+  scale_color_manual(values = c("#00BFFF", "#FF4040")) +
+  xlim(-1,1) +
+  ylim(-0.5,0.5) +
+  HStheme())
+
+
+(PCA.p2 <- autoplot(prcomp(data.nona[,c(7:12)], center = TRUE, scale. = TRUE), x=2, y=3, 
+         data = data.cold, colour = 'location', 
+         loadings = TRUE, loadings.colour = 'black',
+         loadings.label = TRUE, loadings.label.size = 4, loadings.label.colour = 'black', loadings.label.hjust = 0, loadings.label.vjust = 0,
+         frame = TRUE, frame.type = 't') +
+  scale_fill_manual(values = c("#00BFFF", "#FF4040")) +
+  scale_color_manual(values = c("#00BFFF", "#FF4040")) +
+  xlim(-1,1) +
+  ylim(-0.5,0.5) +
+  HStheme())
+
+
+(PCA.p3 <- autoplot(prcomp(data.nona[,c(7:12)], center = TRUE, scale. = TRUE), x=1, y=3, 
+         data = data.cold, colour = 'location', 
+         loadings = TRUE, loadings.colour = 'black',
+         loadings.label = TRUE, loadings.label.size = 4, loadings.label.colour = 'black', loadings.label.hjust = 0, loadings.label.vjust = 0,
+         frame = TRUE, frame.type = 't') +
+  scale_fill_manual(values = c("#00BFFF", "#FF4040")) +
+  scale_color_manual(values = c("#00BFFF", "#FF4040")) +
+  xlim(-1,1) +
+  ylim(-0.5,0.5) +
+  HStheme())
+
 # https://www.datacamp.com/community/tutorials/pca-analysis-r
 ```
 
+## PCA Cold variables
+```{r}
+
+# Subset of cold variable data
+data.cold <- data.nona[,c(2,3,8,10,11)]
+
+
+# Cold PCA
+cold.PCA <- data.cold %>% 
+  dplyr::select(where(is.numeric)) %>% 
+  scale() %>% 
+  prcomp()
+
+summary(cold.PCA)
+print(cold.PCA)
+
+# Graph PC1 and PC2
+cold.PCA %>% 
+  augment(data.cold) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC1,y = PC2, color = location)) +
+  labs(title = "Cold PCA")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+
+centroids <- aggregate(cbind(x,y)~class,df,mean)
+f         <- function(z)sd(z)/sqrt(length(z)) # function to calculate std.err
+se        <- aggregate(cbind(se.x=x,se.y=y)~class,df,f)
+centroids <- merge(centroids,se, by="class")    # add std.err column to centroids
+
+
+
+```
+## Plot PC1 values vs chlorophyll, CMS and photosynthesis
+```{r}
+# Graph PC1 and chlorophyll
+cold.PCA %>% 
+  augment(data.cold) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC1,y = CCHPL, color = location)) +
+  labs(title = "Cold Chlorophyl vs PC1")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+
+# Graph PC1 and CMS
+cold.PCA %>% 
+  augment(data.cold) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC1,y = CCMS, color = location)) +
+  labs(title = "Cold Chlorophyl vs PC1")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+
+# Graph PC1 and photosynthesis
+cold.PCA %>% 
+  augment(data.cold) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC2,y = CPS_dif, color = location)) +
+  labs(title = "Cold Chlorophyl vs PC1")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+
+```
+
+
+
+## PCA Hot variables
+```{r}
+
+# Subset of hot variable data
+data.hot <- data.nona[,c(2,3,7,9,12)]
+
+# Cold PCA
+hot.PCA <- data.hot %>% 
+  dplyr::select(where(is.numeric)) %>% 
+  scale() %>% 
+  prcomp()
+
+summary(hot.PCA)
+print(hot.PCA)
+
+# Graph PC1 and PC2
+hot.PCA %>% 
+  augment(data.hot) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC1,y = PC2, color = location)) +
+  labs(title = "Hot PCA")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+autoplot(prcomp(data.hot[c(3:5)]), data = data.hot, colour = 'location', loadings = TRUE, loadings.colour = 'black',
+         loadings.label = TRUE, loadings.label.size = 3)
+
+```
+
+
+## Plot PC1 values vs chlorophyll, CMS and photosynthesis
+
+```{r}
+# Graph PC1 and chlorophyll
+hot.PCA %>% 
+  augment(data.hot) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC2,y = HCHPL, color = location)) +
+  labs(title = "Cold Chlorophyl vs PC2")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+
+# Graph PC1 and CMS
+hot.PCA %>% 
+  augment(data.hot) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC2,y = HCMS, color = location)) +
+  labs(title = "Cold CMS vs PC2")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+
+# Graph PC1 and photosynthesis
+hot.PCA %>% 
+  augment(data.hot) %>% 
+  rename_at(vars(starts_with(".fitted")),
+            list(~str_replace(.,".fitted",""))) %>% 
+  ggplot(aes(x = PC1,y = HPS_dif, color = location)) +
+  labs(title = "Hot PS vs PC1")+
+  geom_point() +
+  geom_mark_circle(aes(color = location)) +
+  HStheme()
+
+```
