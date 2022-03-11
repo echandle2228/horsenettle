@@ -1,0 +1,53 @@
+,Number,Population,Location,ID,Treatment_RametA,RametA,RametB
+1,1,Cemetary,South,1,Control,24,34
+2,2,Cemetary,South,2,Control,52,10
+3,3,Cemetary,South,3,Heat,47,14
+4,4,Cemetary,South,4,Heat,26,5
+5,5,Cemetary,South,5,Control,20,6
+6,6,Cemetary,South,6,Control,14,41
+9,9,Cemetary,South,8,Control,30,36
+10,10,Cemetary,South,9,Control,5,32
+11,11,Cemetary,South,10,Heat,36,47
+12,12,Cemetary,South,11,Heat,8,17
+7,7,Cemetary,South,7a,Control,18,26
+8,8,Cemetary,South,7b,Control,13,25
+46,20,Front,North,1,Control,40,23
+47,21,Front,North,2,Heat,19,4
+48,22,Front,North,6,Control,4,15
+49,23,Front,North,8,Heat,27,16
+50,24,Front,North,10,Heat,7,38
+51,25,Front,North,11,Heat,17,8
+52,26,Front,North,12,Control,15,7
+13,13,Oil Patch,South,1,Control,44,43
+14,14,Oil Patch,South,2,Control,21,39
+15,15,Oil Patch,South,3,Heat,48,48
+16,16,Oil Patch,South,4,Heat,46,13
+17,17,Oil Patch,South,5,Control,45,51
+18,18,Oil Patch,South,6,Heat,16,29
+19,19,Oil Patch,South,7,Control,50,2
+20,20,Oil Patch,South,8,Heat,38,35
+21,21,Oil Patch,South,9,Control,43,33
+22,22,Parking Lot,South,2,Heat,9,31
+23,23,Parking Lot,South,4,Heat,32,18
+24,24,Parking Lot,South,5,Heat,28,30
+27,1,Prairie Island,North,1,Control,39,46
+28,2,Prairie Island,North,2,Control,51,28
+29,3,Prairie Island,North,3,Control,35,20
+30,4,Prairie Island,North,4,Control,11,3
+31,5,Prairie Island,North,5,Heat,49,11
+32,6,Prairie Island,North,9,Control,2,37
+33,7,Prairie Island,North,10,Control,42,27
+34,8,Prairie Island,North,11,Control,33,22
+35,9,Prairie Island,North,12,Heat,37,1
+36,10,Prairie Island,North,13,Heat,10,44
+37,11,Prairie Island,North,14,Heat,22,21
+38,12,Prairie Island,North,15,Heat,31,24
+39,13,Prairie Island,North,18,Control,25,40
+40,14,Prairie Island,North,19,Heat,41,12
+41,15,Prairie Island,North,21,Heat,23,45
+42,16,Prairie Island,North,25,Heat,29,50
+43,17,Prairie Island,North,27,Control,6,42
+44,18,Prairie Island,North,28,Control,1,49
+45,19,Prairie Island,North,30,Control,12,19
+25,25,Reserve,South,3,Heat,3,9
+26,26,Reserve,South,5,Control,34,52

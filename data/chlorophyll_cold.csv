@@ -195,9 +195,9 @@ Oil Patch,South,1,OP1,D,20,100,503,286,534,484
 Prairie Island,North,13,PI13,D,20,100,553,313,572,522
 Oil Patch,South,7,OP7,D,20,99,522,313,522,465
 Prairie Island,North,18,PI18,D,20,99,579,389,553,484
-Prairie Island,North,18,PI18,D,21,105,439,306,433,382
-Cemetary,South,7a,CE7a,D,21,105,376,110,382,313
-Reserve,South,7,RE7,D,21,106,408,8,433,408
-Prairie Island,North,11,PI11,D,21,106,439,205,408,338
-Cemetary,South,5,CE5,D,21,109,313,46,325,332
-Prairie Island,North,27,PI27,D,21,109,389,262,382,389
+Prairie Island,North,18,PI18,E,21,105,439,306,433,382
+Cemetary,South,7a,CE7a,E,21,105,376,110,382,313
+Reserve,South,7,RE7,E,21,106,408,8,433,408
+Prairie Island,North,11,PI11,E,21,106,439,205,408,338
+Cemetary,South,5,CE5,E,21,109,313,46,325,332
+Prairie Island,North,27,PI27,E,21,109,389,262,382,389
