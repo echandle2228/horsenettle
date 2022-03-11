@@ -1,0 +1,357 @@
+---
+title: "Pollen Germination Figures"
+author: "Emma Chandler"
+date: "3/3/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##########################################################################
+
+# Pollen Germination Analysis and Figures
+# Emma Chandler
+# November 12, 2021
+
+#############################################################################
+
+
+# Load Pollen Data --------------------------------------------------------
+
+```{r}
+# Remove everything from the environment
+remove(list = ls())
+
+
+# Load Libraries
+library(ggplot2)
+library(rcompanion)
+library(ggstatsplot)
+library(dplyr)
+library(tidyverse)
+library(reshape2)
+
+library(lme4)
+library(lmerTest)
+
+# Find working directory
+# getwd()
+# setwd("C:/Users/moin2/OneDrive/Documents/Horsenettle")
+```
+
+
+```{r}
+# Load data
+bilin <- read.csv("~/Horsenettle/data/processed/germParams.csv", header = TRUE)
+head(bilin)
+
+germ_dat <- read.csv("~/Horsenettle/data/pollenTube_NEW.csv", header = TRUE)
+head(germ_dat)
+```
+
+
+# Pollen Germination ------------------------------------------------------
+```{r}
+# Merge ID and Ramet
+germ_dat <- mutate(germ_dat, ID = paste(ID, ramet)) # NEW
+
+# Calculate pollen germination
+germ_dat$germ_percent <- germ_dat$tubes / germ_dat$total_grains *100
+
+# Plot Data
+gd <- germ_dat %>% 
+  group_by(location, temp) %>% 
+  summarise(germ_percent = mean(germ_percent))
+
+
+
+ggplot(germ_dat, aes(x = temp, y = germ_percent, color = location)) +
+  geom_point() +
+  geom_line(aes(group = ID)) +
+  geom_line(data = gd, alpha = .8, size = 3) +
+  theme_classic() +
+  labs(x = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       y = "Percent Germination") +
+  scale_colour_manual(values = c("#104E8B", "#B22222")) +
+  theme(text = element_text(family = "sans"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+
+ggsave("figures/pGERM_mean.png", width = 7, height = 5, dpi = 300)
+
+# http://derekogle.com/NCGraphing/resources/colors 
+
+```
+
+## Curve colored by population
+
+```{r}
+# Plot Data
+gd <- germ_dat %>% 
+  group_by(population, temp) %>% 
+  summarise(germ_percent = mean(germ_percent))
+
+
+
+ggplot(germ_dat, aes(x = temp, y = germ_percent, color = population)) +
+  geom_point() +
+  geom_line(aes(group = ID)) +
+  geom_line(data = gd, alpha = .8, size = 3) +
+  theme_classic() +
+  labs(x = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       y = "Percent Germination") +
+  scale_colour_manual(values = c("#EE2C2C","#0000CD", "#8B1A1A", "#009ACD")) +
+  theme(text = element_text(family = "sans"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+
+ggsave("figures/pGERM_mean_pop.png", width = 7, height = 5, dpi = 300)
+```
+
+
+
+## Reaction Norms of Genets with at least 3 ramets
+```{r}
+# Filtering genets with more than three ramets
+germ_dat$iden <- str_extract(germ_dat$ID,"(\\w+)") 
+
+rn_data <- germ_dat %>% 
+  group_by(iden) %>% 
+  filter(n() > 10)
+
+# rn_data %>% 
+#   filter(iden == "OP1") %>% 
+ggplot(rn_data, aes(x = temp, y = germ_percent, color = location)) +
+  geom_point() +
+  geom_line(aes(group = ID)) +
+  facet_grid(cols = vars(iden)) +
+  theme_classic() +
+  labs(x = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       y = "Pollen Germination") +
+  scale_colour_manual(values = c("#104E8B", "#B22222")) +
+  theme(text = element_text(family = "sans"), 
+        axis.text.x = element_text(size = 10, angle = 90), 
+        axis.text.y = element_text(size = 10),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+
+# ggsave("figures/germ_rn.png", width = 7, height = 5, dpi = 300)
+```
+
+
+
+
+# Bilinear Fit Data Analysis ----------------------------------------------
+```{r}
+# Data description
+summary(bilin)
+
+
+
+# T-test for maximum germination
+t.test(bilin$rmax ~ bilin$location)
+wilcox.test(bilin$rmax ~ bilin$location)
+
+
+ggplot(bilin, aes(location, rmax, fill = location)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.1)+
+  theme_bw()+ 
+  labs(x = "Location", 
+       y = "Maximum Germination (%)", 
+       title = "Maximum Germination") +
+  scale_color_manual(values = c("dodgerblue", "red2")) +
+  scale_fill_manual(values = c("dodgerblue", "red2"))+
+  theme(text = element_text(family = "serif"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+  
+
+# T-test for minimum germination temperature
+t.test(bilin$ctmin ~ bilin$location)
+
+Tmin <- ggplot(bilin, aes(location, ctmin, fill = location)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.1)+
+  theme_bw()+ 
+  labs(x = "Location", 
+       y = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       title = "Minimum Germination Temperature") +
+  scale_color_manual(values = c("dodgerblue", "red2")) +
+  scale_fill_manual(values = c("dodgerblue", "red2"))+
+  theme(text = element_text(family = "serif"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+
+
+# T-test for maximum germination
+t.test(bilin$ctmax ~ bilin$location)
+
+# Mann-Whitney-Wilcoxon Test for unequal variance
+wilcox.test(Tmax ~ location, bilin) # NEW
+
+Tmax <- ggplot(bilin, aes(location, ctmax, fill = location)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.1)+
+  theme_bw()+ 
+  labs(x = "Location", 
+       y = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       title = "Maximum Germination Temperature") +
+  scale_color_manual(values = c("dodgerblue", "red2")) +
+  scale_fill_manual(values = c("dodgerblue", "red2"))+
+  theme(text = element_text(family = "serif"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+
+
+# T-test for optimum germination
+t.test(bilin$topt ~ bilin$location)
+
+Topt <- ggplot(bilin, aes(location, topt, fill = location)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.1)+
+  theme_bw()+ 
+  labs(x = "Location", 
+       y = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       title = "Optimum Germination Temperature") +
+  scale_color_manual(values = c("dodgerblue", "red2")) +
+  scale_fill_manual(values = c("dodgerblue", "red2"))+
+  theme(text = element_text(family = "serif"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+
+
+
+
+
+# Code to stack graphs
+
+
+bilin_plot <- melt(subset(bilin, select=c(location, ctmax, topt, ctmin)), id.var="location")
+
+
+ggplot(bilin_plot, aes(x = location, y = value, fill = location)) + 
+  geom_boxplot() +
+  geom_jitter(width = 0.1)+
+  facet_grid(variable ~ ., scales = "free_y") +
+  theme_bw()+ 
+  labs(x = "Location", 
+       y = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       title = "Temperature Estimates from Quadratic Model") +
+  scale_color_manual(values = c("dodgerblue", "red2")) +
+  scale_fill_manual(values = c("dodgerblue", "red2"))+
+  theme(text = element_text(family = "serif"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+
+ggsave("figures/pGERM_params.png", width = 7, height = 5, dpi = 300)
+
+```
+```{r message=FALSE}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+```{r warning=FALSE}
+
+# Create column with ID only
+bilin$iden <- str_extract(bilin$ID,"(\\w+)")
+
+# Rename columns for graph
+bilin_plot1 <- bilin %>% 
+  rename(Tmax = ctmax, Tmin = ctmin, Topt = topt, Tolerance = thermal_tolerance, Breadth = breadth)
+
+# Subset variables for facet grid ggplot
+bilin_plot <- melt(subset(bilin_plot1, select=c(iden, location, Tmax, Topt, Tmin, Tolerance, Breadth)), id.var=c("iden", "location"))
+
+ggplot(bilin_plot, aes(x = reorder(iden, value), y = value, color = location)) +
+  geom_point()+
+  geom_boxplot() +
+  facet_grid(variable ~ ., scales = "free_y") +
+  HStheme()+
+  labs(title = "Pollen Germination Curve Parameters", x = "Genotype", y = "Calculated Parameter") +
+  scale_color_manual(values = c("#104E8B", "#B22222"))+
+  theme(axis.text.x = element_text(angle = 90))
+  
+
+# ggsave("figures/pGERM_params2_DOT.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+## Statistics
+```{r}
+# Is there a difference between Regions?
+PGERM_max <- aov(ctmax ~ location, data = bilin)
+summary(PGERM_max)
+
+# Is there a difference between Genets
+PGERM_opt <- aov(ctopt ~ location, data = bilin)
+
+
+```
+
+
+
+
+

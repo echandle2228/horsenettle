@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Load Libraries
-```{r}
+```{r message=FALSE}
 library(dplyr)
 library(ggplot2)
 library(rcompanion)
@@ -98,12 +98,21 @@ CCMS_lmer1 <- lmer(CMS ~ location + (1|ramet), data = C.CMS)
 # Data Visualization
 (C.CMS.p1 <- ggplot(C.CMS, aes(x = ramet, CMS, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
     HStheme() +
     labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))
 
 # Saving graph
 ggsave("figures/C.CMS.p1.png", width = 7, height = 5, dpi = 300)
+
+(C.CMS.p1 <- ggplot(C.CMS, aes(x = location, CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))
+
+# Saving graph
+ggsave("figures/C.CMS.p1b.png", width = 7, height = 5, dpi = 300)
 
 ```
 
@@ -119,13 +128,15 @@ unique(sort(C.CMS$ID))
 #Crate summarised data
 detach(package:plyr)
 
-summary <- C.CMS %>% group_by(ID) %>% 
+summary <- C.CMS %>% 
+  group_by(ID, location) %>% 
   summarise(mean = mean(CMS),sd = sd(CMS))
 
 # dot plot
 (C.CMS.dot <- ggplot(summary, aes(x = reorder(ID, mean), y = mean)) +
     geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
-    geom_point(size = 3) +
+    geom_point(size = 3, aes(colour = location)) +
+    scale_color_manual(values = c("#104E8B", "#CD2626"))+
     HStheme() +
     theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
     labs(x = "Genotype", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))

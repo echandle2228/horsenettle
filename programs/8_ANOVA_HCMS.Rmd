@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Load Libraries
-```{r}
+```{r message=FALSE}
 library(dplyr)
 library(ggplot2)
 library(rcompanion)
@@ -51,7 +51,7 @@ cntrpro <- H.CMS$cntr_trt / H.CMS$cntr_max
 H.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
 
 # Export data frame for Correlation
-write.csv(x = H.CMS, file = "~/Horsenettle/data/processed/H.CMS.csv")
+# write.csv(x = H.CMS, file = "~/Horsenettle/data/processed/H.CMS.csv")
 
 ```
 
@@ -96,16 +96,26 @@ HCMS_lmer1 <- lmer(CMS ~ location + (1|ramet) + (1|population:ID), data = H.CMS)
 (HCMS_glmer1.r <- ranova(HCMS_lmer1))
 
 
+
 # Data Visualization
-(H.CMS.p1 <- ggplot(H.CMS, aes(x = reorder(ramet, CMS), CMS, fill = location)) + 
+(H.CMS.p1 <- ggplot(H.CMS, aes(ramet, CMS, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Hot Treatment"))
+
+# Saving graph
+ggsave("figures/H.CMS.p1.png", width = 7, height = 5, dpi = 300)
+
+(H.CMS.p1 <- ggplot(H.CMS, aes(location, CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
     HStheme() +
     labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Hot Treatment"))
 
 
 # Saving graph
-# ggsave("figures/H.CMS.p1.png", width = 7, height = 5, dpi = 300)
+ggsave("figures/H.CMS.p1b.png", width = 7, height = 5, dpi = 300)
 ```
 
 
@@ -117,45 +127,20 @@ summary(HCMS_aov2)
 (HCMS_lmer2.a <- anova(HCMS_aov2))
 
 (TUKEY <- TukeyHSD(HCMS_aov2))
-
-library(dplyr)
-CMS.SUMM = H.CMS %>% 
-  group_by(ID) %>% 
-  summarize(maxCMS=max(CMS))
-
-(hsd=HSD.test(HCMS_aov2,"Genotype", group=T))
-
-ggplot(H.CMS,aes(x=reorder(Species,Petal.Length,FUN = median),y=Petal.Length))+
-  geom_boxplot()+
-  geom_text(data=CMS.SUMM,aes(x=Species,y=0.2+Max.Petal.Length,label=hsd$groups$groups),vjust=0)
-
-
-# I need to group the treatments that are not different each other together.
-labeldf <- function(TUKEY, variable){
-      # Extract labels and factor levels from Tukey post-hoc 
-     Tukey.levels <- TUKEY[[variable]][,4]
-     Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters'])
-     
-     #I need to put the labels in the same order as in the boxplot :
-     Tukey.labels$ID=rownames(Tukey.labels)
-     Tukey.labels=Tukey.labels[order(Tukey.labels$treatment) , ]
-     return(Tukey.labels)
-     }
-ID <- as.character(H.CMS$ID) 
-# Apply the function on my dataset
-LABELS <- labeldf(TUKEY , "ID")
-
+plot(TUKEY, las = 1)
 
 #Crate summarised data
 detach(package:plyr)
 
-summary <- H.CMS %>% group_by(ID) %>% 
+summary <- H.CMS %>% 
+  group_by(ID, location) %>% 
   summarise(mean = mean(CMS),se = sd(CMS)/(sqrt(length(CMS))))
 
 # dot plot
 (H.CMS.dot <- ggplot(summary, aes(x = reorder(ID, mean), y = mean)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.2) +
-    geom_point(size = 3) +
+    geom_point(size = 3, aes(colour = location)) +
+    scale_color_manual(values = c("#104E8B", "#CD2626"))+
     HStheme()+
     stat_compare_means(label = "p.signif", method = "t.test",ref.group = ".all.") + 
     theme(axis.text.x = element_text(size = 10, angle = 90, vjust = 0.5)) +
@@ -165,6 +150,10 @@ summary <- H.CMS %>% group_by(ID) %>%
 ggsave("figures/H.CMS.p2.png", width = 7, height = 5, dpi = 300)
 
 ```
+
+
+
+
 
 
 

@@ -42,7 +42,7 @@ cntrpro <- H.CHPL$control_final / H.CHPL$control_initial
 H.CHPL$CHPL <- 1 - (cntrpro - trtpro)
 
 # Export data frame for Correlation
-write.csv(x = H.CHPL, file = "~/Horsenettle/data/processed/H.CHPL.csv")
+# write.csv(x = H.CHPL, file = "~/Horsenettle/data/processed/H.CHPL.csv")
 
 ```
 
@@ -95,13 +95,13 @@ HCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|population:ID), data = H.CH
 # Data Visualization
 (H.CHPL.p1 <- ggplot(H.CHPL, aes(x = location, CHPL, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#6CA6CD", "#F08080")) +
-    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Content", subtitle = "Hot Treatment")+
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Stability", subtitle = "Hot Treatment")+
     HStheme() +
     theme(legend.position = "none"))
 
 # Saving graph
-# ggsave("figures/H.CHPL.p1.png", width = 7, height = 5, dpi = 300)
+ggsave("figures/H.CHPL.p1.png", width = 7, height = 5, dpi = 300)
 
 ```
 
@@ -117,13 +117,15 @@ summary(HCHPL_aov2)
 #Crate summarised data
 detach(package:plyr)
 
-summary <- H.CHPL %>% group_by(ID) %>% 
+summary <- H.CHPL %>% 
+  group_by(ID, location) %>% 
   summarise(mean = mean(CHPL),sd = sd(CHPL))
 
 # dot plot
 (H.CHPL.dot <- ggplot(summary, aes(x = reorder(ID, mean), y = mean)) +
     geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
-    geom_point(size = 3) +
+    geom_point(size = 3, aes(colour = location)) +
+    scale_color_manual(values = c("#104E8B", "#CD2626"))+
     HStheme() +
     theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
     labs(x = "Genotype", y = "Chlorophyll Ratio", title = "Chlorophyll Stability", subtitle = "Hot Treatment"))

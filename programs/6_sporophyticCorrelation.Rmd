@@ -16,6 +16,7 @@ library(plyr)
 library(tidyverse)
 library(ggcorrplot)
 library(corrplot)
+library(car)
 ```
 
 # Clear environment and set seed
@@ -31,57 +32,73 @@ H.CMS <- read.csv("~/Horsenettle/data/processed/H.CMS.csv", header = TRUE)
 C.CMS <- read.csv("~/Horsenettle/data/processed/C.CMS.csv", header = TRUE)
 H.CHPL <- read.csv("~/Horsenettle/data/processed/H.CHPL.csv", header = TRUE)
 C.CHPL <- read.csv("~/Horsenettle/data/processed/C.CHPL.csv", header = TRUE)
-PS <- read.csv("~/Horsenettle/data/processed/PS.csv", header = TRUE)
-
+CPS <- read.csv("~/Horsenettle/data/processed/CPS.csv", header = TRUE)
+HPS <- read.csv("~/Horsenettle/data/processed/HPS.csv", header = TRUE)
 ```
 
-### Rename column that are the same
+### Rename column that are the same and convert lower to upper case
 ```{r}
 H.CMS$HCMS <- H.CMS$CMS
 C.CMS$CCMS <- C.CMS$CMS
 H.CHPL$HCHPL <- H.CHPL$CHPL
 C.CHPL$CCHPL <- C.CHPL$CHPL
 
+HPS$ramet <- toupper(HPS$ramet)
+CPS$ramet <- toupper(CPS$ramet)
 ```
 
 
 ### Drop columns that won't be used
 ```{r}
 
-H.CMS <- H.CMS[-c(1,6,8:13)]
-C.CMS <- C.CMS[-c(1,6,8:13)]
-H.CHPL <- H.CHPL[-c(1,6,8:13)]
-C.CHPL <- C.CHPL[-c(1,6,8:13)]
-PS <- PS[-c(1,6,8:12)]
-
+H.CMS <- H.CMS[-c(1,7,8:13)]
+C.CMS <- C.CMS[-c(1,7,8:13)]
+H.CHPL <- H.CHPL[-c(1,7,8:13)]
+C.CHPL <- C.CHPL[-c(1,7,8:13)]
+HPS <- HPS[-c(1,7)]
+CPS <- CPS[-c(1,7)]
 ```
 
 ### Check column types
 ```{r}
-summary(PS)
+summary(HPS)
 summary(H.CMS)
 
-C.CHPL$block <- as.character(C.CHPL$block)
-H.CHPL$block <- as.character(H.CHPL$block)
-C.CMS$block <- as.character(C.CMS$block)
-H.CMS$block <- as.character(H.CMS$block)
-PS$block <- as.character(PS$block)
+```
+
+# Test homogeneity of variance
+```{r}
+# Normal Data
+bartlett.test(HCMS ~ location, data = H.CMS) #NS
+bartlett.test(CCMS ~ location, data = C.CMS) #NS
+bartlett.test(HCHPL ~ location, data = H.CHPL) # Variance significantly different
+bartlett.test(CCHPL ~ location, data = C.CHPL) # Variance significantly different
+bartlett.test(CPS ~ location, data = CPS) #NS
+bartlett.test(HPS ~ location, data = HPS) #NS
+
+# Non-normal data
+leveneTest(HCMS ~ location, data = H.CMS) #NS
+leveneTest(CCMS ~ location, data = C.CMS) #NS
+leveneTest(HCHPL ~ location, data = H.CHPL) # Variance significantly different
+leveneTest(CCHPL ~ location, data = C.CHPL) # Variance significantly different
+leveneTest(CPS ~ location, data = CPS) #NS
+leveneTest(HPS ~ location, data = HPS) #NS
+
 ```
 
 
 # Create data frame with all tolerance variables
 ```{r}
-CMS <- merge(H.CMS, C.CMS, by = c("ID", "location", "population", "number", "block"), all.x = FALSE, all = TRUE)
-CHPL <- merge(H.CHPL, C.CHPL, by = c("ID", "location", "population", "number", "block"), all.x = FALSE, all = TRUE)
-CC <- merge(CMS, CHPL, by = c("ID", "location", "population", "number", "block"), all.x = FALSE, all = TRUE)
-ALL <- merge(CC, PS, by = c("ID", "location", "population", "number", "block"), all.x = TRUE, all = TRUE)
+CMS <- merge(H.CMS, C.CMS, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+CHPL <- merge(H.CHPL, C.CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+PS <- merge(HPS, CPS, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+CC <- merge(CMS, CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+ALL <- merge(CC, PS, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
 
 write.csv(x = ALL, file = "~/Horsenettle/data/processed/correlation.csv")
 
-COR <- read.csv("~/Horsenettle/data/processed/correlation.csv", header = TRUE)
-
 # Omit all except values of interest
-COR <- COR[-c(1:6)]
+COR <- ALL[-c(1:5)]
 
 ```
 
@@ -128,13 +145,56 @@ HStheme <- function(){
 # Create correlation heat map
 ```{r}
 
-ggcorrplot(correlation, hc.order = FALSE, outline.col = "white")
+# ggcorrplot(correlation, hc.order = FALSE, outline.col = "white")
+# 
+# corrplot::corrplot(cor(correlation))
 
-corrplot::corrplot(cor(correlation))
 
-corrplot.mixed(correlation)
+Corr <- corrplot(correlation, type="upper", order="hclust", 
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", addCoef.col ='black', tl.col = 'black')
 
-ggcorrplot(correlation, method = "circle", hc.order = TRUE)
+
+# corrplot.mixed(correlation)
+# 
+# ggcorrplot(correlation, method = "circle", hc.order = TRUE)
 
 ```
+
+
+
+## Create correlation plot matrix
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
