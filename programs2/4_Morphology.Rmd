@@ -1,0 +1,87 @@
+---
+title: "Morphology Analysis"
+author: "Emma Chandler"
+date: "3/28/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+remove(list = ls())
+```
+
+Load Libraries
+```{r}
+library(ggplot2)
+```
+
+Load Data
+```{r}
+morph <- read.csv("~/Horsenettle/data/project2_data/flower_traits.csv", header = TRUE)
+
+```
+
+# Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+Visualize Data
+```{r}
+# Style Length
+ggplot(morph, aes(x = Treatment, y = style_length, fill = Treatment)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(y = "Stigma and Style Length")+
+  scale_fill_manual(values = c("#474747", "#FF3030")) +
+  geom_jitter(width = 0.25) +
+  HStheme()
+
+# Saving graph
+ggsave("figures/styleLength.png", width = 7, height = 5, dpi = 300)
+
+t.test(style_length ~ Treatment, morph)
+
+
+
+# Stamen Length 
+ggplot(morph, aes(x = Treatment, y = stamen_length, fill = Treatment)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(y = "Stamen Length")+
+  scale_fill_manual(values = c("#474747", "#FF3030")) +
+  geom_jitter(width = 0.25) +
+  HStheme()
+
+# Saving graph
+ggsave("figures/stamenLength.png", width = 7, height = 5, dpi = 300)
+
+
+
+
+
+# Ovule Number
+ggplot(morph, aes(x = Treatment, y = ovule_number, fill = Treatment)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(y = "Ovule Number")+
+  scale_fill_manual(values = c("#474747", "#FF3030")) +
+  geom_jitter(width = 0.25) +
+  HStheme()
+
+# Saving graph
+ggsave("figures/ovuleNumber.png", width = 7, height = 5, dpi = 300)
+
+```

@@ -1,0 +1,89 @@
+---
+title: "Flowering Analysis"
+author: "Emma Chandler"
+date: "3/28/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+remove(list = ls())
+```
+
+Load Libraries
+```{r}
+library(ggplot2)
+```
+
+Load Data
+```{r}
+flower <- read.csv("~/Horsenettle/data/project2_data/Flowering_2.csv", header = TRUE)
+
+summary(flower)
+
+```
+
+# Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+Visualize Data
+```{r}
+# First Flower
+ggplot(flower, aes(x = Region, y = DOY_flower1, fill = Region)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(y = "Day after Growth Initiation", title = "First Flower")+
+  scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+  geom_jitter(width = 0.25) +
+  HStheme()
+
+# Saving graph
+ggsave("figures/firstFlower.png", width = 7, height = 5, dpi = 300)
+
+t.test(DOY_flower1 ~ Region, flower)
+
+
+# Second Flower
+ggplot(flower, aes(x = Treatment, y = DOY_flower2, fill = Region)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(y = "Day after Growth Initiation", title = "First Flower in Treatment")+
+  scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+  geom_jitter(width = 0.25) +
+  HStheme()
+
+# Saving graph
+ggsave("figures/secondFlower.png", width = 7, height = 5, dpi = 300)
+
+t.test(DOY_flower2 ~ Treatment, flower)
+
+
+bar_dat <- flower[-which(flower$Flower_Type == ""), ]
+
+ggplot(bar_dat, aes(x = Flower_Type, fill = Treatment)) +
+  geom_bar(alpha = 0.8) +
+  labs(x = "Flower Type", y = "Count") +
+  scale_fill_manual(values = c("#474747", "#FF3030"))+
+  HStheme()
+
+# Saving graph
+ggsave("figures/flowerType.png", width = 7, height = 5, dpi = 300)
+
+
+```
+

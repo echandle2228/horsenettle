@@ -96,7 +96,7 @@ CCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|population:ID), data = C.CH
 (C.CHPL.p1 <- ggplot(C.CHPL, aes(x = location, CHPL, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
     scale_fill_manual(values = c("#104E8B", "#CD2626")) +
-    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Content", subtitle = "Cold Treatment")+
+    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Fluorescence", subtitle = "Cold Treatment")+
     HStheme() +
     theme(legend.position = "none"))
 
@@ -127,12 +127,26 @@ summary <- C.CHPL %>%
     scale_color_manual(values = c("#104E8B", "#CD2626"))+
     HStheme() +
     theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
-    labs(x = "Genotype", y = "Chlorophyll Ratio", title = "Chlorophyll Stability", subtitle = "Cold Treatment"))
+    labs(x = "Genotype", y = "Chlorophyll Ratio", title = "Chlorophyll Fluorescence", subtitle = "Cold Treatment"))
 
 # Saving graph
 ggsave("figures/C.CHPL.p2.png", width = 7, height = 5, dpi = 300)
 
 ```
+
+
+# Variance between groups
+
+```{r}
+reg <- bartlett.test(CHPL ~ location, data = C.CHPL)
+reg
+indiv <- bartlett.test(CHPL ~ ID, data = C.CHPL)
+indiv
+```
+
+
+
+
 
 
 

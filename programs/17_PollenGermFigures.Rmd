@@ -70,7 +70,7 @@ gd <- germ_dat %>%
 ggplot(germ_dat, aes(x = temp, y = germ_percent, color = location)) +
   geom_point() +
   geom_line(aes(group = ID)) +
-  geom_line(data = gd, alpha = .8, size = 3) +
+  geom_line(data = gd, alpha = 1, size = 4) +
   theme_classic() +
   labs(x = expression(paste('Temperature (',~degree,'C)',sep='')), 
        y = "Percent Germination") +
@@ -279,10 +279,10 @@ ggplot(bilin_plot, aes(x = location, y = value, fill = location)) +
   theme_bw()+ 
   labs(x = "Location", 
        y = expression(paste('Temperature (',~degree,'C)',sep='')), 
-       title = "Temperature Estimates from Quadratic Model") +
-  scale_color_manual(values = c("dodgerblue", "red2")) +
-  scale_fill_manual(values = c("dodgerblue", "red2"))+
-  theme(text = element_text(family = "serif"), 
+       title = "Calculated Values from Quadratic Fit") +
+  scale_color_manual(values = c("#104E8B", "#B22222")) +
+  scale_fill_manual(values = c("#104E8B", "#B22222"))+
+  theme(text = element_text(family = "sans"), 
         axis.text.x = element_text(size = 12), 
         axis.text.y = element_text(size = 12),
         axis.title = element_text(size = 14),
@@ -336,18 +336,57 @@ ggplot(bilin_plot, aes(x = reorder(iden, value), y = value, color = location)) +
 
 # ggsave("figures/pGERM_params2_DOT.png", width = 7, height = 5, dpi = 300)
 
+
+
+# Same plot without tolerance and breadth
+
+# Subset variables for facet grid ggplot
+bilin_plot.1 <- melt(subset(bilin_plot1, select=c(iden, location, Tmax, Topt, Tmin)), id.var=c("iden", "location"))
+
+ggplot(bilin_plot.1, aes(x = reorder(iden, value), y = value, color = location)) +
+  geom_point()+
+  geom_boxplot() +
+  facet_grid(variable ~ ., scales = "free_y") +
+  HStheme()+
+  labs(title = "Pollen Germination Curve Parameters", x = "Genotype", y = "Calculated Parameter") +
+  scale_color_manual(values = c("#104E8B", "#B22222"))+
+  theme(axis.text.x = element_text(angle = 90))
+  
+
+ggsave("figures/pGERM_params3_DOT.png", width = 7, height = 5, dpi = 300)
+
+
+
 ```
 
 
 ## Statistics
 ```{r}
-# Is there a difference between Regions?
-PGERM_max <- aov(ctmax ~ location, data = bilin)
-summary(PGERM_max)
+# Is there a difference between Regions in Tmax
+PGERM_max.R <- aov(ctmax ~ location, data = bilin)
+summary(PGERM_max.R)
 
-# Is there a difference between Genets
-PGERM_opt <- aov(ctopt ~ location, data = bilin)
+# Is there a difference between Regions in Topt
+PGERM_opt.R <- aov(topt ~ location, data = bilin)
+summary(PGERM_opt.R)
 
+# Is there a difference between Regions in Tmin
+PGERM_min.R <- aov(ctmin ~ location, data = bilin)
+summary(PGERM_min.R)
+
+
+
+# Is there a difference between Regions in Tmax
+PGERM_max.ID <- aov(ctmax ~ ID, data = bilin)
+summary(PGERM_max.ID)
+
+# Is there a difference between Regions in Topt
+PGERM_opt.ID <- aov(topt ~ ID, data = bilin)
+summary(PGERM_opt.ID)
+
+# Is there a difference between Regions in Tmin
+PGERM_min.ID <- aov(ctmin ~ ID, data = bilin)
+summary(PGERM_min.ID)
 
 ```
 

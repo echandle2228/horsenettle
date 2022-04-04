@@ -147,6 +147,21 @@ ggsave("figures/C.CMS.p2.png", width = 7, height = 5, dpi = 300)
 ```
 
 
+# Variance between groups
+
+```{r}
+reg <- levene.test(C.CMS$CMS, C.CMS$location)
+reg
+
+indiv <- bartlett.test(CMS ~ ID, data = H.CMS)
+
+```
+
+
+
+
+
+
 # 1 ) Is there variance between populations?
 ```{r}
 

@@ -208,14 +208,14 @@ write.csv(params_final.pt, "~/Horsenettle/Data/processed/ptgrParams.csv")
 single <- filter(Pollen, fullID == "PI1 A")
 
 # get starting values
-start_vals <- get_start_vals(single$temp, single$germ, model_name = 'quadratic_2008')
-low_lims <- get_lower_lims(single$temp, single$germ, model_name = 'quadratic_2008')
-upper_lims <- get_upper_lims(single$temp, single$germ, model_name = 'quadratic_2008')
+start_vals <- get_start_vals(single$temp, single$PTGR, model_name = 'quadratic_2008')
+low_lims <- get_lower_lims(single$temp, single$PTGR, model_name = 'quadratic_2008')
+upper_lims <- get_upper_lims(single$temp, single$PTGR, model_name = 'quadratic_2008')
 
 start_vals
 low_lims
 
-fit <- nls_multstart(germ~quadratic_2008(temp = temp, a,b,c, topt),
+fit <- nls_multstart(PTGR~quadratic_2008(temp = temp, a,b,c),
                      data = single,
                      iter = 500, 
                      start_lower = start_vals - 10,
@@ -243,12 +243,16 @@ new_data <- data.frame(temp = seq(min(single$temp),
 preds <- augment(fit, newdata = new_data)
 
 # Plot data and model fit
-ggplot(single, aes(temp,germ)) +
+ggplot(single, aes(temp,PTGR)) +
   geom_point() +
   geom_line(aes(temp, .fitted), preds, col = 'blue') +
   HStheme() +
   labs(x = 'Temperature (ºC)',
-       y = 'Germination Percentage')
+       y = 'Germination Percentage',
+       title = "PI1 A")
+
+ggsave("figures/PI1_PTGRCUVE.png", width = 7, height = 5, dpi = 300)
+
 ```
 
 

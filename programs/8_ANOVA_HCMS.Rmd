@@ -28,6 +28,7 @@ library(ggpubr)
 library(agricolae)
 library(pander)
 library(broom)
+library(lawstat)
 
 ```
 
@@ -151,108 +152,19 @@ ggsave("figures/H.CMS.p2.png", width = 7, height = 5, dpi = 300)
 
 ```
 
+# Variance between groups
 
-
-
-
-
-
-
-# 1 ) Is there variance between populations?
 ```{r}
+reg <- levene.test(H.CMS$CMS, H.CMS$location)
+reg
 
-# Data Visualization
-(H.CMS.p1 <- ggplot(H.CMS, aes(x = reorder(population, CMS), CMS, fill = location)) + 
-    geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Population", y = "CMS"))
-
-```
-
-ANOVA https://daviddalpiaz.github.io/appliedstats/analysis-of-variance.html 
-https://cran.r-project.org/web/packages/lmerTest/lmerTest.pdf 
-https://www.r-bloggers.com/2017/06/linear-models-anova-glms-and-mixed-effects-models-in-r/ 
-
-
-
-# 2) Is there variance between Regions?
-```{r}
-# Data Visualization
-(H.CMS.p2 <- ggplot(H.CMS, aes(location, CMS, fill = location)) + 
-    geom_boxplot(fill = c("#00008B", "#FF4040"),alpha = 0.8, colour = c("#00008B", "#FF4040")) +
-    theme_classic()+
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Region", y = "CMS"))
+indiv <- bartlett.test(CMS ~ ID, data = H.CMS)
 
 ```
 
 
 
-# 3) Is there variation between Genotypes?
-```{r}
-# Data Visualization
-HCMS_means <- aggregate(CMS ~ ID, data=H.CMS, mean)
-HCMS_means <- HCMS_means %>% 
-  mutate(location = case_when(
-    grepl("CE", ID) ~ "South",
-    grepl("RE", ID) ~ "South", 
-    grepl("OP", ID) ~ "South",
-    grepl("FR", ID) ~ "North",
-    grepl("PI", ID) ~ "North"))
 
-(H.CMS.p3 <- ggplot(HCMS_means, aes(x = reorder(ID, CMS), CMS, fill = location)) + 
-    geom_col() +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
-    theme(axis.text.x = element_text(size = 12, angle = 90)) +
-    labs(x = "Genotype", y = "CMS"))
-
-
-```
-
-
-# 4) Is there variation between ramets of a genotype?
-```{r}
-# Data Visualization
-(H.CMS.p4 <- ggplot(H.CMS, aes(x = ramet, y = CMS, group = ID, colour = location)) + 
-    geom_point() +
-    geom_line() +
-    scale_color_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Block", y = "CMS"))
-
-```
-
-
-
-# 5) Is there variance between location when genotype is nested in popultation and location and with block effects?
-```{r}
-# Data Visualization
-(H.CMS.p1 <- ggplot(H.CMS, aes(x = ramet, CMS, fill = location)) + 
-    geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Block", y = "CMS"))
-```
-
-
-# Post hoc test
-```{r}
-# Check for homoscedasticity
-par(mfrow=c(2,2))
-plot(HCMS.m1)
-par(mfrow=c(1,1))
-
-
-# Post hoc test
-(tukey.population<-TukeyHSD(HCMS.m1))
-
-plot(tukey.population, las = 1)
-```
 
 Selecting models from aov https://www.scribbr.com/statistics/anova-in-r/ 
 
@@ -336,3 +248,6 @@ H.CMS$sq_CMS <- sq_CMS
 
 Transforming data https://daviddalpiaz.github.io/appliedstats/transformations.html
 Ladder of powers http://seismo.berkeley.edu/~kirchner/eps_120/Toolkits/Toolkit_03.pdf 
+
+
+

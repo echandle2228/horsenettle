@@ -58,6 +58,7 @@ germ$Hgerm <- germ$ctmax
 PTGR$CPTGR <- PTGR$ctmin
 PTGR$HPTGR <- PTGR$ctmax
 
+
 ```
 
 
@@ -71,8 +72,13 @@ C.CHPL <- C.CHPL[-c(1,7,8:13)]
 HPS <- HPS[-c(1,7)]
 CPS <- CPS[-c(1,7)]
 
+Topt_G <- germ[-c(1:3,5:13)]
+Topt_PT <- PTGR[-c(1:3,5:13)]
+
 germ <- germ[-c(1:13)]
 PTGR <- PTGR[-c(1:13)]
+
+
 
 ```
 
@@ -190,39 +196,53 @@ Corr <- corrplot(correlation,type="lower", tl.srt = 45,
 
 
 
-## Create correlation plot matrix
+## Create correlation between PTGR and CMS
 ```{r}
+
+Rank_dat <- merge(CMS, Topt_PT, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat, aes(x = HCMS, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "PTGR Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
+
+
+Rank_dat <- merge(CMS, Topt_G, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat, aes(x = HCMS, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "Pollen Germination Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
+
 
 ```
 
+## Create correlation between PTGR and CMS
+```{r}
+
+Rank_dat_2 <- merge(CHPL, Topt_G, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat_2, aes(x = HCHPL, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "Pollen Germination Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
+
+
+Rank_dat_2 <- merge(CHPL, Topt_PT, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat_2, aes(x = HCHPL, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "PTGR Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
