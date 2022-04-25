@@ -20,6 +20,9 @@ library(plyr)
 library(lmerTest)
 library(lme4)
 
+library(multcomp)
+library(car)
+
 ```
 
 
@@ -70,7 +73,7 @@ https://vsp.pnnl.gov/help/vsample/rosners_outlier_test.htm
 HStheme <- function(){            
   theme_bw()+                          
   theme(axis.text.x = element_text(size = 12), 
-        text = element_text(family = "serif"), 
+        text = element_text(family = "sans"), 
         axis.text.y = element_text(size = 12),
         plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
         axis.title = element_text(size = 14),
@@ -117,6 +120,28 @@ ggsave("figures/C.CMS.p1b.png", width = 7, height = 5, dpi = 300)
 ```
 
 
+```{r}
+
+CCMS_lmer1 <- lmer(CMS ~ location + (1|ID), data = C.CMS)
+
+Anova(CCMS_lmer1, type="III")
+
+postHocs <- glht(CCMSL_lmer1, linfct = mcp(ramet = "Tukey"))
+summary(postHocs)
+
+
+
+CCMS_lmer2 <- lmer(CMS ~ ramet, data = C.CMS)
+
+Anova(CCMS_lmer2, type="III")
+
+postHocs <- glht(CCMSL_lmer2, linfct = mcp(ramet = "Tukey"))
+summary(postHocs)
+
+```
+
+
+
 ## Is there variation in temperature tolerance between genets with ramet as replicates
 ```{r}
 CCMSL_aov2 <- aov(CMS ~ ID, data = C.CMS)
@@ -147,13 +172,38 @@ ggsave("figures/C.CMS.p2.png", width = 7, height = 5, dpi = 300)
 ```
 
 
+## Is there variation in genets for the individual regions?
+```{r}
+# Is there variation in the individuals with in the independent Regions
+
+#North
+C.CMS_N <- C.CMS %>% 
+  filter(location == "North")
+
+CCMS_N <- aov(CMS ~ ID, data = C.CMS_N)
+summary(CCMS_N)
+
+
+#South
+C.CMS_S <- C.CMS %>% 
+  filter(location == "South")
+
+CCMS_S <- aov(CMS ~ ID, data = C.CMS_S)
+summary(CCMS_S)
+
+
+```
+
+
+
 # Variance between groups
 
 ```{r}
 reg <- levene.test(C.CMS$CMS, C.CMS$location)
 reg
 
-indiv <- bartlett.test(CMS ~ ID, data = H.CMS)
+reg <- bartlett.test(CMS ~ location, data = C.CMS)
+reg
 
 ```
 
@@ -168,10 +218,13 @@ indiv <- bartlett.test(CMS ~ ID, data = H.CMS)
 # Data Visualization
 (C.CMS.p1 <- ggplot(C.CMS, aes(x = reorder(population, CMS), CMS, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() + 
     theme(axis.text.x = element_text(size = 12, angle = 0)) +
     labs(x = "Population", y = "CMS"))
+
+# Saving graph
+ggsave("figures/C.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
 
 ```
 
@@ -181,67 +234,8 @@ https://www.r-bloggers.com/2017/06/linear-models-anova-glms-and-mixed-effects-mo
 
 
 
-# 2) Is there variance between Regions?
-```{r}
-# Data Visualization
-(C.CMS.p2 <- ggplot(C.CMS, aes(location, CMS, fill = location)) + 
-    geom_boxplot(fill = c("#00008B", "#FF4040"),alpha = 0.8, colour = c("#00008B", "#FF4040")) +
-    theme_classic()+
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Region", y = "CMS"))
-
-```
 
 
-
-# 3) Is there variation between Genotypes?
-```{r}
-# Data Visualization
-CCMS_means <- aggregate(CMS ~ ID, data=C.CMS, mean)
-CCMS_means <- CCMS_means %>% 
-  mutate(location = case_when(
-    grepl("CE", ID) ~ "South",
-    grepl("RE", ID) ~ "South", 
-    grepl("OP", ID) ~ "South",
-    grepl("FR", ID) ~ "North",
-    grepl("PI", ID) ~ "North"))
-
-(C.CMS.p3 <- ggplot(CCMS_means, aes(x = reorder(ID, CMS), CMS, fill = location)) + 
-    geom_col() +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
-    theme(axis.text.x = element_text(size = 12, angle = 90)) +
-    labs(x = "Genotype", y = "CMS"))
-
-
-```
-
-
-# 4) Is there variation between ramets of a genotype?
-```{r}
-# Data Visualization
-(C.CMS.p4 <- ggplot(C.CMS, aes(x = ramet, y = CMS, group = ID, colour = location)) + 
-    geom_point() +
-    geom_line() +
-    scale_color_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Block", y = "CMS"))
-
-```
-
-
-
-# 5) Is there variance between location when genotype is nested in popultation and location and with block effects?
-```{r}
-# Data Visualization
-(C.CMS.p1 <- ggplot(C.CMS, aes(x = ramet, CMS, fill = location)) + 
-    geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
-    theme(axis.text.x = element_text(size = 12, angle = 0)) +
-    labs(x = "Block", y = "CMS"))
-```
 
 
 # Post hoc test

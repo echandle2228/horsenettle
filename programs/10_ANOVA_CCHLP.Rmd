@@ -19,6 +19,9 @@ library(moments)
 library(lmerTest)
 library(lme4)
 
+library(multcomp)
+library(car)
+
 ```
 
 
@@ -68,7 +71,7 @@ C.CHPL$CHPL <- 1 - (cntrpro - trtpro)
 HStheme <- function(){            
   theme_bw()+                          
   theme(axis.text.x = element_text(size = 12), 
-        text = element_text(family = "serif"), 
+        text = element_text(family = "sans"), 
         axis.text.y = element_text(size = 12),
         plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
         axis.title = element_text(size = 14),
@@ -106,6 +109,18 @@ ggsave("figures/C.CHPL.p1.png", width = 7, height = 5, dpi = 300)
 ```
 
 
+```{r}
+
+CCHPL_lmer1 <- lmer(CHPL ~ location + (1|ID), data = C.CHPL)
+
+Anova(CCHPL_lmer1, type="III")
+
+postHocs <- glht(CCHPL_lmer1, linfct = mcp(location = "Tukey"))
+summary(postHocs)
+
+```
+
+
 
 ## Is there variation in temperature tolerance between genets with ramet as replicates
 ```{r}
@@ -135,6 +150,29 @@ ggsave("figures/C.CHPL.p2.png", width = 7, height = 5, dpi = 300)
 ```
 
 
+## Is there variation in genets for the individual regions?
+```{r}
+# Is there variation in the individuals with in the independent Regions
+
+#North
+C.CHPL_N <- C.CHPL %>% 
+  filter(location == "North")
+
+CCHPL_N <- aov(CHPL ~ ID, data = C.CHPL_N)
+summary(CCHPL_N)
+
+
+#South
+C.CHPL_S <- C.CHPL %>% 
+  filter(location == "South")
+
+CCHPL_S <- aov(CHPL ~ ID, data = C.CHPL_S)
+summary(CCHPL_S)
+
+
+```
+
+
 # Variance between groups
 
 ```{r}
@@ -155,10 +193,14 @@ indiv
 # Data Visualization
 (C.CHPL.p1 <- ggplot(C.CHPL, aes(x = reorder(population, CHPL), CHPL, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() + 
     theme(axis.text.x = element_text(size = 12, angle = 0)) +
     labs(x = "Population", y = "CHPL"))
+
+# Saving graph
+ggsave("figures/C.CHPL.POPULATION.png", width = 7, height = 5, dpi = 300)
+
 
 ```
 

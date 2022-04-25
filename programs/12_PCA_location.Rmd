@@ -25,7 +25,8 @@ library(cluster)
 library(pca3d)
 
 library(factoextra)
-
+library(ggpubr)
+library(gridExtra)
 
 ```
 
@@ -78,8 +79,8 @@ print(SPOR.PCA)
          loadings.label.hjust = 1, 
          loadings.label.vjust = 0,
          frame = TRUE, frame.type = 't') +
-  scale_fill_manual(values = c("#00008B", "#CD2626")) +
-  scale_color_manual(values = c("#00008B", "#CD2626")) +
+  scale_fill_manual(values = c("#104E8B", "#B22222")) +
+  scale_color_manual(values = c("#104E8B", "#B22222")) +
   xlim(-0.4,0.4) +
   ylim(-0.4,0.4) +
   HStheme())
@@ -97,8 +98,8 @@ ggsave("figures/PCA1.png", width = 7, height = 5, dpi = 300)
          loadings.label.hjust = 0, 
          loadings.label.vjust = 0,
          frame = TRUE, frame.type = 't') +
-  scale_fill_manual(values = c("#00008B", "#CD2626")) +
-  scale_color_manual(values = c("#00008B", "#CD2626")) +
+  scale_fill_manual(values = c("#104E8B", "#B22222")) +
+  scale_color_manual(values = c("#104E8B", "#B22222")) +
   xlim(-0.4,0.4) +
   ylim(-0.4,0.4) +
   HStheme())
@@ -117,8 +118,8 @@ ggsave("figures/PCA2.png", width = 7, height = 5, dpi = 300)
          loadings.label.hjust = 0, 
          loadings.label.vjust = 0,
          frame = TRUE, frame.type = 't') +
-  scale_fill_manual(values = c("#00008B", "#CD2626")) +
-  scale_color_manual(values = c("#00008B", "#CD2626")) +
+  scale_fill_manual(values = c("#104E8B", "#B22222")) +
+  scale_color_manual(values = c("#104E8B", "#B22222")) +
   xlim(-0.4,0.4) +
   ylim(-0.4,0.4) +
   HStheme())
@@ -131,6 +132,13 @@ ggplot(data.nona, aes(CPS,CCHPL)) +
   geom_point()
 
 
+
+(stacked_PCA <- ggpubr::ggarrange(PCA.p1, PCA.p2, PCA.p3, ncol = 1,
+                                  labels = c("A", "B", "C"),
+                                  common.legend = TRUE, 
+                                  legend = "right"))
+
+ggsave("figures/PCA.sporStack.png", width = 6, height = 11)
 
 # https://www.datacamp.com/community/tutorials/pca-analysis-r
 ```

@@ -1,0 +1,24 @@
+population,location,number,ID,Iden,ramet,Treatment,no_tubes,tubes,total_grains,Pictures
+Frontenac,North,1,FR1,FR1A,A,Control,47,111,158,1
+Frontenac,North,1,FR1,FR1B,B ,Heat,54,161,215,3
+Frontenac,North,11,FR11,FR11A,A,Heat,45,56,101,1
+Frontenac,North,12,FR12,FR12A,A,Control,85,299,384,1
+Oil Patch,South,1,OP1,OP1A,A,Control,35,175,210,1
+Oil Patch,South,2,OP2,OP2A,A,Control,95,98,193,1
+Oil Patch,South,2,OP2,OP2B,B ,Heat,69,47,116,1
+Oil Patch,South,3,OP3,OP3A,A,Heat,47,59,106,2
+Oil Patch,South,4,OP4,OP4A,A,Heat,65,91,156,1
+Oil Patch,South,7,OP7,OP7A,A,Control,311,287,598,1
+Prairie Island,North,1,PI1,PI1A,A,Control,131,273,404,1
+Prairie Island,North,2,PI2,PI2A,A,Control,174,558,732,1
+Prairie Island,North,2,PI2,PI2B,B ,Heat,119,178,297,3
+Prairie Island,North,3,PI3,PI3A,A,Control,142,458,600,1
+Prairie Island,North,3,PI3,PI3B,B ,Heat,48,80,128,2
+Prairie Island,North,4,PI4,PI4A,A,Control,210,242,452,1
+Prairie Island,North,4,PI4,PI4B,B ,Heat,65,123,188,1
+Prairie Island,North,5,PI5,PI5A,A,Heat,66,86,152,2
+Prairie Island,North,5,PI5,PI5B,B ,Control,126,347,473,1
+Prairie Island,North,9,PI9,PI9A,A,Control,146,244,390,1
+Prairie Island,North,10,PI10,PI10B,B ,Heat,57,119,176,2
+Prairie Island,North,11,PI11,PI11A,A,Control,189,384,573,1
+Prairie Island,North,11,PI11,PI11B,B ,Heat,53,53,106,2

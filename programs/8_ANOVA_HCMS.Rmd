@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Load Libraries
-```{r message=FALSE}
+```{r message = FALSE}
 library(dplyr)
 library(ggplot2)
 library(rcompanion)
@@ -30,6 +30,9 @@ library(pander)
 library(broom)
 library(lawstat)
 
+library(multcomp)
+library(car)
+
 ```
 
 
@@ -41,6 +44,28 @@ remove(list = ls())
 H.CMS <- read.csv("~/Horsenettle/data/CMSdata.csv", header = TRUE)
 
 ```
+
+
+## Differences between north and south for the initial measurements
+```{r}
+
+# Is there a difference between the two max damage measurements
+t.test(H.CMS$exp_max, H.CMS$cntr_max)
+
+# Mixed effects model checking difference between regions
+HCMSL.origin <- lmer(exp_max ~ location + (1|ramet) + (1|population), data = H.CMS)
+
+anova(HCMSL.origin)
+ranova(HCMSL.origin)
+
+# One-way ANOVA checking difference between genets
+HCMSL.origin2 <- aov(exp_max ~ID, H.CMS)
+
+summary.aov(HCMSL.origin2)
+
+```
+
+
 
 ## Calculate CMS 
 ```{r}
@@ -75,10 +100,10 @@ rosner$all.stats
 HStheme <- function(){            
   theme_bw()+                          
   theme(axis.text.x = element_text(size = 12), 
-        text = element_text(family = "serif"), 
+        text = element_text(family = "sans"), 
         axis.text.y = element_text(size = 12),
         plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
-        axis.title = element_text(size = 14),
+        axis.title = element_text(size = 12),
         panel.grid = element_blank(),
         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
         plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
@@ -106,7 +131,7 @@ HCMS_lmer1 <- lmer(CMS ~ location + (1|ramet) + (1|population:ID), data = H.CMS)
     labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Hot Treatment"))
 
 # Saving graph
-ggsave("figures/H.CMS.p1.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/H.CMS.p1.png", width = 7, height = 5, dpi = 300)
 
 (H.CMS.p1 <- ggplot(H.CMS, aes(location, CMS, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
@@ -116,8 +141,47 @@ ggsave("figures/H.CMS.p1.png", width = 7, height = 5, dpi = 300)
 
 
 # Saving graph
-ggsave("figures/H.CMS.p1b.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/H.CMS.p1b.png", width = 7, height = 5, dpi = 300)
 ```
+
+
+## Is there a difference in variation between plants from the north and south using ANCOVA
+
+```{r}
+
+
+HCMS_lmer1 <- lmer(CMS ~ location + (1|ID), data = H.CMS)
+
+Anova(HCMS_lmer1, type="III")
+
+postHocs <- glht(HCMS_lmer1, linfct = mcp(location = "Tukey"))
+summary(postHocs)
+
+
+
+```
+
+
+## Is there a difference in CMS between the blocks
+```{r}
+HCMS_block <- aov(CMS ~ ramet, H.CMS)
+summary(HCMS_block)
+
+
+posthoc <- TukeyHSD(x=HCMS_block, 'ramet', conf.level=0.95)
+posthoc
+
+
+```
+
+
+
+
+
+
+
+
+
 
 
 ## Is there variation in temperature tolerance between genets with ramet as replicates
@@ -148,9 +212,36 @@ summary <- H.CMS %>%
     labs(x = "Genotype", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Hot Treatment"))
 
 # Saving graph
-ggsave("figures/H.CMS.p2.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/H.CMS.p2.png", width = 7, height = 5, dpi = 300)
 
 ```
+
+
+## Is there variation in genets for the individual regions?
+```{r}
+# Is there variation in the individuals with in the independent Regions
+
+#North
+H.CMS_N <- H.CMS %>% 
+  filter(location == "North")
+
+HCMS_N <- aov(CMS ~ ID, data = H.CMS_N)
+summary(HCMS_N)
+
+
+#South
+H.CMS_S <- H.CMS %>% 
+  filter(location == "South")
+
+HCMS_S <- aov(CMS ~ ID, data = H.CMS_S)
+summary(HCMS_S)
+
+
+
+```
+
+
+
 
 # Variance between groups
 
@@ -158,7 +249,30 @@ ggsave("figures/H.CMS.p2.png", width = 7, height = 5, dpi = 300)
 reg <- levene.test(H.CMS$CMS, H.CMS$location)
 reg
 
-indiv <- bartlett.test(CMS ~ ID, data = H.CMS)
+reg <- bartlett.test(CMS ~ location, data = H.CMS)
+reg
+
+```
+
+
+# 1 ) Is there variance between populations?
+```{r}
+
+# ANOVA for populations
+pop.aov <- lmer(CMS ~ population + (1|ID) + (1|ramet), data = H.CMS)
+summary(pop.aov)
+
+
+# Data Visualization
+(H.CMS.p1 <- ggplot(H.CMS, aes(x = reorder(population, CMS), CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() + 
+    theme(axis.text.x = element_text(size = 12, angle = 0)) +
+    labs(x = "Population", y = "CMS"))
+
+# Saving graph
+ggsave("figures/H.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
 
 ```
 

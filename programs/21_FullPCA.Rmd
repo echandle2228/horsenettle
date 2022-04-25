@@ -30,6 +30,9 @@ library(factoextra)
 
 library(magick)
 
+library(ggpubr)
+library(gridExtra)
+
 
 ```
 
@@ -90,12 +93,15 @@ print(ALL.PCA)
          frame = TRUE, frame.type = 't') +
   scale_fill_manual(values = c("#104E8B", "#B22222")) +
   scale_color_manual(values = c("#104E8B", "#B22222")) +
+  theme(plot.margin = unit(c(0.5,0.5,-2,0.5), "cm"))+
+        labs(x = " ") +
   xlim(-0.5,0.5) +
   ylim(-0.5,0.5) +
-  HStheme())
+  HStheme()) +
+  theme(axis.title.x = element_blank())
 
 # Saving graph
-ggsave("figures/PCA_full_1.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/PCA_full_1.png", width = 7, height = 5, dpi = 300)
 
 (PCA.p2 <- autoplot(prcomp(data.noPS[,c(7:14)], center = TRUE, scale. = TRUE), x=2, y=3, 
          data = data.noPS, colour = 'location', 
@@ -114,7 +120,7 @@ ggsave("figures/PCA_full_1.png", width = 7, height = 5, dpi = 300)
   HStheme())
 
 # Saving graph
-ggsave("figures/PCA_full_2.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/PCA_full_2.png", width = 7, height = 5, dpi = 300)
 
 (PCA.p3 <- autoplot(prcomp(data.noPS[,c(7:14)], center = TRUE, scale. = TRUE), x=1, y=3, 
          data = data.noPS, 
@@ -129,19 +135,30 @@ ggsave("figures/PCA_full_2.png", width = 7, height = 5, dpi = 300)
          frame = TRUE, frame.type = 't') +
   scale_fill_manual(values = c("#104E8B", "#B22222")) +
   scale_color_manual(values = c("#104E8B", "#B22222")) +
+  theme(plot.margin = unit(c(-2,0.5,0.5,0.5), "cm"))+
   xlim(-0.5,0.5) +
   ylim(-0.5,0.5) +
   HStheme())
 
 # Saving graph
-ggsave("figures/PCA_full_3.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/PCA_full_3.png", width = 7, height = 5, dpi = 300)
+
+(stacked_PCA <- ggpubr::ggarrange(PCA.p1, PCA.p2, PCA.p3, ncol = 1,
+                                  labels = c("A", "B", "C"),
+                                  common.legend = TRUE, 
+                                  legend = "right"))
+
+
+# Saving graph
+ggsave("figures/PCA_full_stacked.png", width = 6, height = 10, dpi = 300)
+
 
 # https://www.datacamp.com/community/tutorials/pca-analysis-r
 ```
 
 
 ## 3D plot with first 3 principal componenets
-```{r}
+```{r message = FALSE}
 SPOR.PCA <- prcomp(data.noPS[,c(7:14)], center = TRUE, scale. = TRUE)
 
 

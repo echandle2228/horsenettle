@@ -1,0 +1,116 @@
+---
+title: "Gametophytic Plots"
+author: "Emma Chandler"
+date: "4/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Clear Environment
+```{r}
+remove(list = ls())
+```
+
+
+# Load Libraries
+```{r message= FALSE}
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(grid)
+library(cowplot)
+library(tidyverse)
+library(reshape2)
+```
+
+# Load Data
+```{r}
+#Gametophytic Variables
+germ <- read.csv("~/Horsenettle/data/processed/germParams.csv", header = TRUE)
+PTGR <- read.csv("~/Horsenettle/data/processed/ptgrParams.csv", header = TRUE)
+
+raw <- read.csv("~/Horsenettle/data/pollenTube_NEW.csv", header = TRUE)
+
+
+```
+
+# Rename columns for figures
+```{r}
+germ$Tmin <- germ$ctmin
+germ$Tmax <- germ$ctmax
+germ$Topt <- germ$topt
+
+PTGR$Tmin <- PTGR$ctmin
+PTGR$Tmax <- PTGR$ctmax
+PTGR$Topt <- PTGR$topt
+```
+
+
+
+# Stacked raw plot
+```{r}
+# Merge ID and Ramet
+raw <- mutate(raw, ID = paste(ID, ramet)) # NEW
+
+# Calculate pollen tube growth rate
+raw$PTGR <- raw$mean_length / raw$time
+
+# Calculate pollen germination
+raw$germ_percent <- raw$tubes / raw$total_grains *100
+
+# Mean Values
+gd1 <- raw %>% 
+  group_by(location, temp) %>% 
+  summarise(PTGR = mean(PTGR))
+
+gd2 <- raw %>% 
+  group_by(location, temp) %>% 
+  summarise(germ_percent = mean(germ_percent))
+
+gd_origin <- merge(gd1,gd2,by=c("location","temp"))
+
+
+stacked_raw <- melt(subset(raw, select=c(location, temp, ID, PTGR, germ_percent)), id.var= c("location", "temp", "ID"))
+gd <- melt(subset(gd_origin, select=c(location, temp, PTGR, germ_percent)), id.var= c("location", "temp"))
+
+
+# stacked_raw <- stacked_raw %>%
+#   mutate(variable = recode(variable, "PTGR" = "PTGR", "germ_percent" = "Percent Germination"))
+# gd <- gd %>% 
+#   mutate(variable = recode(variable, "PTGR" = "PTGR", "germ_percent" = "Percent Germination"))
+
+
+
+(PTGR.p <- ggplot(stacked_raw, aes(x = temp, y = value, color = location)) +
+  geom_point(alpha = 0.5) +
+  geom_line(aes(group = ID), alpha = 0.5) +
+  geom_line(data = gd, alpha = 1, size = 3) +
+  facet_wrap(variable ~ ., scales = "free_y", ncol = 2,
+             strip.position = "left",
+             labeller = as_labeller(c(PTGR ="Mean PTGR", germ_percent = "Percent Germination"))) +
+  theme_classic() +
+  labs(x = expression(paste('Temperature (',~degree,'C)',sep='')),
+       y = "") +
+  scale_colour_manual(values = c("#104E8B", "#B22222")) +
+  theme(text = element_text(family = "sans"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        # plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank(),
+        strip.background = element_blank(),
+        strip.text = element_text(size = 12),
+        strip.placement = "outside"))
+
+
+ggsave("figures/stackedRaw.png", width = 7, height = 3, dpi = 300)
+
+# http://derekogle.com/NCGraphing/resources/colors 
+
+```

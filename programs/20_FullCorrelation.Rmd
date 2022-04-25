@@ -149,10 +149,10 @@ names (COR)[4] <- "Tmax PTGR"
 ```{r}
 correlation <- cor(COR, use = "pairwise.complete.obs")
 
-head(correlation[, 1:6])
+correlation
 
 p.mat <- cor_pmat(COR)
-head(p.mat[, 1:4])
+p.mat
 
 ```
 

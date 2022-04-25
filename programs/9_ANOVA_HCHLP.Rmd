@@ -20,6 +20,9 @@ library(lmerTest)
 library(lme4)
 library(lawstat)
 
+library(multcomp)
+library(car)
+
 ```
 
 
@@ -32,7 +35,30 @@ H.CHPL <- read.csv("~/Horsenettle/data/chlorophylldata.csv", header = TRUE)
 
 ```
 
-## Calculate CHPL 
+
+## Differences between north and south for the initial measurements
+```{r}
+
+# Is there a difference between the two initial measurements
+t.test(H.CHPL$treatment_initial, H.CHPL$control_initial)
+
+# Mixed effects model checking difference between regions
+HCHPL.origin <- lmer(treatment_initial ~ location + (1|ramet) + (1|population), data = H.CHPL)
+
+anova(HCHPL.origin)
+ranova(HCHPL.origin)
+
+# One-way ANOVA checking difference between genets
+HCHPL.origin2 <- aov(treatment_initial ~ID, H.CHPL)
+
+summary.aov(HCHPL.origin2)
+
+
+```
+
+
+
+## Calculate CHPL Stability
 ```{r}
 
 # Create columns with proportions
@@ -69,7 +95,7 @@ H.CHPL$CHPL <- 1 - (cntrpro - trtpro)
 HStheme <- function(){            
   theme_bw()+                          
   theme(axis.text.x = element_text(size = 12), 
-        text = element_text(family = "serif"), 
+        text = element_text(family = "sans"), 
         axis.text.y = element_text(size = 12),
         plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
         axis.title = element_text(size = 14),
@@ -108,6 +134,23 @@ ggsave("figures/H.CHPL.p1.png", width = 7, height = 5, dpi = 300)
 
 
 
+## Is there a difference in variation between plants from the north and south using ANCOVA
+
+```{r}
+
+HCHPL_lmer1 <- lmer(CHPL ~ location + (1|ID), data = H.CHPL)
+
+Anova(HCHPL_lmer1, type="III")
+
+postHocs <- glht(HCHPL_lmer1, linfct = mcp(location = "Tukey"))
+summary(postHocs)
+
+
+
+```
+
+
+
 ## Is there variation in temperature tolerance between genets with ramet as replicates
 ```{r}
 HCHPL_aov2 <- aov(CHPL ~ ID, data = H.CHPL)
@@ -137,6 +180,30 @@ ggsave("figures/H.CHPL.p2.png", width = 7, height = 5, dpi = 300)
 ```
 
 
+## Is there variation in genets for the individual regions?
+```{r}
+# Is there variation in the individuals with in the independent Regions
+
+#North
+H.CHPL_N <- H.CHPL %>% 
+  filter(location == "North")
+
+HCHPL_N <- aov(CHPL ~ ID, data = H.CHPL_N)
+summary(HCHPL_N)
+
+
+#South
+H.CHPL_S <- H.CHPL %>% 
+  filter(location == "South")
+
+HCHPL_S <- aov(CHPL ~ ID, data = H.CHPL_S)
+summary(HCHPL_S)
+
+
+
+```
+
+
 # Variance between groups
 
 ```{r}
@@ -152,21 +219,26 @@ indiv
 
 
 
-
-
-
-
 # 1 ) Is there variance between populations?
 ```{r}
 # Data Visualization
 (H.CHPL.p1 <- ggplot(H.CHPL, aes(x = reorder(population, CHPL), CHPL, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
-    scale_fill_manual(values = c("#00008B", "#FF4040")) +
-    theme_classic() +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() + 
     theme(axis.text.x = element_text(size = 12, angle = 0)) +
     labs(x = "Population", y = "CHPL"))
 
+# Saving graph
+ggsave("figures/H.CHPL.POPULATION.png", width = 7, height = 5, dpi = 300)
+
 ```
+
+
+
+
+
+
 
 ANOVA https://daviddalpiaz.github.io/appliedstats/analysis-of-variance.html 
 https://cran.r-project.org/web/packages/lmerTest/lmerTest.pdf 
@@ -250,6 +322,10 @@ par(mfrow=c(1,1))
 
 plot(tukey.population, las = 1)
 ```
+
+
+
+
 
 Selecting models from aov https://www.scribbr.com/statistics/anova-in-r/ 
 

@@ -1,0 +1,226 @@
+---
+title: "All Sporophyte"
+author: "Emma Chandler"
+date: "4/8/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Clear environment and set seed
+```{r}
+remove(list = ls())
+set.seed(158358)
+```
+
+# Load Libraries
+```{r message=FALSE}
+library(ggplot2)
+library(rcompanion)
+library(ggstatsplot)
+library(dplyr)
+library(tidyverse)
+library(reshape2)
+```
+
+
+
+# Load data
+```{r}
+H.CMS <- read.csv("~/Horsenettle/data/processed/H.CMS.csv", header = TRUE)
+C.CMS <- read.csv("~/Horsenettle/data/processed/C.CMS.csv", header = TRUE)
+H.CHPL <- read.csv("~/Horsenettle/data/processed/H.CHPL.csv", header = TRUE)
+C.CHPL <- read.csv("~/Horsenettle/data/processed/C.CHPL.csv", header = TRUE)
+CPS <- read.csv("~/Horsenettle/data/processed/CPS.csv", header = TRUE)
+HPS <- read.csv("~/Horsenettle/data/processed/HPS.csv", header = TRUE)
+```
+
+### Rename column that are the same and convert lower to upper case
+```{r}
+H.CMS$HCMS <- H.CMS$CMS
+C.CMS$CCMS <- C.CMS$CMS
+H.CHPL$HCHPL <- H.CHPL$CHPL
+C.CHPL$CCHPL <- C.CHPL$CHPL
+
+HPS$ramet <- toupper(HPS$ramet)
+CPS$ramet <- toupper(CPS$ramet)
+```
+
+
+### Drop columns that won't be used
+```{r}
+
+H.CMS <- H.CMS[-c(1,7,8:13)]
+C.CMS <- C.CMS[-c(1,7,8:13)]
+H.CHPL <- H.CHPL[-c(1,7,8:13)]
+C.CHPL <- C.CHPL[-c(1,7,8:13)]
+HPS <- HPS[-c(1,7)]
+CPS <- CPS[-c(1,7)]
+```
+
+# Create data frame with all tolerance variables
+```{r}
+CMS <- merge(H.CMS, C.CMS, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
+CHPL <- merge(H.CHPL, C.CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
+PS <- merge(HPS, CPS, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
+CC <- merge(CMS, CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
+ALL <- merge(CC, PS, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
+
+```
+
+
+
+# Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 12),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+
+## All sporophytic variable box plots - Region
+```{r}
+
+
+All.spor_REG <- melt(subset(ALL, select=c(location, HCMS, CCMS, HCHPL, CCHPL, HPS, CPS)), id.var="location")
+
+(All.spor.reg <- ggplot(All.spor_REG, aes(location, value, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    facet_wrap(variable ~ ., scales = "free_y", ncol = 2) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Region", y = "Variable Ratio"))
+
+
+# Saving graph
+ggsave("figures/all_spor.png", width = 7, height = 7, dpi = 300)
+
+
+```
+
+
+
+## HCMS and CCMS block effect plots
+```{r}
+
+CMS.block <- melt(subset(ALL, select=c(ramet, location, HCMS, CCMS)), id.var= c("ramet", "location"))
+
+(CMS.block.plot <- ggplot(CMS.block, aes(x = ramet, y = value, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    facet_wrap(variable ~ ., scales = "free_y", ncol = 2) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Block", y = "CMS Ratio"))
+
+
+# Saving graph
+ggsave("figures/CMS_blockEffect.png", width = 7, height = 3, dpi = 300)
+
+```
+
+## All sporophytic variables with significant differences between genets
+```{r}
+
+
+All.spor_GEN <- melt(subset(ALL, select=c(ID, location, HCMS, CCHPL)), id.var= c("ID", "location"))
+
+
+(All.spor.reg <- ggplot(All.spor_GEN, aes(x = reorder(ID, value), y = value, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    facet_wrap(variable ~ ., scales = "free_y", ncol = 1) +
+    HStheme() +
+    scale_fill_manual(values = c("#104E8B", "#B22222"))+
+    theme(axis.text.x = element_text(angle = 90, size = 8, vjust = 0.5))+
+    labs(x = "Region", y = "Variable Ratio"))
+
+
+
+# Saving graph
+ggsave("figures/spor_gen.png", width = 7, height = 5, dpi = 300)
+
+
+```
+
+## All sporophytic variables with insignificant differences between genets
+```{r message=FALSE}
+
+
+IS.spor_GEN <- melt(subset(ALL, select=c(ID, location, CCMS, HCHPL, CPS, HPS)), id.var= c("ID", "location"))
+
+
+IS.spor_GEN$group <- factor(IS.spor_GEN$location, c("South", "North"))
+
+(IS.spor.reg <- IS.spor_GEN %>% 
+    group_by(location) %>% 
+    ggplot(aes(x = ID, y = value, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    facet_wrap(variable ~ ., scales = "free_y", ncol = 1) +
+    HStheme() +
+    scale_fill_manual(values = c("#104E8B", "#B22222"))+
+    theme(axis.text.x = element_text(angle = 90, size = 8, vjust = 0.5))+
+    labs(x = "Region", y = "Variable Ratio"))
+
+
+
+# Saving graph
+ggsave("figures/ISspor_gen.png", width = 7, height = 5, dpi = 300)
+
+
+```
+
+
+## All sporophytic variable box plots - Population
+```{r}
+
+
+All.spor_POP <- melt(subset(ALL, select=c(population, location, HCMS, CCMS, HCHPL, CCHPL, HPS, CPS)), id.var= c("population","location"))
+
+All.spor_POP$group <- factor(All.spor_POP$population, c("Cemetary", "Oil Patch", "Reserve", "Frontenac", "Prairie Island"))
+
+(All.spor.POP <- ggplot(All.spor_POP, aes(x = group, y = value, fill = location)) + 
+    geom_boxplot(alpha = 0.8, ) +
+    facet_wrap(variable ~ ., scales = "free_y", ncol = 1) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Population", y = "Variable Ratio"))
+
+
+# Saving graph
+ggsave("figures/all_spor_pop.png", width = 7, height = 9, dpi = 300)
+
+
+```
+
+Quick test looking at the correlation between hot and cold chlorophyll
+```{r}
+ggplot(ALL, aes(x = CCHPL, y = HCHPL, color = location)) +
+  geom_point() +
+  geom_abline() +
+  scale_color_manual(values = c("#104E8B", "#CD2626")) +
+  HStheme() 
+  
+```
+
+
+
+Quick test looking at the correlation between hot and cold photosynthesis
+```{r}
+ggplot(ALL, aes(x = CPS, y = HPS, color = location)) +
+  geom_point() +
+  scale_color_manual(values = c("#104E8B", "#CD2626")) +
+  HStheme() 
+  
+```

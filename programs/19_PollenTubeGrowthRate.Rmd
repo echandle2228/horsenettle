@@ -262,37 +262,57 @@ t.test(bilin$topt ~ bilin$location)
 
 
 
+```
+
+# Stacked Plots
+```{r}
 
 
 # Code to stack graphs
+# Rename columns for graph
+bilin_plot <- bilin %>% 
+  dplyr::rename(Tmax = ctmax, Tmin = ctmin, Topt = topt, Tolerance = thermal_tolerance, Breadth = breadth)
 
-
-bilin_plot <- melt(subset(bilin, select=c(location, ctmax, topt, ctmin)), id.var="location")
+bilin_plot <- melt(subset(bilin_plot, select=c(location, Tmax, Topt, Tmin)), id.var="location")
 
 
 ggplot(bilin_plot, aes(x = location, y = value, fill = location)) + 
-  geom_boxplot() +
-  geom_jitter(width = 0.1)+
+  geom_boxplot(alpha = 0.8) +
   facet_grid(variable ~ ., scales = "free_y") +
   theme_bw()+ 
   labs(x = "Location", 
-       y = expression(paste('Temperature (',~degree,'C)',sep='')), 
-       title = "Temperature Estimates from Quadratic Model") +
+       y = expression(paste('Temperature (',~degree,'C)',sep=''))) +
   scale_color_manual(values = c("#104E8B", "#B22222")) +
   scale_fill_manual(values = c("#104E8B", "#B22222"))+
   theme(text = element_text(family = "sans"), 
         axis.text.x = element_text(size = 12), 
         axis.text.y = element_text(size = 12),
-        axis.title = element_text(size = 14),
+        axis.title = element_text(size = 12),
         plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
         panel.grid = element_blank(),
         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
         legend.text = element_text(size = 12),
         legend.title = element_blank())
 
-ggsave("figures/ptgr_params.png", width = 7, height = 5, dpi = 300)
+ggsave("figures/PTGR_params.png", width = 7, height = 5, dpi = 300)
+```
+
+
+
+
+## Is there a difference in variation betwee the two regions
+```{r}
+reg <- bartlett.test(ctmax ~ location, data = bilin)
+reg
+
+reg <- bartlett.test(topt ~ location, data = bilin)
+reg
+
+reg <- bartlett.test(ctmin ~ location, data = bilin)
+reg
 
 ```
+
 
 ```{r message=FALSE}
 HStheme <- function(){            
@@ -318,7 +338,7 @@ bilin$iden <- str_extract(bilin$ID,"(\\w+)")
 
 # Rename columns for graph
 bilin_plot1 <- bilin %>% 
-  rename(Tmax = ctmax, Tmin = ctmin, Topt = topt, Tolerance = thermal_tolerance, Breadth = breadth)
+  dplyr::rename(Tmax = ctmax, Tmin = ctmin, Topt = topt, Tolerance = thermal_tolerance, Breadth = breadth)
 
 # Subset variables for facet grid ggplot
 bilin_plot <- melt(subset(bilin_plot1, select=c(iden, location, Tmax, Topt, Tmin, Tolerance, Breadth)), id.var=c("iden", "location"))
@@ -339,17 +359,18 @@ ggplot(bilin_plot, aes(x = reorder(iden, value), y = value, color = location)) +
 # Subset variables for facet grid ggplot
 bilin_plot.1 <- melt(subset(bilin_plot1, select=c(iden, location, Tmax, Topt, Tmin)), id.var=c("iden", "location"))
 
-ggplot(bilin_plot.1, aes(x = reorder(iden, value), y = value, color = location)) +
-  geom_point()+
+ggplot(bilin_plot.1, aes(x = reorder(iden, value), y = value, fill = location)) +
   geom_boxplot() +
   facet_grid(variable ~ ., scales = "free_y") +
   HStheme()+
-  labs(title = "PTGR Curve Parameters", x = "Genotype", y = "Calculated Parameter") +
-  scale_color_manual(values = c("#104E8B", "#B22222"))+
+  labs(x = "Genotype", y = expression(paste('Temperature (',~degree,'C)',sep=''))) +
+  scale_fill_manual(values = c("#104E8B", "#B22222"))+
   theme(axis.text.x = element_text(angle = 90))
   
 
-ggsave("figures/PTGR_params3_DOT.png", width = 7, height = 5, dpi = 300)
+ggsave("figures/PTGR_params4.png", width = 7, height = 5, dpi = 300)
+
+
 ```
 
 ```{r}
@@ -384,3 +405,76 @@ summary(PGERM_min.ID)
 
 
 
+```{r}
+
+Min_lmer1 <- lmer(ctmin ~ location + (1|ID), data = bilin)
+
+Anova(Min_lmer1, type="III")
+
+postHocs <- glht(Min_lmer1, linfct = mcp(location = "Tukey"))
+summary(postHocs)
+
+
+
+Max_lmer1 <- lmer(ctmax ~ location + (1|ID), data = bilin)
+
+Anova(Max_lmer1, type="III")
+
+postHocs <- glht(Max_lmer1, linfct = mcp(location = "Tukey"))
+summary(postHocs)
+
+
+
+opt_lmer1 <- lmer(topt ~ location + (1|ID), data = bilin)
+
+Anova(opt_lmer1, type="III")
+
+postHocs <- glht(opt_lmer1, linfct = mcp(location = "Tukey"))
+summary(postHocs)
+
+```
+
+
+Populations Independently
+```{r}
+# North
+# Is there variation in the individuals with in the independent populations
+bilin_N <- bilin %>% 
+  filter(location == "North")
+
+# Is there a difference between Genets in Tmax
+PGERM_max.ID_N <- aov(ctmax ~ ID, data = bilin_N)
+summary(PGERM_max.ID_N)
+
+# Is there a difference between Genets in Topt
+PGERM_opt.ID_N <- aov(topt ~ ID, data = bilin_N)
+summary(PGERM_opt.ID_N)
+
+# Is there a difference between Genets in Tmin
+PGERM_min.ID_N <- aov(ctmin ~ ID, data = bilin_N)
+summary(PGERM_min.ID_N)
+
+
+
+
+
+#South
+# Is there variation in the individuals with in the independent populations
+bilin_S <- bilin %>% 
+  filter(location == "South")
+
+# Is there a difference between Genets in Tmax
+PGERM_max.ID_S <- aov(ctmax ~ ID, data = bilin_S)
+summary(PGERM_max.ID_S)
+
+# Is there a difference between Genets in Topt
+PGERM_opt.ID_S <- aov(topt ~ ID, data = bilin_S)
+summary(PGERM_opt.ID_S)
+
+
+# Without the outlier
+PGERM_min.ID_S <- aov(ctmin ~ ID, data = bilin_S)
+summary(PGERM_min.ID_S)
+
+
+```
