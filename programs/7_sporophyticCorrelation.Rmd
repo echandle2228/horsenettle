@@ -1,0 +1,267 @@
+---
+title: "Sporophytic Tolerance Correlation"
+author: "Emma Chandler"
+date: "May 24, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Libraries
+```{r message=FALSE}
+
+library(ggplot2)
+library(ggcorrplot)
+library(corrplot)
+library(dplyr)
+library(reshape2)
+library(ggpubr)
+
+```
+
+# Clear environment and set seed
+```{r}
+remove(list = ls())
+set.seed(158358)
+```
+
+
+# Load data
+```{r}
+H.CMS <- read.csv("~/Horsenettle/data/processed/H.CMS.csv", header = TRUE)
+C.CMS <- read.csv("~/Horsenettle/data/processed/C.CMS.csv", header = TRUE)
+H.CHPL <- read.csv("~/Horsenettle/data/processed/H.CHPL.csv", header = TRUE)
+C.CHPL <- read.csv("~/Horsenettle/data/processed/C.CHPL.csv", header = TRUE)
+CPS <- read.csv("~/Horsenettle/data/processed/CPS.csv", header = TRUE)
+HPS <- read.csv("~/Horsenettle/data/processed/HPS.csv", header = TRUE)
+```
+
+### Rename column that are the same and convert lower to upper case
+```{r}
+H.CMS$HCMS <- H.CMS$CMS
+C.CMS$CCMS <- C.CMS$CMS
+H.CHPL$HCHPL <- H.CHPL$CHPL
+C.CHPL$CCHPL <- C.CHPL$CHPL
+
+HPS$ramet <- toupper(HPS$ramet)
+CPS$ramet <- toupper(CPS$ramet)
+```
+
+
+### Drop columns that won't be used
+```{r}
+
+H.CMS <- H.CMS[-c(1,7,8:13)]
+C.CMS <- C.CMS[-c(1,7,8:13)]
+H.CHPL <- H.CHPL[-c(1,7,8:13)]
+C.CHPL <- C.CHPL[-c(1,7,8:13)]
+HPS <- HPS[-c(1,7)]
+CPS <- CPS[-c(1,7)]
+```
+
+### Check column types
+```{r}
+summary(HPS)
+summary(H.CMS)
+
+```
+
+# Test homogeneity of variance
+```{r message=FALSE}
+# Normal Data
+bartlett.test(HCMS ~ location, data = H.CMS) #NS
+bartlett.test(CCMS ~ location, data = C.CMS) #NS
+bartlett.test(HCHPL ~ location, data = H.CHPL) # Variance significantly different
+bartlett.test(CCHPL ~ location, data = C.CHPL) # Variance significantly different
+bartlett.test(CPS ~ location, data = CPS) #NS
+bartlett.test(HPS ~ location, data = HPS) #NS
+
+```
+
+
+# Create data frame with all tolerance variables
+```{r}
+CMS <- merge(H.CMS, C.CMS, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+CHPL <- merge(H.CHPL, C.CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+PS <- merge(HPS, CPS, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+CC <- merge(CMS, CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+ALL <- merge(CC, PS, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
+
+write.csv(x = ALL, file = "~/Horsenettle/data/processed/correlation.csv")
+
+# Omit all except values of interest
+COR <- ALL[-c(1:5)] 
+
+```
+
+Changing column names for ease of reading in correlation plot
+```{r}
+names(COR)[1] <- "Hot CMS"  
+names (COR)[2] <- "Cold CMS"
+names (COR)[3] <- "Hot CHPL"
+names (COR)[4] <- "Cold CHPL"
+names (COR)[5] <- "Cold PS"
+names (COR)[6] <- "Hot PS"
+```
+
+
+# Create correlation matrix
+```{r}
+# Correlations
+correlation <- cor(COR, use = "pairwise.complete.obs")
+head(correlation[, 1:6])
+
+# p-values for correlations
+p.mat <- cor_pmat(COR)
+head(p.mat[, 1:6])
+
+```
+
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+
+# Create correlation heat map
+```{r}
+
+
+Corr <- corrplot(correlation, type="upper", order="hclust", 
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", addCoef.col ='black', tl.col = 'black')
+
+
+
+```
+
+Quick test looking at the correlation between hot and cold chlorophyll
+```{r}
+ggplot(ALL, aes(x = CCHPL, y = HCHPL, color = location)) +
+  geom_point() +
+  stat_ellipse() +
+  scale_color_manual(values = c("#104E8B", "#CD2626")) +
+  HStheme() 
+
+# Saving graph
+ggsave("figures/HCHPL_CCHPL.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+
+
+
+Graphs of all the correlations that were significant
+```{r}
+
+A <- ggplot(ALL, aes(x = HCMS, y = CCHPL)) +
+  geom_point() +
+  scale_color_manual(values = c("#104E8B", "#CD2626")) +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme() 
+
+# ggsave("figures/COR2.png", width = 7, height = 5, dpi = 300)
+
+# As HCMS increases so does photosynthesis for both the hot and cold treatments
+B <- ggplot(ALL, aes(x = HCMS, y = HPS)) +
+  geom_point() +
+  scale_color_manual(values = c("#104E8B", "#CD2626")) +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme() 
+
+# ggsave("figures/COR4.png", width = 7, height = 5, dpi = 300)
+
+C<- ggplot(ALL, aes(x = HCMS, y = CPS)) +
+  geom_point() +
+  scale_color_manual(values = c("#104E8B", "#CD2626")) +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme() 
+
+# ggsave("figures/COR5.png", width = 7, height = 5, dpi = 300)
+
+
+(stacked_SIGcorr <- ggpubr::ggarrange(A, B, C, ncol = 1,
+                                  labels = c("A", "B", "C"),
+                                  common.legend = TRUE, 
+                                  legend = "right"))
+
+ggsave("figures/sigCorrStack.png", width = 5, height = 7, dpi = 300)
+
+```
+
+
+
+## Correlation matrix for each of the ramets
+```{r}
+# Ramet A
+ramA_cor <- ALL %>% 
+  filter(ramet == "A") %>% 
+  select(HCMS, CCMS, HCHPL, CCHPL, HPS, CPS) %>% 
+  cor(use = "pairwise.complete.obs")
+
+Corr <- corrplot(ramA_cor, type="upper", order="hclust", 
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", addCoef.col ='black', tl.col = 'black')
+
+
+
+# Ramet B
+ramB_cor <- ALL %>% 
+  filter(ramet == "B") %>% 
+  select(HCMS, CCMS, HCHPL, CCHPL, HPS, CPS) %>% 
+  cor(use = "pairwise.complete.obs")
+
+Corr <- corrplot(ramB_cor, type="upper", order="hclust", 
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", addCoef.col ='black', tl.col = 'black')
+
+
+
+# Ramet C
+ramC_cor <- ALL %>% 
+  filter(ramet == "C") %>% 
+  select(HCMS, CCMS, HCHPL, CCHPL, HPS, CPS) %>% 
+  cor(use = "pairwise.complete.obs")
+
+Corr <- corrplot(ramC_cor, type="upper", order="hclust", 
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", addCoef.col ='black', tl.col = 'black')
+
+
+
+# Ramet D
+ramD_cor <- ALL %>% 
+  filter(ramet == "D") %>% 
+  select(HCMS, CCMS, HCHPL, CCHPL, HPS, CPS) %>% 
+  cor(use = "pairwise.complete.obs")
+
+Corr <- corrplot(ramD_cor, type="upper", order="hclust", 
+         p.mat = p.mat, sig.level = 0.05, insig = "blank", addCoef.col ='black', tl.col = 'black')
+
+
+
+(corr1 <- ggcorrplot(ramA_cor, type = "lower", lab = TRUE, insig = "blank", 
+                    hc.order = TRUE, p.mat = p.mat))
+(corr1 <- ggcorrplot(ramB_cor, type = "lower", lab = TRUE, insig = "blank", 
+                    hc.order = TRUE, p.mat = p.mat))
+```
+
+All ramet correlation matrices
+```{r}
+
+ramA_MELT <- melt(ramA_cor)
+ggplot(ramA_MELT, aes(Var1, y = Var2, fill = value)) +
+  geom_tile()
+```
+

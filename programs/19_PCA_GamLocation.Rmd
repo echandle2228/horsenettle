@@ -1,0 +1,225 @@
+---
+title: "Sporophytic Tolerance PCA"
+author: "Emma Chandler"
+date: "September 12, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+```{r message=FALSE}
+
+library(ggfortify)
+library(pca3d)
+library(factoextra)
+library(dplyr)
+
+```
+
+## Load data
+```{r}
+remove(list = ls())
+
+#Gametophytic Variables
+germ <- read.csv("~/Horsenettle/data/processed/germParams.csv", header = TRUE)
+PTGR <- read.csv("~/Horsenettle/data/processed/ptgrParams.csv", header = TRUE)
+
+#Rename
+germ$Germ.Tmin <- germ$ctmin
+germ$Germ.Topt <- germ$topt
+germ$Germ.Tmax <- germ$ctmax
+
+PTGR$PTGR.Tmin <- PTGR$ctmin
+PTGR$PTGR.Topt <- PTGR$topt
+PTGR$PTGR.Tmax <- PTGR$ctmax
+
+
+germ <- germ[-c(1:13)]
+PTGR <- PTGR[-c(1:13)]
+
+Gam <- merge(germ, PTGR, by = c("ID", "location","population", "number", "ramet"), all.x = TRUE, all = TRUE)
+
+```
+
+# Creating a figure theme for all plots
+```{r message=FALSE}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+
+## PCA of all sporophytic variables
+```{r}
+# Subset Gametophytic Variables
+
+GAM.PCA <- prcomp(Gam[,c(6:11)], center = TRUE, scale. = TRUE)
+
+summary(GAM.PCA)
+print(GAM.PCA)
+
+
+(PCA.p1 <- autoplot(prcomp(Gam[,c(6:11)], center = TRUE, scale. = TRUE), 
+         data = Gam, colour = 'location', 
+         loadings = TRUE, 
+         loadings.colour = 'black',
+         loadings.label = TRUE, 
+         loadings.label.size = 4, 
+         loadings.label.colour = 'black', 
+         loadings.label.hjust = 1, 
+         loadings.label.vjust = 0,
+         frame = TRUE, frame.type = 't') +
+  scale_fill_manual(values = c("#104E8B", "#B22222")) +
+  scale_color_manual(values = c("#104E8B", "#B22222")) +
+  xlim(-0.4,0.4) +
+  ylim(-0.4,0.4) +
+  HStheme())
+
+# Saving graph
+ggsave("figures/PCA1_gam.png", width = 7, height = 5, dpi = 300)
+
+(PCA.p2 <- autoplot(prcomp(Gam[,c(6:11)], center = TRUE, scale. = TRUE), x=2, y=3, 
+         data = Gam, colour = 'location', 
+         loadings = TRUE, 
+         loadings.colour = 'black',
+         loadings.label = TRUE, 
+         loadings.label.size = 4, 
+         loadings.label.colour = 'black', 
+         loadings.label.hjust = 0, 
+         loadings.label.vjust = 0,
+         frame = TRUE, frame.type = 't') +
+  scale_fill_manual(values = c("#104E8B", "#B22222")) +
+  scale_color_manual(values = c("#104E8B", "#B22222")) +
+  xlim(-0.4,0.4) +
+  ylim(-0.4,0.4) +
+  HStheme())
+
+# Saving graph
+ggsave("figures/PCA2_gam.png", width = 7, height = 5, dpi = 300)
+
+(PCA.p3 <- autoplot(prcomp(Gam[,c(6:11)], center = TRUE, scale. = TRUE), x=1, y=3, 
+         data = Gam, 
+         colour = 'location', 
+         loadings = TRUE, 
+         loadings.colour = 'black',
+         loadings.label = TRUE, 
+         loadings.label.size = 4, 
+         loadings.label.colour = 'black', 
+         loadings.label.hjust = 0, 
+         loadings.label.vjust = 0,
+         frame = TRUE, frame.type = 't') +
+  scale_fill_manual(values = c("#104E8B", "#B22222")) +
+  scale_color_manual(values = c("#104E8B", "#B22222")) +
+  xlim(-0.4,0.4) +
+  ylim(-0.4,0.4) +
+  HStheme())
+
+# Saving graph
+ggsave("figures/PCA3_gam.png", width = 7, height = 5, dpi = 300)
+
+
+ggplot(data.nona, aes(CPS,CCHPL)) +
+  geom_point()
+
+
+
+(stacked_PCA <- ggpubr::ggarrange(PCA.p1, PCA.p2, PCA.p3, ncol = 1,
+                                  labels = c("A", "B", "C"),
+                                  common.legend = TRUE, 
+                                  legend = "right"))
+
+ggsave("figures/PCA.sporStack.png", width = 6, height = 11)
+
+# https://www.datacamp.com/community/tutorials/pca-analysis-r
+```
+
+
+## 3D plot with first 3 principal componenets
+```{r}
+
+SPOR.PCA <- prcomp(Gam[,c(6:11)], center = TRUE, scale. = TRUE)
+loca <- factor(Gam$location)
+
+summary(loca)
+
+pca3d(SPOR.PCA, group = loca, 
+      show.ellipses=TRUE, 
+      ellipse.ci=0.75, 
+      show.plane=FALSE, 
+      palette = c("#00BFFF", "#FF4040"),)
+
+snapshotPCA3d(file="first_plot.png")
+
+
+dir.create("GAM_animation_merge")
+
+for (i in 1:360) {
+  view3d(userMatrix=rotationMatrix(2*pi * i/360, 0, 1, 0))
+  rgl.snapshot(filename=paste("GAM_animation_merge/frame-",
+                              sprintf("%03d", i), ".png", sep=""))}
+
+
+
+```
+
+
+Get PCA individual data
+```{r}
+ID_PCA <- get_pca_ind(SPOR.PCA)
+head(ID_PCA$coord)
+
+coor <- predict(SPOR.PCA, newdata = data.nona)
+
+ALL <- cbind(data.nona, coor)
+
+PC1.m <- aov(PC2 ~ location, data = ALL)
+summary(PC1.m)
+
+# Data Visualization
+(SPOR_PC1 <- ggplot(ALL, aes(x = location, PC2, fill = location)) +     geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#B22222")) +
+    labs(x = "Region", y = "PC2")+
+    HStheme() +
+    theme(legend.position = "none"))
+
+# Saving graph
+ggsave("figures/SPOR_PC1.png", width = 7, height = 5, dpi = 300)
+
+
+PC1.m <- aov(PC3 ~ location, data = ALL)
+summary(PC1.m)
+
+# Data Visualization
+(SPOR_PC1 <- ggplot(ALL, aes(x = location, PC3, fill = location)) +     geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#B22222")) +
+    labs(x = "Region", y = "PC3")+
+    HStheme() +
+    theme(legend.position = "none"))
+
+# Saving graph
+ggsave("figures/SPOR_PC1.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+
+
+
+
+
+
+

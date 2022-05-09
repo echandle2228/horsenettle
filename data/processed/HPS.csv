@@ -1,135 +1,132 @@
 "","population","location","number","ID","ramet","block","HPS"
-"1","Cemetary","South","1","CE1","c",15,0.254098360655738
-"2","Cemetary","South","10","CE10","b",6,0.644970414201184
-"3","Cemetary","South","10","CE10","d",18,0.974509803921569
-"4","Cemetary","South","11","CE11","a",4,0.872727272727273
-"5","Cemetary","South","2","CE2","a",1,0.859459459459459
-"6","Cemetary","South","2","CE2","b",8,0.455882352941177
-"7","Cemetary","South","2","CE2","c",12,0.843621399176955
-"8","Cemetary","South","2","CE2","d",16,0.965714285714286
-"9","Cemetary","South","3","CE3","a",2,0.576704545454545
-"10","Cemetary","South","3","CE3","b",10,0.816949152542373
-"11","Cemetary","South","3","CE3","d",19,0.895981087470449
-"12","Cemetary","South","4","CE4","a",4,0.91703056768559
-"13","Cemetary","South","4","CE4","b",9,0.780160857908847
-"14","Cemetary","South","5","CE5","a",5,0.50251572327044
-"15","Cemetary","South","5","CE5","b",9,0.911214953271028
-"16","Cemetary","South","5","CE5","d",19,0.59144893111639
-"17","Cemetary","South","6","CE6","b",7,0.418546365914787
-"18","Cemetary","South","6","CE6","c",11,0.724550898203593
-"19","Cemetary","South","6","CE6","d",16,0.509881422924901
-"20","Cemetary","South","7a","CE7a","c",11,0.230894308943089
-"21","Cemetary","South","7a","CE7a","d",19,0.604095563139932
-"22","Cemetary","South","7a","CE7a","e",21,0.354705882352941
-"23","Cemetary","South","7b","CE7b","b",9,0.843195266272189
-"24","Cemetary","South","7b","CE7b","c",13,0.963157894736842
-"25","Cemetary","South","7b","CE7b","d",18,0.896341463414634
-"26","Cemetary","South","8","CE8","a",2,0.357142857142857
-"27","Cemetary","South","8","CE8","b",7,0.497607655502392
-"28","Cemetary","South","8","CE8","c",11,0.718954248366013
-"29","Cemetary","South","8","CE8","d",16,0.293675889328063
-"30","Cemetary","South","9","CE9","a",2,0.453674121405751
-"31","Cemetary","South","9","CE9","b",9,0.815094339622642
-"32","Frontenac","North","1","FR1","a",2,0.422382671480144
-"33","Frontenac","North","1","FR1","b",10,0.67003367003367
-"34","Frontenac","North","1","FR1","c",15,0.825301204819277
-"35","Frontenac","North","10","FR10","a",5,0.982062780269058
-"36","Frontenac","North","10","FR10","b",10,0.686725663716814
-"37","Frontenac","North","10","FR10","c",13,0.959276018099547
-"38","Frontenac","North","11","FR11","a",5,0.808888888888889
-"39","Frontenac","North","11","FR11","b",10,0.928571428571428
-"40","Frontenac","North","11","FR11","c",14,0.482183908045977
-"41","Frontenac","North","11","FR11","d",19,0.368421052631579
-"42","Frontenac","North","12","FR12","a",2,0.491646778042959
-"43","Frontenac","North","12","FR12","c",13,0.707006369426752
-"44","Frontenac","North","12","FR12","d",19,0.641379310344828
-"45","Frontenac","North","12","FR12","e",21,0.403402187120292
-"46","Frontenac","North","2","FR2","c",14,0.788135593220339
-"47","Frontenac","North","2","FR2","d",16,0.609523809523809
-"48","Frontenac","North","6","FR6","b",10,0.405405405405405
-"49","Frontenac","North","8","FR8","b",9,0.831501831501831
-"50","Oil Patch","South","1","OP1","b",7,0.884057971014493
-"51","Oil Patch","South","1","OP1","d",20,0.815868263473054
-"52","Oil Patch","South","2","OP2","b",7,0.547008547008547
-"53","Oil Patch","South","2","OP2","c",14,0.514905149051491
-"54","Oil Patch","South","2","OP2","d",20,0.762331838565022
-"55","Oil Patch","South","3","OP3","a",2,0.292569659442724
-"56","Oil Patch","South","3","OP3","c",15,0.274545454545455
-"57","Oil Patch","South","4","OP4","c",11,0.0223484848484849
-"58","Oil Patch","South","5","OP5","a",1,0.478632478632479
-"59","Oil Patch","South","5","OP5","b",10,0.472573839662447
-"60","Oil Patch","South","5","OP5","d",18,0.353676470588235
-"61","Oil Patch","South","6","OP6","b",6,0.819397993311037
-"62","Oil Patch","South","6","OP6","c",13,0.769662921348314
-"63","Oil Patch","South","6","OP6","d",20,0.344502617801047
-"64","Oil Patch","South","7","OP7","c",14,0.159398496240602
-"65","Oil Patch","South","7","OP7","d",20,0.962903225806451
-"66","Oil Patch","South","8","OP8","a",3,0.716
-"67","Oil Patch","South","8","OP8","b",8,0.542016806722689
-"68","Oil Patch","South","8","OP8","c",14,0.266489361702128
-"69","Oil Patch","South","8","OP8","d",17,0.699421965317919
-"70","Oil Patch","South","9","OP9","b",10,0.436150234741784
-"71","Oil Patch","South","9","OP9","c",13,0.834394904458599
-"72","Prairie Island","North","1","PI1","c",12,0.740365111561866
-"73","Prairie Island","North","10","PI10","a",1,0.488372093023256
-"74","Prairie Island","North","10","PI10","b",10,0.358673469387755
-"75","Prairie Island","North","10","PI10","c",12,0.803191489361702
-"76","Prairie Island","North","10","PI10","d",20,0.699876998769988
-"77","Prairie Island","North","11","PI11","c",12,0.624752475247525
-"78","Prairie Island","North","11","PI11","d",17,0.599137931034483
-"79","Prairie Island","North","11","PI11","e",21,0.152099886492622
-"80","Prairie Island","North","12","PI12","a",3,0.233014354066986
-"81","Prairie Island","North","12","PI12","b",6,0.801104972375691
-"82","Prairie Island","North","12","PI12","c",12,0.893662728249194
-"83","Prairie Island","North","12","PI12","d",18,0.811224489795918
-"84","Prairie Island","North","13","PI13","b",8,0.392592592592593
-"85","Prairie Island","North","13","PI13","c",11,0.319101123595506
-"86","Prairie Island","North","14","PI14","a",3,0.641791044776119
-"87","Prairie Island","North","14","PI14","b",8,0.483870967741935
-"88","Prairie Island","North","14","PI14","c",12,0.712707182320442
-"89","Prairie Island","North","14","PI14","d",19,0.915841584158416
-"90","Prairie Island","North","15","PI15","a",2,0.553571428571429
-"91","Prairie Island","North","15","PI15","b",9,0.265286624203822
-"92","Prairie Island","North","15","PI15","c",11,0.747311827956989
-"93","Prairie Island","North","15","PI15","d",17,1
-"94","Prairie Island","North","18","PI18","c",14,0.543478260869565
-"95","Prairie Island","North","18","PI18","d",20,0.773076923076923
-"96","Prairie Island","North","19","PI19","b",6,0.810126582278481
-"97","Prairie Island","North","19","PI19","c",15,0.681372549019608
-"98","Prairie Island","North","19","PI19","d",17,0.618064516129032
-"99","Prairie Island","North","2","PI2","b",6,1
-"100","Prairie Island","North","2","PI2","c",15,0.483050847457627
-"101","Prairie Island","North","2","PI2","d",20,0.411764705882353
-"102","Prairie Island","North","21","PI21","a",2,0.596491228070175
-"103","Prairie Island","North","21","PI21","b",7,0.507645259938838
-"104","Prairie Island","North","21","PI21","c",13,0.978835978835979
-"105","Prairie Island","North","21","PI21","d",17,0.660130718954248
-"106","Prairie Island","North","25","PI25","b",7,0.308414239482201
-"107","Prairie Island","North","25","PI25","c",11,0.202803738317757
-"108","Prairie Island","North","25","PI25","d",16,0.271578947368421
-"109","Prairie Island","North","27","PI27","a",3,0.548672566371681
-"110","Prairie Island","North","27","PI27","b",8,0.229411764705882
-"111","Prairie Island","North","27","PI27","c",13,0.760330578512397
-"112","Prairie Island","North","27","PI27","d",19,0.996389891696751
-"113","Prairie Island","North","28","PI28","a",1,0.585889570552147
-"114","Prairie Island","North","28","PI28","b",8,0.4375
-"115","Prairie Island","North","28","PI28","d",16,0.721212121212121
-"116","Prairie Island","North","3","PI3","a",4,0.552
-"117","Prairie Island","North","3","PI3","b",9,0.295338983050847
-"118","Prairie Island","North","3","PI3","c",11,0.436792452830189
-"119","Prairie Island","North","3","PI3","d",18,0.66
-"120","Prairie Island","North","30","PI30","b",7,0.301363636363636
-"121","Prairie Island","North","30","PI30","c",13,0.362704918032787
-"122","Prairie Island","North","4","PI4","b",9,0.915841584158416
-"123","Prairie Island","North","4","PI4","c",11,0.205357142857143
-"124","Prairie Island","North","4","PI4","d",17,0.571428571428571
-"125","Prairie Island","North","5","PI5","b",8,0.624338624338624
-"126","Prairie Island","North","5","PI5","c",15,0.894321766561514
-"127","Prairie Island","North","5","PI5","d",19,0.692230070635722
-"128","Prairie Island","North","9","PI9","b",7,0.778409090909091
-"129","Prairie Island","North","9","PI9","c",15,0.616891891891892
-"130","Reserve","South","3","RE3","a",3,0.815384615384615
-"131","Reserve","South","3","RE3","b",7,0.504347826086956
-"132","Reserve","South","5","RE5","d",18,0.385390428211587
-"133","Reserve","South","62","RE6","b",6,0.695652173913044
-"134","Reserve","South","7","RE7","d",19,0.654708520179372
+"1","Cemetary","South","11","CE11","A",4,0.872727272727273
+"2","Cemetary","South","2","CE2","A",1,0.859459459459459
+"3","Cemetary","South","3","CE3","A",2,0.576704545454545
+"4","Cemetary","South","4","CE4","A",4,0.91703056768559
+"5","Cemetary","South","5","CE5","A",5,0.50251572327044
+"6","Cemetary","South","8","CE8","A",2,0.357142857142857
+"7","Cemetary","South","9","CE9","A",2,0.453674121405751
+"8","Frontenac","North","1","FR1","A",2,0.422382671480144
+"9","Frontenac","North","10","FR10","A",5,0.982062780269058
+"10","Frontenac","North","11","FR11","A",5,0.808888888888889
+"11","Frontenac","North","12","FR12","A",2,0.491646778042959
+"12","Oil Patch","South","3","OP3","A",2,0.292569659442724
+"13","Oil Patch","South","5","OP5","A",1,0.478632478632479
+"14","Oil Patch","South","8","OP8","A",3,0.716
+"15","Prairie Island","North","10","PI10","A",1,0.488372093023256
+"16","Prairie Island","North","12","PI12","A",3,0.233014354066986
+"17","Prairie Island","North","14","PI14","A",3,0.641791044776119
+"18","Prairie Island","North","15","PI15","A",2,0.553571428571429
+"19","Prairie Island","North","21","PI21","A",2,0.596491228070175
+"20","Prairie Island","North","27","PI27","A",3,0.548672566371681
+"21","Prairie Island","North","28","PI28","A",1,0.585889570552147
+"22","Prairie Island","North","3","PI3","A",4,0.552
+"23","Reserve","South","3","RE3","A",3,0.815384615384615
+"24","Cemetary","South","10","CE10","B",6,0.644970414201184
+"25","Cemetary","South","2","CE2","B",8,0.455882352941177
+"26","Cemetary","South","3","CE3","B",10,0.816949152542373
+"27","Cemetary","South","4","CE4","B",9,0.780160857908847
+"28","Cemetary","South","5","CE5","B",9,0.911214953271028
+"29","Cemetary","South","6","CE6","B",7,0.418546365914787
+"30","Cemetary","South","7b","CE7b","B",9,0.843195266272189
+"31","Cemetary","South","8","CE8","B",7,0.497607655502392
+"32","Cemetary","South","9","CE9","B",9,0.815094339622642
+"33","Frontenac","North","1","FR1","B",10,0.67003367003367
+"34","Frontenac","North","10","FR10","B",10,0.686725663716814
+"35","Frontenac","North","11","FR11","B",10,0.928571428571428
+"36","Frontenac","North","6","FR6","B",10,0.405405405405405
+"37","Frontenac","North","8","FR8","B",9,0.831501831501831
+"38","Oil Patch","South","1","OP1","B",7,0.884057971014493
+"39","Oil Patch","South","2","OP2","B",7,0.547008547008547
+"40","Oil Patch","South","5","OP5","B",10,0.472573839662447
+"41","Oil Patch","South","6","OP6","B",6,0.819397993311037
+"42","Oil Patch","South","8","OP8","B",8,0.542016806722689
+"43","Oil Patch","South","9","OP9","B",10,0.436150234741784
+"44","Prairie Island","North","10","PI10","B",10,0.358673469387755
+"45","Prairie Island","North","12","PI12","B",6,0.801104972375691
+"46","Prairie Island","North","13","PI13","B",8,0.392592592592593
+"47","Prairie Island","North","14","PI14","B",8,0.483870967741935
+"48","Prairie Island","North","15","PI15","B",9,0.265286624203822
+"49","Prairie Island","North","19","PI19","B",6,0.810126582278481
+"50","Prairie Island","North","2","PI2","B",6,1
+"51","Prairie Island","North","21","PI21","B",7,0.507645259938838
+"52","Prairie Island","North","25","PI25","B",7,0.308414239482201
+"53","Prairie Island","North","27","PI27","B",8,0.229411764705882
+"54","Prairie Island","North","28","PI28","B",8,0.4375
+"55","Prairie Island","North","3","PI3","B",9,0.295338983050847
+"56","Prairie Island","North","30","PI30","B",7,0.301363636363636
+"57","Prairie Island","North","4","PI4","B",9,0.915841584158416
+"58","Prairie Island","North","5","PI5","B",8,0.624338624338624
+"59","Prairie Island","North","9","PI9","B",7,0.778409090909091
+"60","Reserve","South","3","RE3","B",7,0.504347826086956
+"61","Reserve","South","62","RE6","B",6,0.695652173913044
+"62","Cemetary","South","1","CE1","C",15,0.254098360655738
+"63","Cemetary","South","2","CE2","C",12,0.843621399176955
+"64","Cemetary","South","6","CE6","C",11,0.724550898203593
+"65","Cemetary","South","7a","CE7a","C",11,0.230894308943089
+"66","Cemetary","South","7b","CE7b","C",13,0.963157894736842
+"67","Cemetary","South","8","CE8","C",11,0.718954248366013
+"68","Frontenac","North","1","FR1","C",15,0.825301204819277
+"69","Frontenac","North","10","FR10","C",13,0.959276018099547
+"70","Frontenac","North","11","FR11","C",14,0.482183908045977
+"71","Frontenac","North","12","FR12","C",13,0.707006369426752
+"72","Frontenac","North","2","FR2","C",14,0.788135593220339
+"73","Oil Patch","South","2","OP2","C",14,0.514905149051491
+"74","Oil Patch","South","3","OP3","C",15,0.274545454545455
+"75","Oil Patch","South","4","OP4","C",11,0.0223484848484849
+"76","Oil Patch","South","6","OP6","C",13,0.769662921348314
+"77","Oil Patch","South","7","OP7","C",14,0.159398496240602
+"78","Oil Patch","South","8","OP8","C",14,0.266489361702128
+"79","Oil Patch","South","9","OP9","C",13,0.834394904458599
+"80","Prairie Island","North","1","PI1","C",12,0.740365111561866
+"81","Prairie Island","North","10","PI10","C",12,0.803191489361702
+"82","Prairie Island","North","11","PI11","C",12,0.624752475247525
+"83","Prairie Island","North","12","PI12","C",12,0.893662728249194
+"84","Prairie Island","North","13","PI13","C",11,0.319101123595506
+"85","Prairie Island","North","14","PI14","C",12,0.712707182320442
+"86","Prairie Island","North","15","PI15","C",11,0.747311827956989
+"87","Prairie Island","North","18","PI18","C",14,0.543478260869565
+"88","Prairie Island","North","19","PI19","C",15,0.681372549019608
+"89","Prairie Island","North","2","PI2","C",15,0.483050847457627
+"90","Prairie Island","North","21","PI21","C",13,0.978835978835979
+"91","Prairie Island","North","25","PI25","C",11,0.202803738317757
+"92","Prairie Island","North","27","PI27","C",13,0.760330578512397
+"93","Prairie Island","North","3","PI3","C",11,0.436792452830189
+"94","Prairie Island","North","30","PI30","C",13,0.362704918032787
+"95","Prairie Island","North","4","PI4","C",11,0.205357142857143
+"96","Prairie Island","North","5","PI5","C",15,0.894321766561514
+"97","Prairie Island","North","9","PI9","C",15,0.616891891891892
+"98","Cemetary","South","10","CE10","D",18,0.974509803921569
+"99","Cemetary","South","2","CE2","D",16,0.965714285714286
+"100","Cemetary","South","3","CE3","D",19,0.895981087470449
+"101","Cemetary","South","5","CE5","D",19,0.59144893111639
+"102","Cemetary","South","6","CE6","D",16,0.509881422924901
+"103","Cemetary","South","7a","CE7a","D",19,0.604095563139932
+"104","Cemetary","South","7b","CE7b","D",18,0.896341463414634
+"105","Cemetary","South","8","CE8","D",16,0.293675889328063
+"106","Frontenac","North","11","FR11","D",19,0.368421052631579
+"107","Frontenac","North","12","FR12","D",19,0.641379310344828
+"108","Frontenac","North","2","FR2","D",16,0.609523809523809
+"109","Oil Patch","South","1","OP1","D",20,0.815868263473054
+"110","Oil Patch","South","2","OP2","D",20,0.762331838565022
+"111","Oil Patch","South","5","OP5","D",18,0.353676470588235
+"112","Oil Patch","South","6","OP6","D",20,0.344502617801047
+"113","Oil Patch","South","7","OP7","D",20,0.962903225806451
+"114","Oil Patch","South","8","OP8","D",17,0.699421965317919
+"115","Prairie Island","North","10","PI10","D",20,0.699876998769988
+"116","Prairie Island","North","11","PI11","D",17,0.599137931034483
+"117","Prairie Island","North","12","PI12","D",18,0.811224489795918
+"118","Prairie Island","North","14","PI14","D",19,0.915841584158416
+"119","Prairie Island","North","15","PI15","D",17,1
+"120","Prairie Island","North","18","PI18","D",20,0.773076923076923
+"121","Prairie Island","North","19","PI19","D",17,0.618064516129032
+"122","Prairie Island","North","2","PI2","D",20,0.411764705882353
+"123","Prairie Island","North","21","PI21","D",17,0.660130718954248
+"124","Prairie Island","North","25","PI25","D",16,0.271578947368421
+"125","Prairie Island","North","27","PI27","D",19,0.996389891696751
+"126","Prairie Island","North","28","PI28","D",16,0.721212121212121
+"127","Prairie Island","North","3","PI3","D",18,0.66
+"128","Prairie Island","North","4","PI4","D",17,0.571428571428571
+"129","Prairie Island","North","5","PI5","D",19,0.692230070635722
+"130","Reserve","South","5","RE5","D",18,0.385390428211587
+"131","Reserve","South","7","RE7","D",19,0.654708520179372

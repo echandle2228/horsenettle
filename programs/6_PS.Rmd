@@ -1,0 +1,474 @@
+---
+title: "Photosynthesis Analysis"
+author: "Emma Chandler"
+date: "October 13, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries
+```{r message=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(lmerTest)
+library(ggpubr)
+library(emmeans)
+```
+
+
+## Load Data
+```{r}
+remove(list = ls())
+
+PS <- read.csv("~/Horsenettle/data/photosynthesis.csv", header = TRUE)
+
+```
+
+## Process Data - add NA to blank cells
+```{r}
+# add NA to blank cells
+PS[PS == ""] <- NA
+PS[PS == "na"] <- NA
+PS[PS == " "] <- NA
+
+# Change photosynthesis measurements character to numeric
+PS$CPS_i <- as.numeric(PS$CPS_i)
+PS$CPS_f <- as.numeric(PS$CPS_f)
+PS$HPS_i <- as.numeric(PS$HPS_i)
+PS$HPS_f <- as.numeric(PS$HPS_f)
+
+summary(PS)
+
+```
+
+
+
+## Differences between north and south for the initial measurements
+```{r}
+
+# Is there a difference between the two initial measurements
+t.test(PS$CPS_i, PS$HPS_i)
+
+# Mixed effects model checking difference between regions
+PSL.origin <- lmer(CPS_i ~ location + (1|ramet) + (1|population), data = PS)
+
+anova(PSL.origin)
+ranova(PSL.origin)
+
+# One-way ANOVA checking difference between genets
+PSL.origin2 <- aov(CPS_i ~ID, PS)
+
+summary.aov(PSL.origin2)
+
+
+```
+
+## Calculating the proportion of photosynthesis before and after treatment
+```{r}
+# Calculating photosynthesis ratio
+PS$CPS <- PS$CPS_f / PS$CPS_i
+PS$HPS <- PS$HPS_f / PS$HPS_i
+```
+
+## Omit data below one standard error of the mean
+```{r}
+
+
+# Excluding values greater than 1 and less than 0
+C_PS <- PS %>%   
+  dplyr::select(population:block, CPS) %>% 
+  filter(CPS <= 1, CPS > 0)
+
+
+H_PS <- PS %>%   
+  dplyr::select(population:block, HPS) %>% 
+  filter(HPS <= 1, HPS > 0)
+
+# Export data frame for Correlation
+write.csv(x = C_PS, file = "~/Horsenettle/data/processed/CPS.csv")
+write.csv(x = H_PS, file = "~/Horsenettle/data/processed/HPS.csv")
+
+
+```
+
+
+
+
+## Check normality of differences
+```{r}
+
+# Cold Treatment
+hist(C_PS$CPS, main = "Cold Treatment", xlab = "Photosynthesis")
+shapiro.test(PS$CPS)
+
+# Hot Treatment
+hist(H_PS$HPS, main = "Hot Treatment", xlab = "Photosynthesis")
+shapiro.test(PS$HPS)
+
+```
+
+
+## Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+# Cold Photosynthesis 
+Is there variance between regions, while accounting for block, population, and genet as random effects?
+```{r}
+
+# Model
+CPS_lmer1 <- lmer(CPS ~ location + (1|ramet) + (1|population:ID), data = C_PS)
+
+(CPS_lmer1.a <- anova(CPS_lmer1))
+(CPS_lmer1.r <- ranova(CPS_lmer1))
+
+
+# Data Visualization
+(CPS.p1 <- ggplot(C_PS, aes(x = location, CPS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    theme(legend.position = "none") +
+    labs(x = "Region", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Cold Treatment"))
+
+
+# Saving graph
+# ggsave("figures/CPS.p1.png", width = 7, height = 5, dpi = 300)
+
+```
+
+There is evidence of differences between blocks in PS, is there a significant difference between north and south for individual ramets in CPS
+```{r}
+
+# Subset data from south
+south <- subset(C_PS,  location == "South",
+                 drop = TRUE)
+# subset data from north
+north <- subset(C_PS,  location == "North",
+                 drop = TRUE)
+
+# Ramet A
+ramA_south <- filter(south, ramet == "A") 
+ramA_north <- filter(north, ramet == "A")
+
+ramA.ttest <- t.test(ramA_south$CPS, ramA_north$CPS)
+ramA.ttest
+
+
+# Ramet B
+ramB_south <- filter(south, ramet == "B") 
+ramB_north <- filter(north, ramet == "B")
+
+ramB.ttest <- t.test(ramB_south$CPS, ramB_north$CPS)
+ramB.ttest
+
+
+# Ramet C
+ramC_south <- filter(south, ramet == "C") 
+ramC_north <- filter(north, ramet == "C")
+
+ramC.ttest <- t.test(ramC_south$CPS, ramC_north$CPS)
+ramC.ttest
+
+
+# Ramet D
+ramD_south <- filter(south, ramet == "D") 
+ramD_north <- filter(north, ramet == "D")
+
+ramD.ttest <- t.test(ramD_south$CPS, ramD_north$CPS)
+ramD.ttest
+
+
+# Data Visualization
+(C_PS.p1 <- ggplot(C_PS, aes(x = ramet, CPS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    labs(x = "Region", y = "Chlorophyll Ratio")+
+    HStheme() +
+    theme(legend.position = "none"))
+
+```
+
+# Hot Photosynthesis
+Is there variance between regions, while accounting for block, population, and genet as random effects?
+```{r}
+
+# Model
+HPS_lmer1 <- lmer(HPS ~ location + (1|ramet) + (1|population:ID), data = H_PS)
+HPS_lmer1 <- lmer(HPS ~ location + (1|ramet) + (1|population), data = H_PS)
+HPS_lmer1 <- lmer(HPS ~ location + (1|ramet), data = H_PS)
+HPS_lmer1 <- aov(HPS ~ location, data = H_PS)
+summary(HPS_lmer1)
+
+(HPS_lmer1.a <- anova(HPS_lmer1))
+(HPS_lmer1.r <- ranova(HPS_lmer1))
+
+
+# Data Visualization
+(HPS.p1 <- ggplot(H_PS, aes(x = location, HPS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    theme(legend.position = "none") +
+    labs(x = "Region", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Hot Treatment"))
+
+
+# Saving graph
+ggsave("figures/HPS.p1.png", width = 7, height = 5, dpi = 300)
+
+```
+
+There is evidence of differences between blocks in PS, is there a significant difference between north and south for individual ramets in CPS
+```{r}
+
+# Subset data from south
+H.south <- subset(H_PS,  location == "South",
+                 drop = TRUE)
+# subset data from north
+H.north <- subset(H_PS,  location == "North",
+                 drop = TRUE)
+
+# Ramet A
+ramA_south <- filter(H.south, ramet == "A") 
+ramA_north <- filter(H.north, ramet == "A")
+
+ramA.ttest <- t.test(ramA_south$HPS, ramA_north$HPS)
+ramA.ttest
+
+
+# Ramet B
+ramB_south <- filter(H.south, ramet == "B") 
+ramB_north <- filter(H.north, ramet == "B")
+
+ramB.ttest <- t.test(ramB_south$HPS, ramB_north$HPS)
+ramB.ttest
+
+
+# Ramet C
+ramC_south <- filter(H.south, ramet == "C") 
+ramC_north <- filter(H.north, ramet == "C")
+
+ramC.ttest <- t.test(ramC_south$HPS, ramC_north$HPS)
+ramC.ttest
+
+
+# Ramet D
+ramD_south <- filter(H.south, ramet == "D") 
+ramD_north <- filter(H.north, ramet == "D")
+
+ramD.ttest <- t.test(ramD_south$HPS, ramD_north$HPS)
+ramD.ttest
+
+
+# Data Visualization
+(H_PS.p1 <- ggplot(H_PS, aes(x = ramet, HPS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    labs(x = "Region", y = "Chlorophyll Ratio")+
+    HStheme() +
+    theme(legend.position = "none"))
+
+```
+
+## Is there differences in variation between north and south
+```{r}
+reg <- bartlett.test(CPS ~ location, data = C_PS)
+reg
+
+
+reg <- bartlett.test(HPS ~ location, data = H_PS)
+reg
+
+```
+
+
+
+
+## Cold Photosynthesis
+Is there variation in temperature tolerance between genets with ramet as replicates
+```{r}
+CPS_aov2 <- aov(CPS ~ ID, data = C_PS)
+summary(CPS_aov2)
+
+
+#Create summarised data
+detach(package:plyr)
+
+summary1 <- C_PS %>%  
+  drop_na(CPS)%>% 
+  group_by(ID, location) %>%
+  summarise(mean = mean(CPS),sd = sd(CPS)) 
+  
+
+# dot plot
+(CPS.dot <- ggplot(summary1, aes(x = reorder(ID, mean), y = mean)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3, aes(colour = location)) +
+    scale_color_manual(values = c("#104E8B", "#CD2626"))+
+    HStheme() +
+    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
+    labs(x = "Genotype", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Cold Treatment"))
+
+# Saving graph
+ggsave("figures/CPS.p2.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+## Hot Photosynthesis
+Is there variation in temperature tolerance between genets with ramet as replicates
+```{r}
+HPS_aov2 <- aov(HPS ~ ID, data = H_PS)
+summary(HPS_aov2)
+
+
+#Create summarised data
+summary2 <- H_PS %>%  
+  drop_na(HPS)%>% 
+  group_by(ID, location) %>%
+  summarise(mean = mean(HPS),sd = sd(HPS)) 
+  
+
+# dot plot
+(CPS.dot <- ggplot(summary2, aes(x = reorder(ID, mean), y = mean)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3, aes(colour = location)) +
+    scale_color_manual(values = c("#104E8B", "#CD2626"))+
+    HStheme() +
+    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
+    labs(x = "Genotype", y = bquote(Delta* ' Net Photosynthesis'), title = "Photosynthesis", subtitle = "Hot Treatment"))
+
+# Saving graph
+ggsave("figures/HPS.p2.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+## Hot Photosynthesis
+## Is there variation in genets for the individual regions?
+```{r}
+# Is there variation in the individuals with in the independent Regions
+# Hot Photosynthesis
+#North
+H.PS_N <- H_PS %>% 
+  filter(location == "North")
+
+H.PS_N <- aov(HPS ~ ID, data = H.PS_N)
+summary(H.PS_N)
+
+
+#South
+H.PS_S <- H_PS %>% 
+  filter(location == "South")
+
+H.PS_S <- aov(HPS ~ ID, data = H.PS_S)
+summary(H.PS_S)
+
+
+
+# Cold Photosynthesis
+#North
+C.PS_N <- C_PS %>% 
+  filter(location == "North")
+
+C.PS_N <- aov(CPS ~ ID, data = C.PS_N)
+summary(C.PS_N)
+
+
+#South
+C.PS_S <- C_PS %>% 
+  filter(location == "South")
+
+C.PS_S <- aov(CPS ~ ID, data = C.PS_S)
+summary(C.PS_S)
+
+```
+
+
+
+# Is there variation between populations Cold?
+```{r}
+
+# Mixed Model for populations
+pop.aov <- lmer(CPS ~ population + (1|ramet), data = C_PS)
+
+(pop.aov.a <- anova(pop.aov))
+(pop.aov.r <- ranova(pop.aov))
+
+
+# Posthoc Test
+PH.pop <-emmeans(pop.aov, list(pairwise ~ population), adjust = "tukey")
+plot(PH.pop)
+
+
+my_comparisons <- list(c("Cemetary", "Oil Patch"), c("Cemetary", "Prairie Island"), c("Cemetary", "Frontenac"),   c("Cemetary", "Reserve"), c("Oil Patch", "Prairie Island"), c("Frontenac", "Oil Patch"), c("Oil Patch", "Reserve"), c("Frontenac", "Prairie Island"),   c("Prairie Island", "Reserve"), c("Frontenac", "Reserve")) # comparisons for post-hoc tests
+# Edit until here
+
+
+ggboxplot(C_PS, x = "population", y = "CPS",
+          fill = "location") +
+  stat_compare_means(comparisons = my_comparisons, label = "p.signif") +
+  scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+  HStheme() +
+  theme(axis.text.x = element_text(size = 12, angle = 0)) +
+  labs(x = "Population", y = "CPS")
+
+
+
+# Saving graph
+# ggsave("figures/H.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+# Is there variation between populations Hot?
+```{r}
+
+# Mixed Model for populations
+pop.aov <- lmer(HPS ~ population + (1|ramet), data = H_PS)
+
+(pop.aov.a <- anova(pop.aov))
+(pop.aov.r <- ranova(pop.aov))
+
+
+# Posthoc Test
+PH.pop <-emmeans(pop.aov, list(pairwise ~ population), adjust = "tukey")
+plot(PH.pop)
+
+
+my_comparisons <- list(c("Cemetary", "Oil Patch"), c("Cemetary", "Prairie Island"), c("Cemetary", "Frontenac"),   c("Cemetary", "Reserve"), c("Oil Patch", "Prairie Island"), c("Frontenac", "Oil Patch"), c("Oil Patch", "Reserve"), c("Frontenac", "Prairie Island"),   c("Prairie Island", "Reserve"), c("Frontenac", "Reserve")) # comparisons for post-hoc tests
+# Edit until here
+
+
+ggboxplot(H_PS, x = "population", y = "HPS",
+          fill = "location") +
+  stat_compare_means(comparisons = my_comparisons, label = "p.signif") +
+  scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+  HStheme() +
+  theme(axis.text.x = element_text(size = 12, angle = 0)) +
+  labs(x = "Population", y = "HPS")
+
+
+
+# Saving graph
+# ggsave("figures/H.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
+
+```

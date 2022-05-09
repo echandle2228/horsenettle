@@ -1,0 +1,256 @@
+---
+title: "ANOVA for temperature tolerance"
+author: "Emma Chandler"
+date: "September 11, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries
+```{r message=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(lmerTest)
+library(ggpubr)
+library(EnvStats)
+library(emmeans)
+```
+
+
+
+## Load Data
+```{r}
+remove(list = ls())
+
+C.CHPL <- read.csv("~/Horsenettle/data/chlorophyll_cold.csv", header = TRUE)
+
+```
+
+## Calculate CHPL 
+```{r}
+
+# Create columns with proportions
+trtpro <- C.CHPL$treatment_final / C.CHPL$treatment_initial
+cntrpro <- C.CHPL$control_final / C.CHPL$control_initial
+
+# Calculate C.CHPL damage using proportions
+C.CHPL$CHPL <- 1 - (cntrpro - trtpro)
+
+# Export data frame for Correlation
+write.csv(x = C.CHPL, file = "~/Horsenettle/data/processed/C.CHPL.csv")
+
+```
+
+
+## Test for outliers
+```{r}
+# Create a boxplot of the dataset, outliers are shown as two distinct points
+(outliers <- boxplot(data = C.CHPL, CHPL~location, plot=TRUE)$out)  
+
+# Use number of potential outliers from previous code
+rosner <- rosnerTest(C.CHPL$CHPL, k = 5)
+rosner$all.stats
+# Three Outliers- in rows 199, 201, 182
+
+# Remove outliers
+# C.CHPL_NoOut <- C.CHPL[-c(199, 201, 182),]
+# (outliers <- boxplot(data = C.CHPL_NoOut, CHPL~location, plot=TRUE)$out)
+
+
+```
+
+
+# Creating a figure theme for all plots
+```{r message=FALSE}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+
+
+# Is there variance between regions, while accounting for block, population, and genet as random effects?
+```{r}
+CCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|population:ID), data = C.CHPL)
+
+(CCHPL_lmer1.a <- anova(CCHPL_lmer1))
+(CCHPL_lmer1.r <- ranova(CCHPL_lmer1))
+
+
+
+# Data Visualization
+(C.CHPL.p1 <- ggplot(C.CHPL, aes(x = location, CHPL, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Fluorescence", subtitle = "Cold Treatment")+
+    HStheme() +
+    theme(legend.position = "none"))
+
+# Saving graph
+ggsave("figures/C.CHPL.p1.png", width = 7, height = 5, dpi = 300)
+
+```
+
+There is evidence of differences between blocks in CHPL, is there a significant difference between north and south for individual ramets in CHPL
+```{r}
+
+# Subset data from south
+south <- subset(C.CHPL,  location == "South",
+                 drop = TRUE)
+# subset data from north
+north <- subset(C.CHPL,  location == "North",
+                 drop = TRUE)
+
+# Ramet A
+ramA_south <- filter(south, ramet == "A") 
+ramA_north <- filter(north, ramet == "A")
+
+ramA.ttest <- t.test(ramA_south$CHPL, ramA_north$CHPL, paired = TRUE)
+ramA.ttest
+
+
+# Ramet B
+ramB_south <- filter(south, ramet == "B") 
+ramB_north <- filter(north, ramet == "B")
+
+ramB.ttest <- t.test(ramB_south$CHPL, ramB_north$CHPL, paired = TRUE)
+ramB.ttest
+
+
+# Ramet C
+ramC_south <- filter(south, ramet == "C") 
+ramC_north <- filter(north, ramet == "C")
+
+ramC.ttest <- t.test(ramC_south$CHPL, ramC_north$CHPL, paired = TRUE)
+ramC.ttest
+
+
+# Ramet D
+ramD_south <- filter(south, ramet == "D") 
+ramD_north <- filter(north, ramet == "D")
+
+ramD.ttest <- t.test(ramD_south$CHPL, ramD_north$CHPL, paired = TRUE)
+ramD.ttest
+
+
+# Data Visualization
+(C.CHPL.p1 <- ggplot(C.CHPL, aes(x = ramet, CHPL, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    labs(x = "Block", y = "Chlorophyll Ratio")+
+    HStheme() +
+    theme(legend.position = "none"))
+
+# Saving graph
+ggsave("figures/CCHPL_blocks.png", width = 7, height = 5, dpi = 300)
+
+```
+
+## Is there variation in temperature tolerance between genets with ramet as replicates
+```{r}
+CCHPL_aov2 <- aov(CHPL ~ ID, data = C.CHPL)
+
+summary(CCHPL_aov2)
+
+
+summary <- C.CHPL %>% 
+  group_by(ID, location) %>% 
+  summarise(mean = mean(CHPL),sd = sd(CHPL))
+
+# dot plot
+(C.CHPL.dot <- ggplot(summary, aes(x = reorder(ID, mean), y = mean)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3, aes(colour = location)) +
+    scale_color_manual(values = c("#104E8B", "#CD2626"))+
+    HStheme() +
+    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
+    labs(x = "Genotype", y = "Chlorophyll Ratio", title = "Chlorophyll Fluorescence", subtitle = "Cold Treatment"))
+
+# Saving graph
+ggsave("figures/C.CHPL.p2.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+## Is there variation in genets for the individual regions?
+```{r}
+# Is there variation in the individuals with in the independent Regions
+
+#North
+C.CHPL_N <- C.CHPL %>% 
+  filter(location == "North")
+
+CCHPL_N <- aov(CHPL ~ ID, data = C.CHPL_N)
+summary(CCHPL_N)
+
+
+#South
+C.CHPL_S <- C.CHPL %>% 
+  filter(location == "South")
+
+CCHPL_S <- aov(CHPL ~ ID, data = C.CHPL_S)
+summary(CCHPL_S)
+
+
+```
+
+
+# Variance between groups
+
+```{r}
+reg <- bartlett.test(CHPL ~ location, data = C.CHPL)
+reg
+
+```
+
+
+
+# 1 ) Is there variation in between populations?
+```{r}
+
+# Mixed Model for populations
+pop.aov <- lmer(CHPL ~ population + (1|ramet), data = C.CHPL)
+
+(pop.aov.a <- anova(pop.aov))
+(pop.aov.r <- ranova(pop.aov))
+
+# Posthoc Test
+PH.pop <-emmeans(pop.aov, list(pairwise ~ population), adjust = "tukey")
+plot(PH.pop)
+
+
+my_comparisons <- list(c("Cemetary", "Oil Patch"), c("Cemetary", "Prairie Island"), c("Cemetary", "Frontenac"),   c("Cemetary", "Reserve"), c("Oil Patch", "Prairie Island"), c("Frontenac", "Oil Patch"), c("Oil Patch", "Reserve"), c("Frontenac", "Prairie Island"),   c("Prairie Island", "Reserve"), c("Frontenac", "Reserve")) # comparisons for post-hoc tests
+# Edit until here
+
+
+ggboxplot(C.CHPL, x = "population", y = "CHPL",
+          fill = "location") +
+  stat_compare_means(comparisons = my_comparisons, label = "p.signif") +
+  scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+  HStheme() +
+  theme(axis.text.x = element_text(size = 12, angle = 0)) +
+  labs(x = "Population", y = "CHPL")
+
+
+
+# Saving graph
+# ggsave("figures/H.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
+
+
+```
+

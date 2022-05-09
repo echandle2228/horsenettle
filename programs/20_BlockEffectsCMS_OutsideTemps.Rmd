@@ -1,0 +1,106 @@
+---
+title: "CMS Block Effect and Outdoor Temperatures"
+author: "Emma Chandler"
+date: "5/5/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load Libraries
+```{r message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(neonUtilities)
+library(gridExtra)
+library(scales)
+library(reshape2)
+```
+
+Load Data
+```{r}
+remove(list = ls())
+
+temp <- read.csv("~/Horsenettle/data/EnvironmentalData/NOAA_2021Temps.csv", header = TRUE)
+CMS.DATE <- read.csv("~/Horsenettle/data/CMS_Dates.csv", header = TRUE)
+H.CMS <- read.csv("~/Horsenettle/data/processed/H.CMS.csv", header = TRUE)
+C.CMS <- read.csv("~/Horsenettle/data/processed/C.CMS.csv", header = TRUE)
+```
+
+CMS data processing
+```{r}
+# Rename CMS columns
+H.CMS$HCMS <- H.CMS$CMS
+C.CMS$CCMS <- C.CMS$CMS
+
+# Drop unimportant columns
+H.CMS <- H.CMS[-c(1,7,8:13)]
+C.CMS <- C.CMS[-c(1,7,8:13)]
+
+# Merge CCMS and HCMS
+CMS <- merge(H.CMS, C.CMS, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE) %>% 
+  melt()
+
+# Merge date and CMS
+CMSwd <- merge(CMS, CMS.DATE, by.x = c("ID", "location", "ramet","variable"), by.y = c("ID", "location", "ramet","trt"), all.x = FALSE, all = TRUE)
+CMSwd2 <- CMSwd[c(1:7, 12)] %>% 
+  na.omit()
+
+# Make sure date is coded as a date
+CMSwd2$Date <- as.Date(CMSwd2$Date, format = "%m/%d/%Y")
+
+temp$DATE <- as.Date(temp$DATE, format = "%m/%d/%Y")
+
+```
+
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+Time Series Plot with CMS values and outside temperature
+```{r}
+
+(CMS.p <- ggplot(CMSwd2, aes(x = Date, y = value, color = variable, shape = ramet)) +
+  geom_point() +
+  scale_x_date(breaks = date_breaks("1 month"),
+               labels = date_format("%b"),
+               limits = as.Date(c("2021-02-24", "2021-08-01"))) +
+  HStheme() +
+  scale_color_manual(values = c("#FF4040","#00688B"),
+                     guide = "legend",
+                     labels = c("HCMS", "CCMS")) +
+  labs(x = "Date", y = "CMS") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        legend.position = "bottom"))
+  
+
+(temp.p <- ggplot(temp, aes(x = DATE, y = TMAX.C)) +
+  geom_line() +
+  scale_x_date(breaks = date_breaks("1 month"), 
+               labels = date_format("%b"),
+               limits = as.Date(c("2021-02-24", "2021-08-01"))) +
+  HStheme() +
+  labs(x = "Date", y = expression(paste('Daily Max Temp (',~degree,'C)',sep='')))) 
+
+
+
+# g <- grid.arrange(temp.p, CMS.p, heights = c(1,2))
+
+ggsave("figures/temp.png", width = 7, height = 5, dpi = 300)
+
+```
+

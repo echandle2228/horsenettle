@@ -1,0 +1,230 @@
+---
+title: "Temperature Tolerance Correlation"
+author: "Emma Chandler"
+date: "March 1, 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Libraries
+```{r message=FALSE}
+
+library(ggplot2)
+library(ggcorrplot)
+library(corrplot)
+
+```
+
+# Clear environment and set seed
+```{r}
+remove(list = ls())
+set.seed(158358)
+```
+
+
+# Load data
+```{r}
+# Sporophytic Variables
+H.CMS <- read.csv("~/Horsenettle/data/processed/H.CMS.csv", header = TRUE)
+C.CMS <- read.csv("~/Horsenettle/data/processed/C.CMS.csv", header = TRUE)
+H.CHPL <- read.csv("~/Horsenettle/data/processed/H.CHPL.csv", header = TRUE)
+C.CHPL <- read.csv("~/Horsenettle/data/processed/C.CHPL.csv", header = TRUE)
+CPS <- read.csv("~/Horsenettle/data/processed/CPS.csv", header = TRUE)
+HPS <- read.csv("~/Horsenettle/data/processed/HPS.csv", header = TRUE)
+
+#Gametophytic Variables
+germ <- read.csv("~/Horsenettle/data/processed/germParams.csv", header = TRUE)
+PTGR <- read.csv("~/Horsenettle/data/processed/ptgrParams.csv", header = TRUE)
+
+```
+
+### Rename column that are the same and convert lower to upper case
+```{r}
+H.CMS$HCMS <- H.CMS$CMS
+C.CMS$CCMS <- C.CMS$CMS
+H.CHPL$HCHPL <- H.CHPL$CHPL
+C.CHPL$CCHPL <- C.CHPL$CHPL
+
+HPS$ramet <- toupper(HPS$ramet)
+CPS$ramet <- toupper(CPS$ramet)
+
+germ$Cgerm <- germ$ctmin
+germ$Hgerm <- germ$ctmax
+
+PTGR$CPTGR <- PTGR$ctmin
+PTGR$HPTGR <- PTGR$ctmax
+
+
+```
+
+
+### Drop columns that won't be used
+```{r}
+
+H.CMS <- H.CMS[-c(1,7,8:13)]
+C.CMS <- C.CMS[-c(1,7,8:13)]
+H.CHPL <- H.CHPL[-c(1,7,8:13)]
+C.CHPL <- C.CHPL[-c(1,7,8:13)]
+HPS <- HPS[-c(1,7)]
+CPS <- CPS[-c(1,7)]
+
+Topt_G <- germ[-c(1:3,5:13)]
+Topt_PT <- PTGR[-c(1:3,5:13)]
+
+germ <- germ[-c(1:13)]
+PTGR <- PTGR[-c(1:13)]
+
+
+
+```
+
+### Check column types
+```{r}
+summary(HPS)
+summary(H.CMS)
+
+```
+
+# Test homogeneity of variance
+```{r}
+# Normal Data
+bartlett.test(HCMS ~ location, data = H.CMS) #NS
+bartlett.test(CCMS ~ location, data = C.CMS) #NS
+bartlett.test(HCHPL ~ location, data = H.CHPL) # Variance significantly different
+bartlett.test(CCHPL ~ location, data = C.CHPL) # Variance significantly different
+bartlett.test(CPS ~ location, data = CPS) #NS
+bartlett.test(HPS ~ location, data = HPS) #NS
+
+```
+
+
+# Create data frame with all tolerance variables
+```{r}
+CMS <- merge(H.CMS, C.CMS, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+CHPL <- merge(H.CHPL, C.CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+PS <- merge(HPS, CPS, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+CC <- merge(CMS, CHPL, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+spor <- merge(CC, PS, by = c("ID", "location", "population", "number", "ramet"), all.x = TRUE, all = TRUE)
+
+gam <- merge(germ, PTGR, by = c("ID", "location","population", "number", "ramet"), all.x = TRUE, all = TRUE)
+ALL <- merge(gam, spor, by = c("ID", "location","population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+write.csv(x = ALL, file = "~/Horsenettle/data/processed/correlationFull.csv")
+
+# Omit all except values of interest
+COR <- ALL[-c(1:5)]
+
+```
+
+Changing column names for ease of reading in correlation plot
+```{r}
+names(COR)[5] <- "Hot CMS"  
+names (COR)[6] <- "Cold CMS"
+names (COR)[7] <- "Hot CHPL"
+names (COR)[8] <- "Cold CHPL"
+names (COR)[9] <- "Cold PS"
+names (COR)[10] <- "Hot PS"
+
+names (COR)[1] <- "Tmin Germination"
+names (COR)[2] <- "Tmax Germination"
+names (COR)[3] <- "Tmin PTGR"
+names (COR)[4] <- "Tmax PTGR"
+```
+
+
+# Create correlation matrix
+```{r}
+correlation <- cor(COR, use = "pairwise.complete.obs")
+
+correlation
+
+p.mat <- cor_pmat(COR)
+p.mat
+
+```
+
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "serif"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+
+# Create correlation heat map
+```{r}
+
+
+
+Corr <- corrplot(correlation,type="lower", tl.srt = 45,
+                 p.mat = p.mat, sig.level = 0.05, insig = "blank", number.cex = 0.8,
+                 addCoef.col ='black', tl.col = c("#030303", "#050505", "#030303", "#030303", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A"))
+
+
+```
+
+
+
+## Create correlation between PTGR and CMS
+```{r}
+
+Rank_dat <- merge(CMS, Topt_PT, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat, aes(x = HCMS, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "PTGR Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
+
+
+Rank_dat <- merge(CMS, Topt_G, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat, aes(x = HCMS, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "Pollen Germination Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
+
+
+```
+
+## Create correlation between PTGR and CMS
+```{r}
+
+Rank_dat_2 <- merge(CHPL, Topt_G, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat_2, aes(x = HCHPL, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "Pollen Germination Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
+
+
+Rank_dat_2 <- merge(CHPL, Topt_PT, by = c("ID", "location", "population", "number", "ramet"), all.x = FALSE, all = TRUE)
+
+ggplot(Rank_dat_2, aes(x = HCHPL, y = topt, color = location)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  HStheme()+
+  labs(y = "PTGR Topt") +
+  scale_color_manual(values = c("#483D8B", "#FF4040"))
+
+
+
+```

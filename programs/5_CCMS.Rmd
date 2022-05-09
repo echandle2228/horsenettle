@@ -1,0 +1,272 @@
+---
+title: "ANOVA for temperature tolerance"
+author: "Emma Chandler"
+date: "September 11, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries
+```{r message=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(lmerTest)
+library(ggpubr)
+library(EnvStats)
+library(emmeans)
+```
+
+
+
+## Load Data
+```{r}
+remove(list = ls())
+
+C.CMS <- read.csv("~/Horsenettle/data/CMS_cold.csv", header = TRUE)
+
+```
+
+## Calculate CMS 
+```{r}
+# Create  proportions of damage over max
+trtpro <- C.CMS$exp_trt / C.CMS$exp_max
+cntrpro <- C.CMS$cntr_trt / C.CMS$cntr_max
+
+# Calculate CMS using proportions
+C.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
+
+# Export data frame for Correlation
+write.csv(x = C.CMS, file = "~/Horsenettle/data/processed/C.CMS.csv")
+
+```
+
+## Test for outliers
+```{r}
+# Create a boxplot of the dataset, outliers are shown as two distinct points
+(outliers <- boxplot(data = C.CMS, CMS~location, plot=TRUE)$out)  
+
+# Use number of potential outliers from previous code
+rosner <- rosnerTest(C.CMS$CMS, k = 5)
+rosner$all.stats
+# Three Outliers- in rows 10, 58, 61
+
+# Remove outliers
+# C.CMS_NoOut <- C.CMS[-c(10,58,61),]
+# (outliers <- boxplot(data = C.CMS_NoOut, CMS~location, plot=TRUE)$out)  
+
+
+```
+
+# Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
+```
+
+
+
+
+# Is there variance between regions, while accounting for block, population, and genet as random effects?
+```{r}
+
+CCMS_lmer1 <- lmer(CMS ~ location + (1|ramet), data = C.CMS)
+
+(CCMS_lmer1.a <- anova(CCMS_lmer1))
+(CCMS_lmer1.r <- ranova(CCMS_lmer1))
+
+
+
+# Data Visualization
+(C.CMS.p1 <- ggplot(C.CMS, aes(x = ramet, CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))
+
+# Saving graph
+ggsave("figures/C.CMS.p1.png", width = 7, height = 5, dpi = 300)
+
+(C.CMS.p1 <- ggplot(C.CMS, aes(x = location, CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))
+
+# Saving graph
+ggsave("figures/C.CMS.p1b.png", width = 7, height = 5, dpi = 300)
+
+```
+
+Since there is variation between blocks that is probably due to temperatures in the greenhouse affecting the the plants, is there a significant difference between north and south for individual ramets
+```{r}
+
+# Subset data from south
+south <- subset(C.CMS,  location == "South",
+                 drop = TRUE)
+# subset data from north
+north <- subset(C.CMS,  location == "North",
+                 drop = TRUE)
+
+# Ramet A
+ramA_south <- filter(south, ramet == "A") 
+ramA_north <- filter(north, ramet == "A")
+
+ramA.ttest <- t.test(ramA_south$CMS, ramA_north$CMS, paired = TRUE)
+ramA.ttest
+
+
+# Ramet B
+ramB_south <- filter(south, ramet == "B") 
+ramB_north <- filter(north, ramet == "B")
+
+ramB.ttest <- t.test(ramB_south$CMS, ramB_north$CMS, paired = TRUE)
+ramB.ttest
+
+(rametB <- C.CMS %>% 
+    filter(ramet == "B") %>% 
+    ggplot(aes(location, CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Region", y = "CMS Ratio", title = "Ramet B"))
+
+# Saving graph
+# ggsave("figures/H.CMS_rametA.png", width = 7, height = 5, dpi = 300)
+
+
+# Ramet C
+ramC_south <- filter(south, ramet == "C") 
+ramC_north <- filter(north, ramet == "C")
+
+ramC.ttest <- t.test(ramC_south$CMS, ramC_north$CMS, paired = TRUE)
+ramC.ttest
+
+(rametC <- C.CMS %>% 
+    filter(ramet == "C") %>% 
+    ggplot(aes(location, CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Region", y = "CMS Ratio", title = "Ramet C"))
+
+# Saving graph
+# ggsave("figures/H.CMS_rametA.png", width = 7, height = 5, dpi = 300)
+
+
+# Ramet D
+ramD_south <- filter(south, ramet == "D") 
+ramD_north <- filter(north, ramet == "D")
+
+ramD.ttest <- t.test(ramD_south$CMS, ramD_north$CMS, paired = TRUE)
+ramD.ttest
+```
+
+## Is there variation in temperature tolerance between genets with ramet as replicates
+```{r}
+CCMSL_aov2 <- aov(CMS ~ ID, data = C.CMS)
+
+summary(CCMSL_aov2)
+
+unique(sort(C.CMS$ID))
+
+
+summary <- C.CMS %>% 
+  group_by(ID, location) %>% 
+  summarise(mean = mean(CMS),sd = sd(CMS))
+
+# dot plot
+(C.CMS.dot <- ggplot(summary, aes(x = reorder(ID, mean), y = mean)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3, aes(colour = location)) +
+    scale_color_manual(values = c("#104E8B", "#CD2626"))+
+    HStheme() +
+    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
+    labs(x = "Genotype", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))
+
+# Saving graph
+ggsave("figures/C.CMS.p2.png", width = 7, height = 5, dpi = 300)
+
+```
+
+
+## Is there variation in genets for the individual regions?
+```{r}
+# Is there variation in the individuals with in the independent Regions
+
+#North
+C.CMS_N <- C.CMS %>% 
+  filter(location == "North")
+
+CCMS_N <- aov(CMS ~ ID, data = C.CMS_N)
+summary(CCMS_N)
+
+
+#South
+C.CMS_S <- C.CMS %>% 
+  filter(location == "South")
+
+CCMS_S <- aov(CMS ~ ID, data = C.CMS_S)
+summary(CCMS_S)
+
+
+```
+
+
+
+# Variance between groups
+
+```{r}
+reg <- bartlett.test(CMS ~ location, data = C.CMS)
+reg
+
+```
+
+
+# 1 ) Is there variance between populations?
+```{r}
+
+# Mixed Model for populations
+pop.aov <- lmer(CMS ~ population + (1|ramet), data = C.CMS)
+
+(pop.aov.a <- anova(pop.aov))
+(pop.aov.r <- ranova(pop.aov))
+
+# Posthoc Test
+PH.pop <-emmeans(pop.aov, list(pairwise ~ population), adjust = "tukey")
+plot(PH.pop)
+
+
+my_comparisons <- list(c("Cemetary", "Oil Patch"), c("Cemetary", "Prairie Island"), c("Cemetary", "Frontenac"),   c("Cemetary", "Reserve"), c("Oil Patch", "Prairie Island"), c("Frontenac", "Oil Patch"), c("Oil Patch", "Reserve"), c("Frontenac", "Prairie Island"),   c("Prairie Island", "Reserve"), c("Frontenac", "Reserve")) # comparisons for post-hoc tests
+# Edit until here
+
+
+ggboxplot(C.CMS, x = "population", y = "CMS",
+          fill = "location") +
+  stat_compare_means(comparisons = my_comparisons, label = "p.signif") +
+  scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+  HStheme() +
+  theme(axis.text.x = element_text(size = 12, angle = 0)) +
+  labs(x = "Population", y = "CMS")
+
+
+
+# Saving graph
+# ggsave("figures/H.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
+
+```
+
