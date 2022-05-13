@@ -170,8 +170,13 @@ coor <- predict(SPOR.PCA, newdata = data.nona)
 
 ALL <- cbind(data.nona, coor)
 
-PC1.m <- aov(PC2 ~ location, data = ALL)
-summary(PC1.m)
+
+
+t.test(PC1 ~ location, ALL)
+t.test(PC2 ~ location, ALL)
+t.test(PC3 ~ location, ALL)
+
+
 
 # Data Visualization
 (SPOR_PC1 <- ggplot(ALL, aes(x = location, PC2, fill = location)) +     geom_boxplot(alpha = 0.8) +
@@ -184,8 +189,6 @@ summary(PC1.m)
 ggsave("figures/SPOR_PC1.png", width = 7, height = 5, dpi = 300)
 
 
-PC1.m <- aov(PC3 ~ location, data = ALL)
-summary(PC1.m)
 
 # Data Visualization
 (SPOR_PC1 <- ggplot(ALL, aes(x = location, PC3, fill = location)) +     geom_boxplot(alpha = 0.8) +

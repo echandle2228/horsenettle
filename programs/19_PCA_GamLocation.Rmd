@@ -151,12 +151,12 @@ ggsave("figures/PCA.sporStack.png", width = 6, height = 11)
 ## 3D plot with first 3 principal componenets
 ```{r}
 
-SPOR.PCA <- prcomp(Gam[,c(6:11)], center = TRUE, scale. = TRUE)
+GAM.PCA <- prcomp(Gam[,c(6:11)], center = TRUE, scale. = TRUE)
 loca <- factor(Gam$location)
 
 summary(loca)
 
-pca3d(SPOR.PCA, group = loca, 
+pca3d(GAM.PCA, group = loca, 
       show.ellipses=TRUE, 
       ellipse.ci=0.75, 
       show.plane=FALSE, 
@@ -179,15 +179,16 @@ for (i in 1:360) {
 
 Get PCA individual data
 ```{r}
-ID_PCA <- get_pca_ind(SPOR.PCA)
+ID_PCA <- get_pca_ind(GAM.PCA)
 head(ID_PCA$coord)
 
-coor <- predict(SPOR.PCA, newdata = data.nona)
+coor <- predict(GAM.PCA, newdata = Gam)
 
-ALL <- cbind(data.nona, coor)
+ALL <- cbind(Gam, coor)
 
-PC1.m <- aov(PC2 ~ location, data = ALL)
-summary(PC1.m)
+t.test(PC1 ~ location, ALL)
+t.test(PC2 ~ location, ALL)
+t.test(PC3 ~ location, ALL)
 
 # Data Visualization
 (SPOR_PC1 <- ggplot(ALL, aes(x = location, PC2, fill = location)) +     geom_boxplot(alpha = 0.8) +

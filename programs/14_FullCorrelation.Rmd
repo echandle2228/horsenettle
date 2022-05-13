@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(ggcorrplot)
 library(corrplot)
+library(dplyr)
 
 ```
 
@@ -228,3 +229,40 @@ ggplot(Rank_dat_2, aes(x = HCHPL, y = topt, color = location)) +
 
 
 ```
+
+## Separate correlations
+```{r}
+
+# North
+North <- ALL %>% 
+  filter(location == "North") %>% 
+  select(c(6:15)) %>% 
+  cor(use = "pairwise.complete.obs")
+
+p.mat_N <- cor_pmat(North)
+
+Corr1 <- corrplot(North ,type="lower", tl.srt = 45,
+                 p.mat = p.mat_N, sig.level = 0.05, insig = "blank", number.cex = 0.8,
+                 addCoef.col ='black', tl.col = c("#030303", "#050505", "#030303", "#030303", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A"))
+
+
+
+
+
+# South
+South <- ALL %>% 
+  filter(location == "South") %>% 
+  select(c(6:15)) %>% 
+  cor(use = "pairwise.complete.obs")
+
+p.mat_S <- cor_pmat(South)
+
+Corr2 <- corrplot(South ,type="lower", tl.srt = 45,
+                 p.mat = p.mat_S, sig.level = 0.05, insig = "blank", number.cex = 0.8,
+                 addCoef.col ='black', tl.col = c("#030303", "#050505", "#030303", "#030303", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A"))
+
+
+```
+
+
+

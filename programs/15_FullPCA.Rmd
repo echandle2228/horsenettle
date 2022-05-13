@@ -197,6 +197,10 @@ coor <- predict(ALL.PCA, newdata = data.noPS)
 ALL <- cbind(data.noPS, coor)
 
 
+t.test(PC1 ~ location, ALL)
+t.test(PC2 ~ location, ALL)
+t.test(PC3 ~ location, ALL)
+
 PC2.m <- aov(PC2 ~ location, data = ALL)
 summary(PC2.m)
 
