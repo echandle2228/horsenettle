@@ -52,11 +52,11 @@ C.CHPL$CCHPL <- C.CHPL$CHPL
 HPS$ramet <- toupper(HPS$ramet)
 CPS$ramet <- toupper(CPS$ramet)
 
-germ$Cgerm <- germ$ctmin
-germ$Hgerm <- germ$ctmax
+germ$Germ.Tmin <- germ$ctmin
+germ$Germ.Tmax <- germ$ctmax
 
-PTGR$CPTGR <- PTGR$ctmin
-PTGR$HPTGR <- PTGR$ctmax
+PTGR$PTGR.Tmin <- PTGR$ctmin
+PTGR$PTGR.Tmax <- PTGR$ctmax
 
 
 ```
@@ -243,7 +243,7 @@ p.mat_N <- cor_pmat(North)
 
 Corr1 <- corrplot(North ,type="lower", tl.srt = 45,
                  p.mat = p.mat_N, sig.level = 0.05, insig = "blank", number.cex = 0.8,
-                 addCoef.col ='black', tl.col = c("#030303", "#050505", "#030303", "#030303", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A"))
+                 addCoef.col ='black', tl.col = c("#104E8B", "#104E8B", "#104E8B", "#104E8B", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222"))
 
 
 
@@ -259,7 +259,7 @@ p.mat_S <- cor_pmat(South)
 
 Corr2 <- corrplot(South ,type="lower", tl.srt = 45,
                  p.mat = p.mat_S, sig.level = 0.05, insig = "blank", number.cex = 0.8,
-                 addCoef.col ='black', tl.col = c("#030303", "#050505", "#030303", "#030303", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A"))
+                 addCoef.col ='black', tl.col = c("#104E8B", "#104E8B", "#104E8B", "#104E8B", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222"))
 
 
 ```
