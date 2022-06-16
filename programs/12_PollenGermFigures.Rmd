@@ -380,7 +380,7 @@ ggplot(bilin_plot.2, aes(x = iden, y = value, fill = location)) +
 
 
 
-ggsave("figures/pGERM_params4_DOT2.png", width = 7, height = 5, dpi = 300)
+ggsave("figures/pGERM_params4_DOT2.png", width = 7, height = 7, dpi = 300)
 
 
 
