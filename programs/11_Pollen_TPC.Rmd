@@ -195,7 +195,7 @@ params_final.pt <- merge(params.pt, region_dat, by = "fullID")
 
 
 
-## Single plant with plot
+## Single plant with plot - Germination
 
 ```{r}
 
@@ -238,19 +238,18 @@ new_data <- data.frame(temp = seq(min(single$temp),
 preds_PI <- augment(fit, newdata = new_data)
 
 # Plot data and model fit
-PI1A.p <- ggplot(single, aes(temp,germ)) +
+(PI1A.p <- ggplot(single, aes(temp,germ)) +
   geom_point() +
   geom_line(aes(temp, .fitted), preds_PI, col = 'blue') +
   HStheme() +
-  theme(plot.margin = unit(c(0,0.5,0.5,0.5), "cm"))+
   labs(x = 'Temperature (ºC)',
        y = '% Germination',
-       title = "PI1 A")
+       title = "PI1 A"))
+
+ggsave("figures/germ_curve_N.png", width = 7, height = 5, dpi = 300)
 
 
 
-
-# ggsave("figures/PI1A_germ.png", width = 7, height = 5, dpi = 300)
 
 ```
 
@@ -297,15 +296,14 @@ new_data <- data.frame(temp = seq(min(single$temp),
 preds_OP <- augment(fit, newdata = new_data)
 
 # Plot data and model fit
-OP1A.p <- ggplot(single, aes(temp,germ)) +
+(OP1A.p <- ggplot(single, aes(temp,germ)) +
   geom_point() +
   geom_line(aes(temp, .fitted), preds_OP, col = 'red') +
   HStheme() +
-  theme(plot.margin = unit(c(0.5,0.5,-0.5,0.5), "cm"))+
-  labs(x = "", y = '% Germination',
-       title = "OP1 A")
+  labs(x = "Temperature (ºC)", y = '% Germination',
+       title = "OP1 A"))
 
-
+ggsave("figures/germ_curve_S.png", width = 7, height = 5, dpi = 300)
 
 (stacked_quad <- ggpubr::ggarrange(OP1A.p, PI1A.p, ncol = 1, nrow = 2))
 
@@ -316,3 +314,118 @@ OP1A.p <- ggplot(single, aes(temp,germ)) +
 
 
 
+## Single plant with plot - PTGR
+
+```{r}
+
+# Plotting one curve
+single <- filter(Pollen, fullID == "PI1 A")
+
+# get starting values
+start_vals <- get_start_vals(single$temp, single$PTGR, model_name = 'quadratic_2008')
+low_lims <- get_lower_lims(single$temp, single$PTGR, model_name = 'quadratic_2008')
+upper_lims <- get_upper_lims(single$temp, single$PTGR, model_name = 'quadratic_2008')
+
+start_vals
+low_lims
+
+fit <- nls_multstart(PTGR~quadratic_2008(temp = temp, a,b,c),
+                     data = single,
+                     iter = 500, 
+                     start_lower = start_vals - 10,
+                     start_upper = start_vals + 10,
+                     lower = low_lims,
+                     upper = upper_lims,
+                     supp_errors = "Y")
+
+parameters <- calc_params(fit) %>% 
+  mutate_all(round, 2)
+
+parameters$ID <- "OP1 A"
+parameters$location <- "North"
+
+
+
+# Predict new data
+new_data <- data.frame(temp = seq(min(single$temp),
+                                  max(single$temp),
+                                  0.5))
+
+
+
+
+preds_PI <- augment(fit, newdata = new_data)
+
+# Plot data and model fit
+(PI1A.p <- ggplot(single, aes(temp,PTGR)) +
+  geom_point() +
+  geom_line(aes(temp, .fitted), preds_PI, col = 'blue') +
+  HStheme() +
+  labs(x = 'Temperature (ºC)',
+       y = 'PTGR',
+       title = "PI1 A"))
+
+ggsave("figures/PTGR_curve_N.png", width = 7, height = 5, dpi = 300)
+
+
+
+
+```
+
+## Single plant with plot
+
+```{r}
+
+# Plotting one curve
+single <- filter(Pollen, fullID == "OP1 A")
+
+# get starting values
+start_vals <- get_start_vals(single$temp, single$PTGR, model_name = 'quadratic_2008')
+low_lims <- get_lower_lims(single$temp, single$PTGR, model_name = 'quadratic_2008')
+upper_lims <- get_upper_lims(single$temp, single$PTGR, model_name = 'quadratic_2008')
+
+start_vals
+low_lims
+
+fit <- nls_multstart(PTGR~quadratic_2008(temp = temp, a,b,c),
+                     data = single,
+                     iter = 500, 
+                     start_lower = start_vals - 10,
+                     start_upper = start_vals + 10,
+                     lower = low_lims,
+                     upper = upper_lims,
+                     supp_errors = "Y")
+
+parameters <- calc_params(fit) %>% 
+  mutate_all(round, 2)
+
+parameters$ID <- "OP1 A"
+parameters$location <- "South"
+
+
+
+# Predict new data
+new_data <- data.frame(temp = seq(min(single$temp),
+                                  max(single$temp),
+                                  0.5))
+
+
+
+
+preds_OP <- augment(fit, newdata = new_data)
+
+# Plot data and model fit
+(OP1A.p <- ggplot(single, aes(temp,PTGR)) +
+  geom_point() +
+  geom_line(aes(temp, .fitted), preds_OP, col = 'red') +
+  HStheme() +
+  labs(x = "Temperature (ºC)", y = 'PTGR',
+       title = "OP1 A"))
+
+ggsave("figures/PTGR_curve_S.png", width = 7, height = 5, dpi = 300)
+
+(stacked_quad <- ggpubr::ggarrange(OP1A.p, PI1A.p, ncol = 1, nrow = 2))
+
+
+# ggsave("figures/stacked_genet.png", width = 4, height = 5, dpi = 300)
+```

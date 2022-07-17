@@ -121,7 +121,7 @@ HCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|population:ID), data = H.CH
 (H.CHPL.p1 <- ggplot(H.CHPL, aes(x = location, CHPL, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
     scale_fill_manual(values = c("#104E8B", "#CD2626")) +
-    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Fluorescence", subtitle = "Hot Treatment")+
+    labs(x = "Region", y = "CHPL Ratio", title = "Chlorophyll Content", subtitle = "Hot Treatment")+
     HStheme() +
     theme(legend.position = "none"))
 

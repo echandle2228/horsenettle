@@ -97,7 +97,7 @@ CCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|population:ID), data = C.CH
 (C.CHPL.p1 <- ggplot(C.CHPL, aes(x = location, CHPL, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
     scale_fill_manual(values = c("#104E8B", "#CD2626")) +
-    labs(x = "Region", y = "Chlorophyll Ratio", title = "Chlorophyll Fluorescence", subtitle = "Cold Treatment")+
+    labs(x = "Region", y = "CHPL Ratio", title = "Chlorophyll Content", subtitle = "Cold Treatment")+
     HStheme() +
     theme(legend.position = "none"))
 
@@ -180,6 +180,16 @@ summary <- C.CHPL %>%
     HStheme() +
     theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
     labs(x = "Genotype", y = "Chlorophyll Ratio", title = "Chlorophyll Fluorescence", subtitle = "Cold Treatment"))
+
+
+(C.CHPL.dot <- ggplot(C.CHPL, aes(x = reorder(ID, CHPL, FUN = median, na.rm = TRUE), y = CHPL, fill = location)) +
+    geom_boxplot(alpha = 0.8) +
+    HStheme() +
+    scale_fill_manual(values = c("#104E8B", "#B22222"))+
+    theme(axis.text.x = element_text(angle = 90, size = 8, vjust = 0.5),
+          axis.text.y = element_text(size = 8))+
+    labs(x = "Genet", y = "CHPL Ratio", title = "Chlorophyll Content", subtitle = "Cold Treatment"))
+
 
 # Saving graph
 ggsave("figures/C.CHPL.p2.png", width = 7, height = 5, dpi = 300)

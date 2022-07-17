@@ -139,6 +139,15 @@ posthoc <- TukeyHSD(x=HCMS_block, 'ramet', conf.level=0.95)
 posthoc
 
 
+(CMS.block.plot <- ggplot(H.CMS, aes(x = ramet, y = CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Block", y = "CMS Ratio"))
+
+# Saving graph
+ggsave("figures/H.CMS.BLOCK.png", width = 7, height = 5, dpi = 300)
+
 ```
 Since there is variation between blocks that is probably due to temperatures in the greenhouse affecting the the plants, is there a significant difference between north and south for individual ramets
 ```{r}
@@ -221,8 +230,18 @@ summary <- H.CMS %>%
     theme(axis.text.x = element_text(size = 10, angle = 90, vjust = 0.5)) +
     labs(x = "Genotype", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Hot Treatment"))
 
+
+(H.CMS.dot <- ggplot(H.CMS, aes(x = reorder(ID, CMS, FUN = median, na.rm = TRUE), y = CMS, fill = location)) +
+    geom_boxplot(alpha = 0.8) +
+    HStheme() +
+    scale_fill_manual(values = c("#104E8B", "#B22222"))+
+    theme(axis.text.x = element_text(angle = 90, size = 8, vjust = 0.5),
+          axis.text.y = element_text(size = 8))+
+    labs(x = "Genet", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Hot Treatment"))
+
+
 # Saving graph
-# ggsave("figures/H.CMS.p2.png", width = 7, height = 5, dpi = 300)
+ggsave("figures/H.CMS.p2.png", width = 7, height = 5, dpi = 300)
 
 ```
 

@@ -18,6 +18,8 @@ library(lmerTest)
 library(ggpubr)
 library(EnvStats)
 library(emmeans)
+library(reshape2)
+
 ```
 
 
@@ -99,7 +101,7 @@ CCMS_lmer1 <- lmer(CMS ~ location + (1|ramet), data = C.CMS)
     labs(x = "Block", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))
 
 # Saving graph
-ggsave("figures/C.CMS.p1.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/C.CMS.p1.png", width = 7, height = 5, dpi = 300)
 
 (C.CMS.p1 <- ggplot(C.CMS, aes(x = location, CMS, fill = location)) + 
     geom_boxplot(alpha = 0.8) +
@@ -121,6 +123,20 @@ south <- subset(C.CMS,  location == "South",
 # subset data from north
 north <- subset(C.CMS,  location == "North",
                  drop = TRUE)
+
+
+
+(CMS.block.plot <- ggplot(C.CMS, aes(x = ramet, y = CMS, fill = location)) + 
+    geom_boxplot(alpha = 0.8) +
+    scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+    HStheme() +
+    labs(x = "Block", y = "CMS Ratio"))
+
+# Saving graph
+ggsave("figures/C.CMS.BLOCK.png", width = 7, height = 5, dpi = 300)
+
+
+
 
 # Ramet A
 ramA_south <- filter(south, ramet == "A") 
@@ -174,7 +190,11 @@ ramD_north <- filter(north, ramet == "D")
 
 ramD.ttest <- t.test(ramD_south$CMS, ramD_north$CMS, paired = TRUE)
 ramD.ttest
+
 ```
+
+
+
 
 ## Is there variation in temperature tolerance between genets with ramet as replicates
 ```{r}
@@ -197,6 +217,16 @@ summary <- C.CMS %>%
     HStheme() +
     theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 0.5)) +
     labs(x = "Genotype", y = "CMS Ratio", title = "Cell Membrane Stability", subtitle = "Cold Treatment"))
+
+
+(C.CMS.dot <- ggplot(C.CMS, aes(x = reorder(ID, CMS, FUN = median, na.rm = TRUE), y = CMS, fill = location)) +
+    geom_boxplot(alpha = 0.8) +
+    HStheme() +
+    scale_fill_manual(values = c("#104E8B", "#B22222"))+
+    theme(axis.text.x = element_text(angle = 90, size = 8, vjust = 0.5),
+          axis.text.y = element_text(size = 8))+
+    labs(x = "Genet", y = "CMS Ratio"))
+
 
 # Saving graph
 ggsave("figures/C.CMS.p2.png", width = 7, height = 5, dpi = 300)

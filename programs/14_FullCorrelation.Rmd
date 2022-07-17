@@ -16,6 +16,7 @@ library(ggplot2)
 library(ggcorrplot)
 library(corrplot)
 library(dplyr)
+library(RcmdrMisc)
 
 ```
 
@@ -136,16 +137,6 @@ names (COR)[4] <- "Tmax PTGR"
 ```
 
 
-# Create correlation matrix
-```{r}
-correlation <- cor(COR, use = "pairwise.complete.obs")
-
-correlation
-
-p.mat <- cor_pmat(COR)
-p.mat
-
-```
 
 ```{r}
 HStheme <- function(){            
@@ -165,17 +156,35 @@ HStheme <- function(){
 
 
 
-# Create correlation heat map
+# Create correlation matrix
 ```{r}
+correlation <- cor(COR, use = "pairwise.complete.obs")
+
+correlation
+
+p.mat <- cor_pmat(COR)
+p.mat
+
+
+# Adjusted p-values with bonferroni correction
+padj <- apply(p.mat, 2, p.adjust, method = "holm")
+padj
 
 
 
 Corr <- corrplot(correlation,type="lower", tl.srt = 45,
                  p.mat = p.mat, sig.level = 0.05, insig = "blank", number.cex = 0.8,
-                 addCoef.col ='black', tl.col = c("#030303", "#050505", "#030303", "#030303", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A", "#4A4A4A"))
+                 addCoef.col ='black', tl.col = c("#104E8B", "#104E8B", "#104E8B", "#104E8B", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222"))
+
+
+Corr <- corrplot(correlation,type="lower", tl.srt = 45,
+                 p.mat = padj, sig.level = 0.05, insig = "blank", number.cex = 0.8,
+                 addCoef.col ='black', tl.col = c("#104E8B", "#104E8B", "#104E8B", "#104E8B", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222"))
+
 
 
 ```
+
 
 
 
@@ -239,10 +248,14 @@ North <- ALL %>%
   select(c(6:15)) %>% 
   cor(use = "pairwise.complete.obs")
 
-p.mat_N <- cor_pmat(North)
+(p.mat_N <- cor_pmat(North))
+
+# Adjusted p-values with bonferroni correction
+padj_N <- apply(p.mat_N, 2, p.adjust, method = "holm")
+padj_N
 
 Corr1 <- corrplot(North ,type="lower", tl.srt = 45,
-                 p.mat = p.mat_N, sig.level = 0.05, insig = "blank", number.cex = 0.8,
+                 p.mat = padj_N, sig.level = 0.05, insig = "blank", number.cex = 0.8,
                  addCoef.col ='black', tl.col = c("#104E8B", "#104E8B", "#104E8B", "#104E8B", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222"))
 
 
@@ -255,10 +268,14 @@ South <- ALL %>%
   select(c(6:15)) %>% 
   cor(use = "pairwise.complete.obs")
 
-p.mat_S <- cor_pmat(South)
+(p.mat_S <- cor_pmat(South))
+
+# Adjusted p-values with bonferroni correction
+padj_S <- apply(p.mat_S, 2, p.adjust, method = "holm")
+padj_S
 
 Corr2 <- corrplot(South ,type="lower", tl.srt = 45,
-                 p.mat = p.mat_S, sig.level = 0.05, insig = "blank", number.cex = 0.8,
+                 p.mat = padj_S, sig.level = 0.05, insig = "blank", number.cex = 0.8,
                  addCoef.col ='black', tl.col = c("#104E8B", "#104E8B", "#104E8B", "#104E8B", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222", "#B22222"))
 
 
