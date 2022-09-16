@@ -1,6 +1,0 @@
-ERROR 6: Field of name 'number' is not supported in GPX schema. Use GPX_USE_EXTENSIONS creation option to allow use of the <extensions> element.
-ERROR 6: Field of name 'route_fid' is not supported in GPX schema. Use GPX_USE_EXTENSIONS creation option to allow use of the <extensions> element.
-ERROR 6: Field of name 'route_point_id' is not supported in GPX schema. Use GPX_USE_EXTENSIONS creation option to allow use of the <extensions> element.
-ERROR 6: Field of name 'track_fid' is not supported in GPX schema. Use GPX_USE_EXTENSIONS creation option to allow use of the <extensions> element.
-ERROR 6: Field of name 'track_seg_id' is not supported in GPX schema. Use GPX_USE_EXTENSIONS creation option to allow use of the <extensions> element.
-ERROR 6: Field of name 'track_seg_point_id' is not supported in GPX schema. Use GPX_USE_EXTENSIONS creation option to allow use of the <extensions> element.
