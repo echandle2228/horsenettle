@@ -1,5 +1,5 @@
 ## horsenettle
-This repository contains the protocols, data, and code used in a study comparing temperature tolerance traits in populations of horsenettle from Texas and Minnesota.
+This repository contains the protocols, data, and code used in a study comparing temperature tolerance traits in populations of horsenettle from Texas and Minnesota.  
 This README.md was created 2022-09-16 by Emma K. Chandler
 ## General Information
 1. Data and R code: Intraspecific variation of temperature tolerance in Solanum carolinenses (horsenettle)
@@ -8,6 +8,7 @@ This README.md was created 2022-09-16 by Emma K. Chandler
 Emma K. Chandler, Department of Biological Sciences, Dept. 2715, North Dakota State University, PO Box 6050, Fargo, ND 58108-6050, ORCiD: 0000-0002-6507-1091
 
 Corresponding Author: Steven E. Travers, Department of Biological Sciences, Dept. 2715, North Dakota State University, PO Box 6050, Fargo, ND 58108-6050, steven.travers@ndsu.edu, ORCiD: 0000-0001-5679-8064
+
 3. Data collected from January 2021 through November 2021
 4. Data collected at North Dakota State University
 5. Information about funding sources: No direct funding sources
