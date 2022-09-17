@@ -3,7 +3,7 @@ This repository contains the protocols, data, and code used in a study comparing
 This README.md was created 2022-09-16 by Emma K. Chandler
 ## General Information
 1. Data and R code: Intraspecific variation of temperature tolerance in Solanum carolinenses (horsenettle)
-2. Author Information
+2. Author Information:
 Emma K. Chandler, Department of Biological Sciences, Dept. 2715, North Dakota State University, PO Box 6050, Fargo, ND 58108-6050, ORCiD: 0000-0002-6507-1091
 Corresponding Author: Steven E. Travers, Department of Biological Sciences, Dept. 2715, North Dakota State University, PO Box 6050, Fargo, ND 58108-6050, steven.travers@ndsu.edu, ORCiD: 0000-0001-5679-8064
 3. Data collected from January 2021 through November 2021
@@ -40,11 +40,11 @@ A. File folder data
    8. Filename leaf_mass.csv: mass of 10 leaf rounds (used to determine if leaf thickness differed between populations for cell membrane stability measurements)
    9. Filename MN_TX_TempComparisons.csv: summary daily temperature data (NOAA) and flowering data (iNaturalist) for Texas and Minnesota 
    10. Filename photosynthesis.csv: initial and final photosynthesis measurements for the hot and cold treatments
-   11.Filename PollenGerm_parameters.csv: pollen counts for germination and pollen tube length statistics for pollen tube growth rate
+   11. Filename PollenGerm_parameters.csv: pollen counts for germination and pollen tube length statistics for pollen tube growth rate
 B. File folder pilot_programs: R code for analyzing data from pilot study
 C. File folder pollentube2021: pictures of petri dishes (agar growth medium) with pollen from five temperature treatments
 D. File folder programs: R code for greenhouse design and analyzing data
-      
+    1.   
       
 ## Data information for: 
 
