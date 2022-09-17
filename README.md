@@ -21,7 +21,7 @@ Corresponding Author: Steven E. Travers, Department of Biological Sciences, Dept
 
 E.K. Chandler and S.E. Travers. Data and R Code to Support: Evidence of local adaptation in temperature tolerance traits of the gametophytic and sporophytic stages in Solanum carolinense (horsenettle).
 
-__
+______________
 ## Data and File Overview
 A. File folder data  
    1. File folder LICOR_PS: raw files and csv files with net photosynthesis data from measurments taken with the LI-6400 infrared gas analyzer
@@ -79,7 +79,7 @@ D. File folder programs: R code for greenhouse design and analyzing data
 
 E. File folder Protocols: documents with protocols for measuring and calculating each variable included in this project
 
-__
+________________
 ## Data information for: chlorophyll_cold.csv
 1. Number of variables: 11
 2. Number of plants/rows: 196
