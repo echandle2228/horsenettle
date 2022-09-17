@@ -1,6 +1,7 @@
 ## horsenettle
 This repository contains the protocols, data, and code used in a study comparing temperature tolerance traits in populations of horsenettle from Texas and Minnesota.  
 This README.md was created 2022-09-16 by Emma K. Chandler
+
 ## General Information
 1. Data and R code: Intraspecific variation of temperature tolerance in Solanum carolinenses (horsenettle)
 2. Author Information:
@@ -12,12 +13,15 @@ Corresponding Author: Steven E. Travers, Department of Biological Sciences, Dept
 3. Data collected from January 2021 through November 2021
 4. Data collected at North Dakota State University
 5. Information about funding sources: No direct funding sources
+
 ## Sharing and Access Information
 1. Restrictions placed on data:
 2. Links to publication that cite data: E.K. Chandler and S.E. Travers. Evidence of local adaptation in temperature tolerance traits of the gametophytic and sporophytic stages in Solanum carolinense (horsenettle)(in review for publication)
 3. Recommended citation for the data:
 
 E.K. Chandler and S.E. Travers. Data and R Code to Support: Evidence of local adaptation in temperature tolerance traits of the gametophytic and sporophytic stages in Solanum carolinense (horsenettle).
+
+__
 ## Data and File Overview
 A. File folder data  
    1. File folder LICOR_PS: raw files and csv files with net photosynthesis data from measurments taken with the LI-6400 infrared gas analyzer
@@ -74,8 +78,138 @@ D. File folder programs: R code for greenhouse design and analyzing data
    21. File folder figures: figure outputs from all files listed above
 
 E. File folder Protocols: documents with protocols for measuring and calculating each variable included in this project
-      
-## Data information for: 
 
+__
+## Data information for: chlorophyll_cold.csv
+1. Number of variables: 11
+2. Number of plants/rows: 196
+3. Missing data: none
+4. Variable list
+  * population: origin population of plant
+  * location: origin region/location of plant (north vs south)
+  * number: plant number within population
+  * ID: plant ID including population abbreviation and number
+  * ramet: designation of ramet (4 per genet)
+  * block: temporal blocking, numbered in order of the week plants initiated growth
+  * pair: pair number for pairings between a southern and northern plant that initiated growth at the same time and were always placed next to one another in the greenhouse
+  * treatment_initial: initial chlorophyll content measurement prior to cold treatment
+  * treatment_final: final chlorophyll content measurement after cold treatment
+  * control_initial: initial chlorophyll content measurement prior to control treatment
+  * control_final: final chlorophyll content measurement after control treatment
 
+## Data information for: chlorophylldata.csv
+1. Number of variables: 11
+2. Number of plants/rows: 196
+3. Missing data: none
+4. Variable list
+  * population: origin population of plant
+  * location: origin region/location of plant (north vs south)
+  * number: plant number within population
+  * ID: plant ID including population abbreviation and number
+  * ramet: designation of ramet (4 per genet)
+  * block: temporal blocking, numbered in order of the week plants initiated growth
+  * pair: pair number for pairings between a southern and northern plant that initiated growth at the same time and were always placed next to one another in the greenhouse
+  * treatment_initial: initial chlorophyll content measurement prior to hot treatment
+  * treatment_final: final chlorophyll content measurement after hot treatment
+  * control_initial: initial chlorophyll content measurement prior to control treatment
+  * control_final: final chlorophyll content measurement after control treatment
 
+## Data information for: CMS_cold.csv
+1. Number of variables: 11
+2. Number of plants/rows: 196
+3. Missing data: none
+4. Variable list
+  * population: origin population of plant
+  * location: origin region/location of plant (north vs south)
+  * number: plant number within population
+  * ID: plant ID including population abbreviation and number
+  * ramet: designation of ramet (4 per genet)
+  * block: temporal blocking, numbered in order of the week plants initiated growth
+  * pair: pair number for pairings between a southern and northern plant that initiated growth at the same time and were always placed next to one another in the greenhouse
+  * exp_trt: conductivity measurement after cold treatment
+  * exp_max: conductivity measurement after maximum damage treatment for group in cold treatment
+  * cntr_trt: conductivity measurement after control treatment
+  * cntr_max: conductivity measurement after maximum damage treatment for group in control treatment
+
+## Data information for: CMSdata.csv
+1. Number of variables: 11
+2. Number of plants/rows: 196
+3. Missing data: none
+4. Variable list
+  * population: origin population of plant
+  * location: origin region/location of plant (north vs south)
+  * number: plant number within population
+  * ID: plant ID including population abbreviation and number
+  * ramet: designation of ramet (4 per genet)
+  * block: temporal blocking, numbered in order of the week plants initiated growth
+  * pair: pair number for pairings between a southern and northern plant that initiated growth at the same time and were always placed next to one another in the greenhouse
+  * exp_trt: conductivity measurement after hot treatment
+  * exp_max: conductivity measurement after maximum damage treatment for group in hot treatment
+  * cntr_trt: conductivity measurement after control treatment
+  * cntr_max: conductivity measurement after maximum damage treatment for group in control treatment
+
+## Data information for: leaf_mass.csv
+1. Number of variables: 9
+2. Number of plants/rows: 104
+3. Missing data: none
+4. Variable list
+  * population: origin population of plant
+  * location: origin region/location of plant (north vs south)
+  * number: plant number within population
+  * ID: plant ID including population abbreviation and number
+  * ramet: designation of ramet (2 per genet measured)
+  * block: temporal blocking, numbered in order of the week plants initiated growth
+  * pair: pair number for pairings between a southern and northern plant that initiated growth at the same time and were always placed next to one another in the greenhouse
+  * mass_T: mass of 10 leaf rounds from the treatment group used for CMS measurements
+  * mass_C: mass of 10 leaf rounds from the control group used for CMS measurments
+
+## Data information for: MN_TX_TempComparison.csv
+1. Number of variables: 7
+2. Number of plants/rows: 365
+3. Missing data: none
+4. Variable list
+  * DOY: day of the year
+  * Txmax: average maximum daily temperature for 2018-2021 in Collin County Texas
+  * Txmax: average minimum daily temperature for 2018-2021 in Collin County Texas
+  * Mnmax: average maximum daily temperature for 2018-2021 in Houston County Minnesota
+  * Mnmax: average minimum daily temperature for 2018-2021 in Houston County Minnesota
+  * TXflwr: day when horsenettle plant was observed flowering on iNaturalist in Texas
+  * MNflwr: day when horsenettle plant was observed flowering on iNaturalist in Minnesota
+
+## Data information for: photosynthesis.csv
+1. Number of variables: 11
+2. Number of plants/rows: 188
+3. Missing data: missing data for plants with leaves that were too small, with missing leaves, or dead
+4. Variable list
+  * population: origin population of plant
+  * location: origin region/location of plant (north vs south)
+  * number: plant number within population
+  * ID: plant ID including population abbreviation and number
+  * ramet: designation of ramet (4 per genet)
+  * block: temporal blocking, numbered in order of the week plants initiated growth
+  * CPS_i: initial net photosynthesis measurement prior to cold treatment
+  * CPS_f: final net photosynthesis measurement after cold treatment
+  * HPS_i: initial net photosynthesis measurement prior to hot treatment
+  * HPS_f: final net photosynthesis measurement after hot treatment
+  * notes: notes about problematic measurements due to equiptment problems
+
+## Data information for: pollenTube_NEW.csv
+1. Number of variables: 15
+2. Number of plants/rows: 305
+3. Missing data: none
+4. Variable list
+  * population: origin population of plant
+  * location: origin region/location of plant (north vs south)
+  * number: plant number within population
+  * ID: plant ID including population abbreviation and number
+  * ramet: designation of ramet (4 per genet)
+  * temp: temperature treatment in degrees celcius
+  * no_tubes: number of pollen grains counted on one picture per plate with no pollen tube
+  * tubes: number of pollen grains counted on one picture per plate with a pollen tube
+  * total_grains: total number of pollen grains counted on one picture per plate
+  * mean_length: mean length of the 20 longest pollen tubes on 4 pictures per plate
+  * median_length: median length of the 20 longest pollen tubes on 4 pictures per plate
+  * sd_length: standard deviation of the length of the 20 longest pollen tubes on 4 pictures per plate
+  * se_length: standard error of the length of the 20 longest pollen tubes on 4 pictures per plate
+  * max_length: length of the longest pollen tube of the 20 longest pollen tubes on 4 pictures per plate
+  * time: number of hours the plate with pollen grains was at the treatment temperature
