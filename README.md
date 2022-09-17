@@ -19,6 +19,7 @@ Corresponding Author: Steven E. Travers, Department of Biological Sciences, Dept
 E.K. Chandler and S.E. Travers. Data and R Code to Support: Evidence of local adaptation in temperature tolerance traits of the gametophytic and sporophytic stages in Solanum carolinense (horsenettle).
 ## Data and File Overview
 A. File folder data
+
    1. File folder LICOR_PS: raw files and csv files with net photosynthesis data from measurments taken with the LI-6400 infrared gas analyzer
    2. File folder pilotdata: csv files with data from pilot study
         * Filename chlorophyll.csv: chlorophyll content measurements used to calculate chlorophyll stability for a heat treatment
@@ -46,8 +47,11 @@ A. File folder data
    11. Filename PollenGerm_parameters.csv: pollen counts for germination and pollen tube length statistics for pollen tube growth rate
    
 B. File folder pilot_programs: R code for analyzing data from pilot study
+
 C. File folder pollentube2021: pictures of petri dishes (agar growth medium) with pollen from five temperature treatments
+
 D. File folder programs: R code for greenhouse design and analyzing data
+
     1. Filename 1_greenhouse_design.R: code for random placement of plants in greenhouse
     2. Filename 2_HCMS.Rmd: code for analyzing hot cell membrane stability data
     3. Filename 3_HCHPL.Rmd: code for analyzing hot chlorophyll stability data
