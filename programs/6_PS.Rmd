@@ -89,8 +89,8 @@ H_PS <- PS %>%
   filter(HPS <= 1, HPS > 0)
 
 # Export data frame for Correlation
-write.csv(x = C_PS, file = "~/Horsenettle/data/processed/CPS.csv")
-write.csv(x = H_PS, file = "~/Horsenettle/data/processed/HPS.csv")
+# write.csv(x = C_PS, file = "~/Horsenettle/data/processed/CPS.csv")
+# write.csv(x = H_PS, file = "~/Horsenettle/data/processed/HPS.csv")
 
 
 ```
@@ -135,7 +135,7 @@ Is there variance between regions, while accounting for block, population, and g
 ```{r}
 
 # Model
-CPS_lmer1 <- lmer(CPS ~ location + (1|ramet) + (1|population:ID), data = C_PS)
+CPS_lmer1 <- lmer(CPS ~ location + population + (1|ramet) + (1|ID), data = C_PS)
 
 (CPS_lmer1.a <- anova(CPS_lmer1))
 (CPS_lmer1.r <- ranova(CPS_lmer1))
@@ -212,14 +212,25 @@ Is there variance between regions, while accounting for block, population, and g
 ```{r}
 
 # Model
-HPS_lmer1 <- lmer(HPS ~ location + (1|ramet) + (1|population:ID), data = H_PS)
-HPS_lmer1 <- lmer(HPS ~ location + (1|ramet) + (1|population), data = H_PS)
-HPS_lmer1 <- lmer(HPS ~ location + (1|ramet), data = H_PS)
-HPS_lmer1 <- aov(HPS ~ location, data = H_PS)
+HPS_lmer1 <- lmer(HPS ~ location + population + (1|ramet) + (1|ID), data = H_PS)
 summary(HPS_lmer1)
 
 (HPS_lmer1.a <- anova(HPS_lmer1))
 (HPS_lmer1.r <- ranova(HPS_lmer1))
+
+
+# Include populations as a random effect with southern populations pooled
+H_PS <- H_PS %>% mutate(population_2 = case_when(location == "South" ~ "South",
+                                                   population == "Prairie Island" ~ "Prairie Island",
+                                                   population == "Frontenac" ~ "Frontenac"))
+
+HPS_lmer1_pop <- lmer(HPS ~ location + ID + (1|ramet), data = H_PS)
+AIC(HPS_lmer1_pop)
+
+(HPS_lmer1_pop.a <- anova(HPS_lmer1_pop))
+(HPS_lmer1_pop.r <- ranova(HPS_lmer1_pop))
+
+summary(HPS_lmer1_pop)
 
 
 # Data Visualization

@@ -17,6 +17,7 @@ library(ggcorrplot)
 library(corrplot)
 library(dplyr)
 library(RcmdrMisc)
+library(bcdstats)
 
 ```
 
@@ -170,6 +171,8 @@ p.mat
 padj <- apply(p.mat, 2, p.adjust, method = "holm")
 padj
 
+
+adjust.corr(p.mat, type = "pearson", adjust = "holm")
 
 
 Corr <- corrplot(correlation,type="lower", tl.srt = 45,

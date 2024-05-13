@@ -104,3 +104,17 @@ ggsave("figures/temp.png", width = 7, height = 5, dpi = 300)
 
 ```
 
+
+Stacked plot for CCMS and HCMS block effect
+```{r}
+(CMS.block.plot <- ggplot(CMS, aes(x = ramet, y = value, fill = location)) + 
+   geom_boxplot(alpha = 0.8) +
+   facet_wrap(~variable) +
+   scale_fill_manual(values = c("#104E8B", "#CD2626")) +
+   HStheme() +
+   labs(x = "Block", y = "CMS Ratio"))
+
+
+```
+
+

@@ -40,26 +40,26 @@ remove(list = ls())
 bilin <- read.csv("~/Horsenettle/data/processed/ptgrParams.csv", header = TRUE)
 head(bilin)
 
-germ_dat <- read.csv("~/Horsenettle/data/pollenTube_NEW.csv", header = TRUE)
-head(germ_dat)
+PTGR_dat <- read.csv("~/Horsenettle/data/pollenTube_NEW.csv", header = TRUE)
+head(PTGR_dat)
 ```
 
 
-# Pollen Germination ------------------------------------------------------
+# Pollen Tube Growth Rate ------------------------------------------------------
 ```{r}
 # Merge ID and Ramet
-germ_dat <- mutate(germ_dat, ID = paste(ID, ramet)) # NEW
+PTGR_dat <- mutate(PTGR_dat, ID = paste(ID, ramet)) # NEW
 
 # Calculate pollen tube growth rate
-germ_dat$PTGR <- germ_dat$mean_length / germ_dat$time
+PTGR_dat$PTGR <- PTGR_dat$mean_length / PTGR_dat$time
 
 # Plot Data
-gd <- germ_dat %>% 
+gd <- PTGR_dat %>% 
   group_by(location, temp) %>% 
   summarise(PTGR = mean(PTGR))
 
 
-ggplot(germ_dat, aes(x = temp, y = PTGR, color = location)) +
+ggplot(PTGR_dat, aes(x = temp, y = PTGR, color = location)) +
   geom_point() +
   geom_line(aes(group = ID)) +
   geom_line(data = gd, alpha = 1, size = 3) +
@@ -88,13 +88,13 @@ ggplot(germ_dat, aes(x = temp, y = PTGR, color = location)) +
 
 ```{r}
 # Plot Data
-gd <- germ_dat %>% 
+gd <- PTGR_dat %>% 
   group_by(population, temp) %>% 
   summarise(PTGR = mean(PTGR))
 
 
 
-ggplot(germ_dat, aes(x = temp, y = PTGR, color = population)) +
+ggplot(PTGR_dat, aes(x = temp, y = PTGR, color = population)) +
   geom_point() +
   geom_line(aes(group = ID)) +
   geom_line(data = gd, alpha = .8, size = 3) +
@@ -119,9 +119,9 @@ ggplot(germ_dat, aes(x = temp, y = PTGR, color = population)) +
 ## Reaction Norms for genets with atleast 3 ramets
 ```{r}
 # Filtering genets with more than three ramets
-germ_dat$iden <- str_extract(germ_dat$ID,"(\\w+)") 
+PTGR_dat$iden <- str_extract(PTGR_dat$ID,"(\\w+)") 
 
-rn_data <- germ_dat %>% 
+rn_data <- PTGR_dat %>% 
   group_by(iden) %>% 
   filter(n() > 10)
 
@@ -152,7 +152,7 @@ ggplot(rn_data, aes(x = temp, y = PTGR, color = location)) +
 # Compare PTGR North and South at 30 degrees
 ```{r}
 
-germ_dat %>% 
+PTGR_dat %>% 
   filter(temp == 30) %>% 
   ggplot(aes(x= location, y = PTGR, fill = location))+
   geom_boxplot()+
@@ -391,20 +391,27 @@ ggsave("figures/PTGR_params4_2.png", width = 7, height = 5, dpi = 300)
 
 ```
 
+## Mixed effects linear models for pollen tube growth rate
 ```{r}
 # Is there a difference between Regions in Tmax
-PGERM_max.R <- aov(ctmax ~ location, data = bilin)
-summary(PGERM_max.R)
+PTGR_max.R <- lmer(ctmax ~ location + population + (1|ID), data = bilin)
+
+anova(PTGR_max.R)
+ranova(PTGR_max.R)
+summary(PTGR_max.R)
 
 # Is there a difference between Regions in Topt
-PGERM_opt.R <- aov(topt ~ location, data = bilin)
-summary(PGERM_opt.R)
+PTGR_opt.R <- lmer(topt ~ location + population + (1|ID), data = bilin)
+
+anova(PTGR_opt.R)
+ranova(PTGR_opt.R)
+summary(PTGR_opt.R)
 
 # Is there a difference between Regions in Tmin
-PGERM_min.R <- aov(ctmin ~ location, data = bilin)
+PGERM_min.R <- lmer(ctmin ~ location + population + (1|ID), data = bilin)
 summary(PGERM_min.R)
-
-
+anova(PGERM_min.R)
+ranova(PGERM_min.R)
 
 # Is there a difference between Regions in Tmax
 PGERM_max.ID <- aov(ctmax ~ ID, data = bilin)

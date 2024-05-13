@@ -41,7 +41,7 @@ cntrpro <- C.CHPL$control_final / C.CHPL$control_initial
 C.CHPL$CHPL <- 1 - (cntrpro - trtpro)
 
 # Export data frame for Correlation
-write.csv(x = C.CHPL, file = "~/Horsenettle/data/processed/C.CHPL.csv")
+# write.csv(x = C.CHPL, file = "~/Horsenettle/data/processed/C.CHPL.csv")
 
 ```
 
@@ -86,12 +86,31 @@ HStheme <- function(){
 
 # Is there variance between regions, while accounting for block, population, and genet as random effects?
 ```{r}
-CCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|population:ID), data = C.CHPL)
-
+CCHPL_lmer1 <- lmer(CHPL ~ location + (1|ramet) + (1|ID), data = C.CHPL)
+AIC(CCHPL_lmer1)
 (CCHPL_lmer1.a <- anova(CCHPL_lmer1))
 (CCHPL_lmer1.r <- ranova(CCHPL_lmer1))
+summary(CCHPL_lmer1)
+
+CCHPL_lmer1_pop <- lmer(CHPL ~ location + population + (1|ramet) + (1|ID), data = C.CHPL)
+AIC(CCHPL_lmer1_pop)
+(CCHPL_lmer1_pop.a <- anova(CCHPL_lmer1_pop))
+(CCHPL_lmer1_pop.r <- ranova(CCHPL_lmer1_pop))
+summary(CCHPL_lmer1_pop)
 
 
+# Include populations as a random effect with southern populations pooled
+C.CHPL <- C.CHPL %>% mutate(population_2 = case_when(location == "South" ~ "South",
+                                                   population == "Prairie Island" ~ "Prairie Island",
+                                                   population == "Frontenac" ~ "Frontenac"))
+
+CCHPL_lmer1_pop <- lmer(CHPL ~ location + (1|ramet) + (1|population_2/ID), data = C.CHPL)
+AIC(CCHPL_lmer1_pop)
+
+(CCHPL_lmer1_pop.a <- anova(CCHPL_lmer1_pop))
+(CCHPL_lmer1_pop.r <- ranova(CCHPL_lmer1_pop))
+
+summary(CCHPL_lmer1_pop)
 
 # Data Visualization
 (C.CHPL.p1 <- ggplot(C.CHPL, aes(x = location, CHPL, fill = location)) + 

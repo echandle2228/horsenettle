@@ -42,7 +42,7 @@ cntrpro <- C.CMS$cntr_trt / C.CMS$cntr_max
 C.CMS$CMS <- ((1 - trtpro)/(1 - cntrpro))
 
 # Export data frame for Correlation
-write.csv(x = C.CMS, file = "~/Horsenettle/data/processed/C.CMS.csv")
+# write.csv(x = C.CMS, file = "~/Horsenettle/data/processed/C.CMS.csv")
 
 ```
 
@@ -85,12 +85,32 @@ HStheme <- function(){
 
 # Is there variance between regions, while accounting for block, population, and genet as random effects?
 ```{r}
-
-CCMS_lmer1 <- lmer(CMS ~ location + (1|ramet), data = C.CMS)
-
+CCMS_lmer1 <- lmer(CMS ~ location + ID + (1|ramet), data = C.CMS)
+AIC(CCMS_lmer1)
 (CCMS_lmer1.a <- anova(CCMS_lmer1))
 (CCMS_lmer1.r <- ranova(CCMS_lmer1))
+summary(CCMS_lmer1)
 
+
+CCMS_lmer1_pop <- lmer(CMS ~ location + population + (1|ramet) + (1|ID), data = C.CMS)
+AIC(CCMS_lmer1_pop)
+(CCMS_lmer1_pop.a <- anova(CCMS_lmer1_pop))
+(CCMS_lmer1_pop.r <- ranova(CCMS_lmer1_pop))
+
+
+
+# Include populations as a random effect with southern populations pooled
+C.CMS <- C.CMS %>% mutate(population_2 = case_when(location == "South" ~ "South",
+                                                   population == "Prairie Island" ~ "Prairie Island",
+                                                   population == "Frontenac" ~ "Frontenac"))
+
+CCMS_lmer1_pop <- lmer(CMS ~ location + (1|ramet) + (1|population_2), data = C.CMS)
+AIC(CCMS_lmer1_pop)
+
+(CCMS_lmer1_pop.a <- anova(CCMS_lmer1_pop))
+(CCMS_lmer1_pop.r <- ranova(CCMS_lmer1_pop))
+
+summary(CCMS_lmer1_pop)
 
 
 # Data Visualization
@@ -162,7 +182,7 @@ ramB.ttest
     labs(x = "Region", y = "CMS Ratio", title = "Ramet B"))
 
 # Saving graph
-# ggsave("figures/H.CMS_rametA.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/C.CMS_rametA.png", width = 7, height = 5, dpi = 300)
 
 
 # Ramet C
@@ -181,7 +201,7 @@ ramC.ttest
     labs(x = "Region", y = "CMS Ratio", title = "Ramet C"))
 
 # Saving graph
-# ggsave("figures/H.CMS_rametA.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/C.CMS_rametA.png", width = 7, height = 5, dpi = 300)
 
 
 # Ramet D
@@ -296,7 +316,7 @@ ggboxplot(C.CMS, x = "population", y = "CMS",
 
 
 # Saving graph
-# ggsave("figures/H.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/C.CMS.POPULATION.png", width = 7, height = 5, dpi = 300)
 
 ```
 

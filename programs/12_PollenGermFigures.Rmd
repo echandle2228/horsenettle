@@ -34,7 +34,8 @@ library(reshape2)
 library(lmerTest)
 library(outliers)
 library(tidytext)
-
+library(ggpubr)
+library(car)
 
 ```
 
@@ -46,6 +47,23 @@ head(bilin)
 
 germ_dat <- read.csv("~/Horsenettle/data/pollenTube_NEW.csv", header = TRUE)
 head(germ_dat)
+```
+
+# Creating a figure theme for all plots
+```{r}
+HStheme <- function(){            
+  theme_bw()+                          
+  theme(axis.text.x = element_text(size = 12), 
+        text = element_text(family = "sans"), 
+        axis.text.y = element_text(size = 12),
+        plot.subtitle = element_text(size = 16, vjust = 1, hjust = 0.5),
+        axis.title = element_text(size = 12),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank())
+}
 ```
 
 
@@ -79,7 +97,7 @@ ggplot(germ_dat, aes(x = temp, y = germ_percent, color = location)) +
         plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
         panel.grid = element_blank(),
         plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
-        legend.text = element_text(size = 12),
+        legend.text = element_blank(size = 12),
         legend.title = element_blank())
 
 ggsave("figures/pGERM_mean.png", width = 7, height = 5, dpi = 300)
@@ -296,7 +314,7 @@ ggplot(bilin_plot, aes(x = location, y = value, fill = location)) +
         legend.text = element_text(size = 12),
         legend.title = element_blank())
 
-ggsave("figures/pGERM_params.png", width = 7, height = 5, dpi = 300)
+# ggsave("figures/pGERM_params.png", width = 7, height = 5, dpi = 300)
 ```
 
 
@@ -388,39 +406,39 @@ ggsave("figures/pGERM_params4_DOT2.png", width = 7, height = 7, dpi = 300)
 ```
 
 
-## Statistics
+## Linear mixed effects models for Tmax, Topt, and Tmin
 ```{r}
+# Include populations as a random effect with southern populations pooled
+bilin <- bilin %>% mutate(population_2 = case_when(location == "South" ~ "South",
+                                                   population == "Prairie Island" ~ "Prairie Island",
+                                                   population == "Frontenac" ~ "Frontenac"))
+
+
+
 # Is there a difference between Regions in Tmax
-PGERM_max.R <- aov(ctmax ~ location, data = bilin)
-summary(PGERM_max.R)
+PGERM_max.R <- lmer(ctmax ~ location + population + (1|ID), data = bilin)
+
+anova(PGERM_max.R)
+ranova(PGERM_max.R)
+
 
 # Is there a difference between Regions in Topt
-PGERM_opt.R <- aov(topt ~ location, data = bilin)
+PGERM_opt.R <- lmer(topt ~ location + population + (1|ID), data = bilin)
+
+anova(PGERM_opt.R)
+ranova(PGERM_opt.R)
 summary(PGERM_opt.R)
 
 # Is there a difference between Regions in Tmin
-PGERM_min.R <- aov(ctmin ~ location, data = bilin)
+PGERM_min.R <- lmer(ctmin ~ location + population + (1|ID), data = bilin)
+
+anova(PGERM_min.R)
+ranova(PGERM_min.R)
 summary(PGERM_min.R)
+```
 
-
-
-
-
-
-# Is there a difference between Genets in Tmax
-PGERM_max.ID <- aov(ctmax ~ ID, data = bilin)
-summary(PGERM_max.ID)
-
-# Is there a difference between Genets in Topt
-PGERM_opt.ID <- aov(topt ~ ID, data = bilin)
-summary(PGERM_opt.ID)
-
-# Is there a difference between Genets in Tmin
-PGERM_min.ID <- aov(ctmin ~ ID, data = bilin)
-summary(PGERM_min.ID)
-
-
-
+## Outlier analysis for Tmin
+```{r}
 # Outlier analysis for Tmin
 grubbs.test(bilin$ctmin)
 
@@ -429,12 +447,11 @@ bilin_noOut <- bilin %>%
   filter(!ctmin == 1.182)
 
 # Is there a difference between Genets in Tmin
-PGERM_min.ID_noOut <- aov(ctmin ~ ID, data = bilin_noOut)
+PGERM_min.ID_noOut <- lmer(ctmin ~ location + population + (1|ID), data = bilin_noOut)
+
+anova(PGERM_min.ID_noOut)
+ranova(PGERM_min.ID_noOut)
 summary(PGERM_min.ID_noOut)
-
-
-
-
 ```
 
 
@@ -515,6 +532,61 @@ summary(PGERM_opt.pop)
 # Is there a difference between populations in Tmin
 PGERM_min.pop <- aov(ctmin ~ population, data = bilin)
 summary(PGERM_min.pop)
+
+```
+
+## Summary and tmax figure
+```{r}
+
+# Is there a difference between Regions in Tmax
+PGERM_max.R <- lmer(ctmax ~ location + (1|ID), data = bilin)
+summary(PGERM_max.R)
+
+gd <- germ_dat %>% 
+  group_by(location, temp) %>% 
+  summarise(germ_percent = mean(germ_percent))
+
+(raw_dat <- ggplot(germ_dat, aes(x = temp, y = germ_percent, color = location)) +
+  geom_point(alpha = 0.3) +
+  geom_line(aes(group = ID), alpha = 0.3) +
+  geom_line(data = gd, alpha = 1, size = 3) +
+  theme_classic() +
+  labs(x = expression(paste('Temperature (',~degree,'C)',sep='')), 
+       y = "Percent Germination") +
+  scale_colour_manual(values = c("#104E8B", "#B22222")) +
+  theme(text = element_text(family = "sans"), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_blank()))
+
+
+(dot_plot <- ggerrorplot(bilin, x = "location", y = "ctmax", desc_stat = "mean_se", color = "location") +
+  theme_classic() +
+  labs(x = "Region", y = "Tmax °C")+
+  scale_colour_manual(values = c("#B22222", "#104E8B")) +
+  theme(text = element_text(family = "sans"),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        panel.grid = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        legend.background = element_blank()))
+
+(Pub_GermFig <- ggarrange(raw_dat, dot_plot,
+                    labels = c("A", "B"),
+                    ncol = 2, nrow = 1,
+                    widths = c(1.25, 0.75),
+                    common.legend = TRUE,
+                    legend = "none"))
+
+
+ggsave("figures/Pub_GermFig.png", width = 7, height = 3.5, dpi = 500)
 
 ```
 
